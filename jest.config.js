@@ -52,7 +52,7 @@ export default {
   coverageThreshold: {
     global: {
       statements: 100,
-      branches: 80, //ThemeProvider has SSR conditional logic which I can't test in JSDOM
+      branches: 100,
       functions: 100,
       lines: 100,
     },
