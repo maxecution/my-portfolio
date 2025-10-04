@@ -1,10 +1,6 @@
-/**
- * ThemeProvider - Manages theme state with system detection, persistence, manual setting and toggle functionality
- */
-
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { ThemeProviderContext, type Theme, type ThemeProviderState } from "@/contexts/ThemeContext";
+import { ThemeProviderContext, type Theme, type ThemeProviderState } from "./ThemeContext";
 
 type ThemeProviderProps = {
   children: ReactNode;
@@ -19,11 +15,9 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(storageKey) as Theme;
-      if (stored && ["dark", "light", "system"].includes(stored)) {
-        return stored;
-      }
+    const stored = localStorage.getItem(storageKey) as Theme;
+    if (stored && ["dark", "light", "system"].includes(stored)) {
+      return stored;
     }
     return defaultTheme;
   });

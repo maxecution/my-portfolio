@@ -1,5 +1,5 @@
 import "./styles/global.css";
-import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { ThemeProvider } from "@/components/layout/ThemeProvider/ThemeProvider";
 import { useTheme } from "@/hooks/useTheme";
 
 // Component for testing theme functionality

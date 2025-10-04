@@ -9,11 +9,5 @@ export type ThemeProviderState = {
   actualTheme: "dark" | "light";
 };
 
-const initialState: ThemeProviderState = {
-  theme: "system",
-  setTheme: () => null,
-  toggleTheme: () => null,
-  actualTheme: "dark",
-};
-
-export const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+// Standard React pattern: use null as default to force explicit provider usage
+export const ThemeProviderContext = createContext<ThemeProviderState | null>(null);
