@@ -57,5 +57,5 @@ export default {
       lines: 100,
     },
   },
-  coverageReporters: ["text", "lcov", "html"],
+  coverageReporters: ["text", "json", "lcov", "html"],
 };
