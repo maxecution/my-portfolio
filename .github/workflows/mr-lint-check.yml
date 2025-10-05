@@ -1,0 +1,229 @@
+name: Lint Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: |
+          echo "::group::Installing dependencies"
+          corepack enable
+          pnpm install --frozen-lockfile
+          echo "✅ Dependencies installed successfully"
+          echo "::endgroup::"
+
+      - name: Run ESLint
+        id: lint
+        run: |
+          echo "::group::Running ESLint"
+          echo "Analyzing code for linting issues..."
+
+          # Create lint output directory
+          mkdir -p lint-results
+
+          # Run lint and capture both regular and JSON output
+          set +e  # Don't exit on lint failures
+
+          # Run lint with JSON output for detailed analysis
+          pnpm lint --format json > lint-results/lint.json 2>/dev/null || true
+
+          # Run lint normally to get exit code
+          pnpm lint > lint-results/lint.txt 2>&1
+          LINT_EXIT_CODE=$?
+
+          if [ $LINT_EXIT_CODE -eq 0 ]; then
+            echo "✅ All linting checks passed!"
+            echo "lint_status=success" >> $GITHUB_OUTPUT
+            echo "No linting issues found." > lint-results/summary.txt
+          else
+            echo "❌ Linting issues found"
+            echo "lint_status=failure" >> $GITHUB_OUTPUT
+            
+            # Create a summary of issues
+            if [ -f "lint-results/lint.json" ]; then
+              node -e "
+                const fs = require('fs');
+                try {
+                  const lintResults = JSON.parse(fs.readFileSync('lint-results/lint.json', 'utf8'));
+                  let totalErrors = 0;
+                  let totalWarnings = 0;
+                  let fileCount = 0;
+                  
+                  lintResults.forEach(file => {
+                    if (file.messages && file.messages.length > 0) {
+                      fileCount++;
+                      file.messages.forEach(msg => {
+                        if (msg.severity === 2) totalErrors++;
+                        else if (msg.severity === 1) totalWarnings++;
+                      });
+                    }
+                  });
+                  
+                  fs.writeFileSync('lint-results/summary.txt', 
+                    \`Found \${totalErrors} errors and \${totalWarnings} warnings across \${fileCount} files.\`
+                  );
+                  
+                  console.log(\`::error title=ESLint Issues::Found \${totalErrors} errors and \${totalWarnings} warnings across \${fileCount} files\`);
+                } catch (e) {
+                  console.log('::warning::Could not parse lint JSON output');
+                  fs.writeFileSync('lint-results/summary.txt', 'Linting issues found - see details below.');
+                }
+              "
+            fi
+            
+            exit 1
+          fi
+          echo "::endgroup::"
+
+      - name: Comment PR with lint results
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const fs = require('fs');
+            let lintComment = '';
+
+            if ('${{ steps.lint.outputs.lint_status }}' === 'success') {
+              lintComment = `## ✅ Lint Check Passed
+              
+              All code style and syntax requirements met.
+              
+              - ✅ Code style is consistent
+              - ✅ No syntax errors detected
+              - ✅ All ESLint rules followed`;
+            } else {
+              // Read lint results
+              let detailedResults = '';
+              let summary = 'Linting issues found.';
+              
+              try {
+                // Read summary
+                if (fs.existsSync('lint-results/summary.txt')) {
+                  summary = fs.readFileSync('lint-results/summary.txt', 'utf8').trim();
+                }
+                
+                // Parse JSON results for detailed view
+                if (fs.existsSync('lint-results/lint.json')) {
+                  const lintResults = JSON.parse(fs.readFileSync('lint-results/lint.json', 'utf8'));
+                  
+                  // Group issues by file
+                  const fileIssues = lintResults
+                    .filter(file => file.messages && file.messages.length > 0)
+                    .slice(0, 5); // Limit to first 5 files to avoid huge comments
+                  
+                  if (fileIssues.length > 0) {
+                    detailedResults = '\n\n### Detailed Issues:\n\n';
+                    
+                    fileIssues.forEach(file => {
+                      const filePath = file.filePath.replace(process.cwd() + '/', '');
+                      detailedResults += `#### \`${filePath}\`\n\n`;
+                      
+                      file.messages.forEach(msg => {
+                        const severity = msg.severity === 2 ? '🔴 Error' : '🟡 Warning';
+                        const line = msg.line || '?';
+                        const col = msg.column || '?';
+                        detailedResults += `- **${severity}** (Line ${line}:${col}) - ${msg.message}\n`;
+                        if (msg.ruleId) {
+                          detailedResults += `  - Rule: \`${msg.ruleId}\`\n`;
+                        }
+                        detailedResults += '\n';
+                      });
+                    });
+                    
+                    if (lintResults.filter(f => f.messages && f.messages.length > 0).length > 5) {
+                      detailedResults += `\n_... and ${lintResults.filter(f => f.messages && f.messages.length > 0).length - 5} more files with issues._\n`;
+                    }
+                  }
+                }
+              } catch (error) {
+                console.log('Error reading lint results:', error);
+                detailedResults = '\n\n_Detailed results unavailable - check the workflow logs._';
+              }
+              
+              lintComment = `## ❌ Lint Check Failed
+              
+              ${summary}
+              
+              **Local development:**
+              \`\`\`bash
+              # Run linting with auto-fix
+              pnpm lint --fix
+              
+              # Or just check issues
+              pnpm lint
+              
+              # Get JSON format for detailed analysis
+              pnpm lint --format json
+              \`\`\`${detailedResults}
+              
+              **Action required:**
+              - Run \`pnpm lint --fix\` to auto-fix formatting issues
+              - Remove unused imports and variables
+              - Fix React hooks dependency arrays
+              - Ensure consistent code style`;
+            }
+
+            // Find existing lint comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('Lint Check')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: lintComment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: lintComment
+              });
+            }
+
+      - name: Set lint check status
+        if: always()
+        run: |
+          if [ "${{ steps.lint.outputs.lint_status }}" = "success" ]; then
+            echo "::notice title=Lint Check::✅ Code style is perfect - No linting issues found!"
+          else
+            echo "::error title=Lint Check::❌ Linting issues found - Please fix and push changes"
+            exit 1
+          fi

@@ -1,0 +1,148 @@
+name: Coverage Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  coverage-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: |
+          echo "::group::Installing dependencies"
+          corepack enable
+          pnpm install --frozen-lockfile
+          echo "✅ Dependencies installed successfully"
+          echo "::endgroup::"
+
+      - name: Run tests with coverage
+        id: coverage
+        run: |
+          echo "::group::Running Jest with coverage"
+          echo "🚀 Starting test suite with coverage analysis..."
+
+          # Run tests and capture output
+          if pnpm test:coverage; then
+            echo "✅ All tests passed with 100% coverage!"
+            echo "coverage_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Tests failed or coverage threshold not met"
+            echo "coverage_status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          echo "::endgroup::"
+
+      - name: Parse coverage summary
+        id: coverage-summary
+        run: |
+          node <<'EOF' >> $GITHUB_OUTPUT
+          const fs = require('fs');
+          const summary = require('./coverage/coverage-summary.json').total;
+          for (const key in summary) {
+            console.log(`${key}=${summary[key].pct}`);
+          }
+          EOF
+
+      - name: Comment PR with coverage results
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            let coverageComment = '';
+
+            if ('${{ steps.coverage.outputs.coverage_status }}' === 'success') {
+            const summary = {
+              statements: '${{ steps.coverage-summary.outputs.statements }}%',
+              branches: '${{ steps.coverage-summary.outputs.branches }}%',
+              functions: '${{ steps.coverage-summary.outputs.functions }}%',
+              lines: '${{ steps.coverage-summary.outputs.lines }}%'
+            };
+
+            coverageComment = `## ✅ Coverage Check Passed
+
+            All tests are passing with required coverage thresholds met.
+
+            - ✅ Statements: ${summary.statements}
+            - ✅ Branches: ${summary.branches}
+            - ✅ Functions: ${summary.functions}
+            - ✅ Lines: ${summary.lines}`;
+            } else {
+              coverageComment = `## ❌ Coverage Check Failed
+              
+              Coverage requirements not met. Required: 100% for all metrics.
+              
+              **Action required:**
+              - Add tests for uncovered code
+              - Ensure all branches and edge cases are tested
+              - Verify no existing tests were broken
+              
+              **Local testing:**
+              \`\`\`bash
+              pnpm test:coverage
+              \`\`\``;
+            }
+
+            // Find existing coverage comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('Coverage Check')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: coverageComment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: coverageComment
+              });
+            }
+
+      - name: Set check status
+        if: always()
+        run: |
+          if [ "${{ steps.coverage.outputs.coverage_status }}" = "success" ]; then
+            echo "::notice title=Coverage Check::✅ 100% coverage maintained - Ready for merge!"
+          else
+            echo "::error title=Coverage Check::❌ Coverage threshold not met - Please add tests"
+            exit 1
+          fi
