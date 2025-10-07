@@ -10,6 +10,7 @@ PRODUCTION_BRANCH="main"
 
 if [[ "$VERCEL_ENV" == "production" && "$VERCEL_GIT_COMMIT_REF" == "$PRODUCTION_BRANCH" ]]; then
   exit 1 
+fi
 
 if [[ "$VERCEL_ENV" == "preview" && -n "$VERCEL_GIT_PULL_REQUEST_ID" ]]; then
   exit 1 
