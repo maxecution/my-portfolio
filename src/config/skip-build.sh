@@ -15,4 +15,4 @@ if [[ "$VERCEL_ENV" == "preview" && -n "$VERCEL_GIT_PULL_REQUEST_ID" ]]; then
   exit 1 
 fi
 
-exit 0  
+exit 0
