@@ -1,12 +1,12 @@
 import { renderHook } from "@testing-library/react";
 import { useTheme } from "./useTheme";
-import { ThemeProvider } from "@layout/ThemeProvider/ThemeProvider";
+import { ThemeProvider } from "@/contexts/ThemeProvider/ThemeProvider";
 import React from "react";
 import {
   createLocalStorageMock,
   createMatchMediaMock,
   type LocalStorageMock,
-} from "@layout/ThemeProvider/themeProviderTestUtils";
+} from "@/contexts/ThemeProvider/themeProviderTestUtils";
 
 describe("useTheme Hook", () => {
   let mockLocalStorage: LocalStorageMock;

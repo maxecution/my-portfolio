@@ -1,6 +1,6 @@
 import "./styles/global.css";
-import { ThemeProvider } from "@/components/layout/ThemeProvider/ThemeProvider";
-import { useTheme } from "@/hooks/useTheme";
+import { ThemeProvider } from "@/contexts/ThemeProvider/ThemeProvider";
+import { useTheme } from "@/contexts/ThemeProvider/useTheme";
 
 // Component for testing theme functionality
 function DarkThemeTester() {
