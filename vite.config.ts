@@ -10,6 +10,8 @@ export default defineConfig({
       //also update in tsconfig.json, tsconfig.app.json, jest.config.js!
       "@": "/src",
       "@layout": "/src/components/layout",
+      "@sections": "/src/sections",
+      "@contexts": "/src/contexts",
     },
   },
 });

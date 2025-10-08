@@ -21,6 +21,8 @@ export default {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@layout/(.*)$": "<rootDir>/src/components/layout/$1",
+    "^@sections/(.*)$": "<rootDir>/src/sections/$1",
+    "^@contexts/(.*)$": "<rootDir>/src/contexts/$1",
     // Handle CSS imports in tests
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     // Handle static assets

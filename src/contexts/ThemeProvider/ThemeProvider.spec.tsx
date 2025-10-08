@@ -1,8 +1,7 @@
-import React from "react";
 import { render, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { ThemeProvider } from "./ThemeProvider";
-import { ThemeProviderContext } from "./ThemeContext";
+import { useTheme } from "./useTheme";
 import {
   THEME_TEST_CONSTANTS,
   getCurrentThemeText,
@@ -16,15 +15,9 @@ import {
 const { LIGHT, DARK, SYSTEM, SET_LIGHT, SET_DARK, SET_SYSTEM, TOGGLE, STORAGE_KEY } =
   THEME_TEST_CONSTANTS;
 
-// Test component that uses the theme context and demonstrates proper Tailwind usage
+// Test component that uses the theme context for UI interaction
 const TestComponent = () => {
-  const context = React.useContext(ThemeProviderContext);
-  if (!context) {
-    throw new Error(
-      "ThemeProviderContext is null. Make sure ThemeProvider is in the component tree."
-    );
-  }
-  const { theme, setTheme, toggleTheme, actualTheme } = context;
+  const { theme, setTheme, toggleTheme, actualTheme } = useTheme();
 
   return (
     <div
