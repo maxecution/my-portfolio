@@ -15,6 +15,7 @@ type SectionProps = BaseSectionProps &
     | { title: string; ariaLabel: string }
   );
 
+//TODO:adjust colour scheme as actual sections are added
 export default function Section({
   id,
   title,
