@@ -15,6 +15,6 @@ const files = staged.join(" ");
 const coverageFrom = staged.map((f) => `'${f}'`).join(",");
 
 // 3. Run Jest
-const cmd = `jest --findRelatedTests --coverage --coverageReporters=text --collectCoverageFrom=[${coverageFrom}] ${files}`;
+const cmd = `jest --findRelatedTests --passWithNoTests --coverage --coverageReporters=text-summary --collectCoverageFrom=[${coverageFrom}] ${files}`;
 console.log(`Running: ${cmd}`);
 execSync(cmd, { stdio: "inherit", shell: true });
