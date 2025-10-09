@@ -24,7 +24,6 @@ describe("Section Component", () => {
     expect(sectionElement).not.toHaveClass("min-h-screen");
 
     // Should be labeled by the heading
-
     expect(sectionElement).toHaveAttribute("aria-labelledby", HEADING_ID);
     expect(sectionElement).not.toHaveAttribute("aria-label");
 
@@ -62,7 +61,6 @@ describe("Section Component", () => {
     expect(sectionElement).not.toHaveClass("py-20");
 
     // Should still have proper accessibility with title
-
     expect(sectionElement).toHaveAttribute("aria-labelledby", HEADING_ID);
   });
 

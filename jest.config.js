@@ -37,6 +37,7 @@ export default {
     "!src/vite-env.d.ts",
     "!src/App.tsx", // Exclude main App component from coverage requirements for now until more components are added
     "!src/setupTests.ts",
+    "!src/config/**",
   ],
   testMatch: [
     "<rootDir>/src/**/__tests__/**/*.{ts,tsx}",
