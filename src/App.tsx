@@ -1,24 +1,9 @@
 import "./styles/global.css";
 import { ThemeProvider } from "@contexts/ThemeProvider/ThemeProvider";
-import { useTheme } from "@contexts/ThemeProvider/useTheme";
 import Section from "@layout/section/Section";
+import NavBar from "@sections/navbar/NavBar";
 
-// Component for testing theme functionality
-
-function ExampleNavBar() {
-  const { toggleTheme } = useTheme();
-
-  return (
-    <nav className='w-full p-4 bg-gray-200 dark:bg-gray-800 flex justify-between items-center'>
-      <div className='text-xl font-bold'>My Portfolio</div>
-      <button
-        className='bg-blue-500 dark:bg-blue-100 text-white dark:text-black p-2 rounded'
-        onClick={toggleTheme}>
-        Toggle Theme
-      </button>
-    </nav>
-  );
-}
+// Component for testing sections
 function LoremIpsum() {
   return (
     <div>
@@ -38,18 +23,18 @@ function App() {
   return (
     <ThemeProvider>
       <div className='bg-white text-black dark:bg-black dark:text-white'>
-        <ExampleNavBar />
+        <NavBar />
         <main className='min-h-screen'>
-          <Section id='hero' fullHeight ariaLabel='Hero'>
+          <Section id='hero' ariaLabel='Hero' fullHeight>
             <LoremIpsum />
           </Section>
-          <Section id='about' title='About Me'>
+          <Section id='about' title='About Me' fullHeight>
             <LoremIpsum />
           </Section>
-          <Section id='projects' title='Projects'>
+          <Section id='projects' title='Projects' fullHeight>
             <LoremIpsum />
           </Section>
-          <Section id='contact' title='Contact'>
+          <Section id='contact' title='Contact' fullHeight>
             <LoremIpsum />
           </Section>
         </main>

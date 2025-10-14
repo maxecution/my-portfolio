@@ -1,3 +1,20 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset for sticky navbar, scroll padding accounts for fixed header (h-16) */
+html {
+  scroll-padding-top: 8rem;
+}
+
+/* Universal focus styles */
+@layer base {
+  :focus {
+    @apply outline-none ring-2 ring-gray-400 rounded-md;
+  }
+}
