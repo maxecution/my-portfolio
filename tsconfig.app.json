@@ -14,7 +14,9 @@
       "@/*": ["*"],
       "@layout/*": ["components/layout/*"],
       "@sections/*": ["sections/*"],
-      "@contexts/*": ["contexts/*"]
+      "@contexts/*": ["contexts/*"],
+      "@data/*": ["data/*"],
+      "@hooks/*": ["hooks/*"]
     },
 
     /* Bundler mode */

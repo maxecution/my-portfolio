@@ -1,5 +1,5 @@
-import { type ReactNode } from "react";
-import SectionHeader from "./SectionHeader";
+import { type ReactNode } from 'react';
+import SectionHeader from './SectionHeader';
 
 interface BaseSectionProps {
   id: string;
@@ -9,30 +9,18 @@ interface BaseSectionProps {
 
 // Enforce that either title or ariaLabel (or both) is provided when using the Section component
 type SectionProps = BaseSectionProps &
-  (
-    | { title: string; ariaLabel?: never }
-    | { title?: never; ariaLabel: string }
-    | { title: string; ariaLabel: string }
-  );
+  ({ title: string; ariaLabel?: never } | { title?: never; ariaLabel: string } | { title: string; ariaLabel: string });
 
-export default function Section({
-  id,
-  title,
-  fullHeight = false,
-  ariaLabel,
-  children,
-}: SectionProps) {
+export default function Section({ id, title, fullHeight = false, ariaLabel, children }: SectionProps) {
   const headingId = title ? `${id}-heading` : undefined;
 
   return (
     <>
       <section
-        id={`${id}-id`}
+        id={`${id}`}
         aria-labelledby={headingId}
         aria-label={!title ? ariaLabel : undefined}
-        className={`w-full ${
-          fullHeight ? "min-h-screen flex items-center" : "py-20"
-        } px-6 md:px-20`}>
+        className={`w-full ${fullHeight ? 'min-h-screen flex items-start' : 'py-20'} px-6 md:px-20`}>
         <div className='mx-auto w-full pl-5'>
           {title && <SectionHeader id={headingId}>{title}</SectionHeader>}
           {children}

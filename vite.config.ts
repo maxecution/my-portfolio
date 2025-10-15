@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,10 +8,12 @@ export default defineConfig({
   resolve: {
     alias: {
       //also update in tsconfig.json, tsconfig.app.json, jest.config.js!
-      "@": "/src",
-      "@layout": "/src/components/layout",
-      "@sections": "/src/sections",
-      "@contexts": "/src/contexts",
+      '@': '/src',
+      '@layout': '/src/components/layout',
+      '@sections': '/src/sections',
+      '@contexts': '/src/contexts',
+      '@data': '/src/data',
+      '@hooks': '/src/hooks',
     },
   },
 });
