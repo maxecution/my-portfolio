@@ -1,4 +1,3 @@
-// src/sections/NavBar/NavBar.tsx
 import type { JSX } from 'react';
 import useScrollState from '@hooks/useScrollState';
 import NavLinks from './NavLinks';
