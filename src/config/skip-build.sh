@@ -6,11 +6,12 @@
 # VERCEL_GIT_COMMIT_REF → the branch being pushed
 # $VERCEL_GIT_PULL_REQUEST_ID → if a the pull request ID exists, a preview build is triggered 
 
+sleep 5 # wait for Vercel env vars to be available because PR ID is not immediately available
+
 PRODUCTION_BRANCH="main"
 echo "VERCEL_ENV=$VERCEL_ENV"
 echo "VERCEL_GIT_PULL_REQUEST_ID=$VERCEL_GIT_PULL_REQUEST_ID"
 echo "VERCEL_GIT_COMMIT_REF=$VERCEL_GIT_COMMIT_REF"
-
 
 if [[ "$VERCEL_ENV" == "production" && "$VERCEL_GIT_COMMIT_REF" == "$PRODUCTION_BRANCH" ]]; then
   exit 1 
