@@ -96,11 +96,13 @@ jobs:
           echo "::group::Deploying to Vercel"
           if [[ "${{ steps.env.outputs.env }}" == "production" ]]; then
             echo "Deploying to PRODUCTION environment..."
-            DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }} 2>&1 | grep -E '^https://' | tail -n 1)
+            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }} 2>&1)
+            DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.app' | head -n 1)
             echo "✅ Production deployment completed successfully!"
           else
             echo "Deploying to PREVIEW environment..."
-            DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }} 2>&1 | grep -E '^https://' | tail -n 1)
+            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }} 2>&1)
+            DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.app' | head -n 1)
             echo "✅ Preview deployment completed successfully!"
           fi
 
