@@ -61,10 +61,10 @@ jobs:
           echo "Analyzing trigger event and branch..."
           if [[ "${{ github.event_name }}" == "push" ]]; then
             echo "env=production" >> $GITHUB_OUTPUT
-            echo "✅ Deploying to PRODUCTION (main branch push detected)"
+            echo "✅ Deploying to PRODUCTION"
           else
             echo "env=preview" >> $GITHUB_OUTPUT
-            echo "✅ Deploying to PREVIEW (pull request detected)"
+            echo "✅ Deploying to PREVIEW"
           fi
           echo "::endgroup::"
 
@@ -76,44 +76,34 @@ jobs:
           echo "✅ Vercel environment info pulled successfully"
           echo "::endgroup::"
 
-      - name: Build Project
-        run: |
-          echo "::group::Building project"
-          if [[ "${{ steps.env.outputs.env }}" == "production" ]]; then
-            echo "Building project for PRODUCTION deployment..."
-            vercel build --prod --token=${{ env.VERCEL_TOKEN }}
-            echo "✅ Production build completed successfully"
-          else
-            echo "Building project for PREVIEW deployment..."
-            vercel build --token=${{ env.VERCEL_TOKEN }}
-            echo "✅ Preview build completed successfully"
-          fi
-          echo "::endgroup::"
-
-      - name: Deploy Project
+      - name: Build and Deploy Project
         id: deploy
         run: |
-          echo "::group::Deploying to Vercel"
-          if [[ "${{ steps.env.outputs.env }}" == "production" ]]; then
-            echo "Deploying to PRODUCTION environment..."
-            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }} 2>&1)
-            DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.app' | head -n 1)
-            echo "✅ Production deployment completed successfully!"
+          echo "::group::Building and Deploying Project"
+
+          ENV="${{ steps.env.outputs.env }}"
+          PROD_FLAG=""
+          if [[ "$ENV" == "production" ]]; then
+            echo "PRODUCTION deployment"
+            PROD_FLAG="--prod"
           else
-            echo "Deploying to PREVIEW environment..."
-            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }} 2>&1)
-            DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.app' | head -n 1)
-            echo "✅ Preview deployment completed successfully!"
+            echo "PREVIEW deployment"
           fi
 
-          # Validate URL was captured
+          echo "Building..."
+          vercel build $PROD_FLAG --token=${{ env.VERCEL_TOKEN }}
+
+          echo "Deploying..."
+          DEPLOY_OUTPUT=$(vercel deploy --prebuilt $PROD_FLAG --token=${{ env.VERCEL_TOKEN }} 2>&1)
+          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.app' | head -n 1)
+
           if [[ -z "$DEPLOY_URL" ]]; then
             echo "❌ Failed to capture deployment URL"
             exit 1
           fi
 
-          # Export DEPLOY_URL for use in later steps
           echo "deploy_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          echo "✅ Deployment completed successfully!"
           echo "::endgroup::"
 
       - name: Comment Deployment URL on PR
