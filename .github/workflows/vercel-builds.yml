@@ -1,0 +1,168 @@
+name: Vercel Deployments
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      deployments: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: |
+          echo "::group::Installing dependencies"
+          echo "Installing project dependencies..."
+          corepack enable
+          pnpm install --frozen-lockfile
+          echo "✅ Dependencies installed successfully"
+          echo "::endgroup::"
+
+      - name: Install Vercel CLI
+        run: |
+          echo "::group::Installing Vercel CLI"
+          echo "Installing Vercel CLI globally..."
+          pnpm add -g vercel@latest
+          echo "✅ Vercel CLI installed successfully"
+          echo "::endgroup::"
+
+      - name: Determine deployment environment
+        id: env
+        run: |
+          echo "::group::Determining deployment environment"
+          echo "Analyzing trigger event and branch..."
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "env=production" >> $GITHUB_OUTPUT
+            echo "✅ Deploying to PRODUCTION (main branch push detected)"
+          else
+            echo "env=preview" >> $GITHUB_OUTPUT
+            echo "✅ Deploying to PREVIEW (pull request detected)"
+          fi
+          echo "::endgroup::"
+
+      - name: Pull Vercel Environment Info
+        run: |
+          echo "::group::Pulling Vercel environment configuration"
+          echo "Fetching Vercel project configuration for ${{ steps.env.outputs.env }} environment..."
+          vercel pull --yes --environment=${{ steps.env.outputs.env }} --token=${{ env.VERCEL_TOKEN }}
+          echo "✅ Vercel environment info pulled successfully"
+          echo "::endgroup::"
+
+      - name: Build Project
+        run: |
+          echo "::group::Building project"
+          if [[ "${{ steps.env.outputs.env }}" == "production" ]]; then
+            echo "Building project for PRODUCTION deployment..."
+            vercel build --prod --token=${{ env.VERCEL_TOKEN }}
+            echo "✅ Production build completed successfully"
+          else
+            echo "Building project for PREVIEW deployment..."
+            vercel build --token=${{ env.VERCEL_TOKEN }}
+            echo "✅ Preview build completed successfully"
+          fi
+          echo "::endgroup::"
+
+      - name: Deploy Project
+        id: deploy
+        run: |
+          echo "::group::Deploying to Vercel"
+          if [[ "${{ steps.env.outputs.env }}" == "production" ]]; then
+            echo "Deploying to PRODUCTION environment..."
+            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }} 2>&1)
+            DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.app' | head -n 1)
+            echo "✅ Production deployment completed successfully!"
+          else
+            echo "Deploying to PREVIEW environment..."
+            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }} 2>&1)
+            DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.app' | head -n 1)
+            echo "✅ Preview deployment completed successfully!"
+          fi
+
+          # Validate URL was captured
+          if [[ -z "$DEPLOY_URL" ]]; then
+            echo "❌ Failed to capture deployment URL"
+            exit 1
+          fi
+
+          # Export DEPLOY_URL for use in later steps
+          echo "deploy_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          echo "::endgroup::"
+
+      - name: Comment Deployment URL on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.deploy.outputs.deploy_url }}';
+
+            if (!url || url === 'undefined') {
+              console.log('❌ No deployment URL available to comment');
+              return;
+            }
+
+            const deploymentComment = `## Preview Deployment Ready!
+
+            Your preview deployment is live and ready for testing:
+
+            **Preview URL:** ${url}
+
+            This preview will be automatically updated with new commits to this PR.`;
+
+            // Check for existing deployment comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('Preview Deployment Ready')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: deploymentComment
+              });
+              console.log('✅ Updated existing deployment comment');
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: deploymentComment
+              });
+              console.log('✅ Created new deployment comment');
+            }
