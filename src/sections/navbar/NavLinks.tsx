@@ -17,12 +17,14 @@ export default function NavLinks({ links, orientation = 'horizontal', onLinkClic
       }`}
       role={isVertical ? undefined : 'menu'}>
       {links.map((link) => (
-        <li key={link.href} className={isVertical ? 'border-b border-gray-500' : ''}>
+        <li key={link.href} className={isVertical ? 'border-b border-gray-500 hover:border-b-2' : ''}>
           <a
             href={link.href}
             onClick={onLinkClick}
             aria-label={`Navigate to ${link.label} section`}
-            className={`text-base md:text-lg xl:text-xl 2xl:text-2xl font-medium text-black dark:text-white pb-2 border-b-2 border-transparent hover:border-black hover:dark:border-white`}>
+            className={`text-base md:text-lg xl:text-xl 2xl:text-2xl font-medium text-text dark:text-text pb-2 border-b-2 border-transparent ${
+              !isVertical ? 'hover:border-text hover:dark:border-text' : ''
+            }`}>
             {link.label}
           </a>
         </li>

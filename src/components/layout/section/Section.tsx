@@ -28,7 +28,7 @@ export default function Section({ id, title, fullHeight = false, ariaLabel, chil
       </section>
       {/* Divider line at the bottom of section */}
       <div className='flex justify-center py-8' role='separator' aria-hidden='true'>
-        <div className='w-2/3 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent dark:from-transparent dark:via-gray-500 dark:to-transparent' />
+        <div className='w-2/3 h-px bg-gradient-to-r from-transparent via-primary-400 to-transparent dark:from-transparent dark:via-primary-500 dark:to-transparent' />
       </div>
     </>
   );
