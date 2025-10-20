@@ -70,8 +70,10 @@ export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps): 
             id='mobile-menu'
             data-burger-menu
             role='menu'
-            className={`fixed top-16 right-0 w-45 z-60 transition-transform duration-300 ease-in-out ${
-              hasScrolled ? 'bg-gray-200/75 dark:bg-gray-800/75 backdrop-blur-xs' : 'bg-white dark:bg-black'
+            className={`fixed top-16 right-0 w-45 z-60 transition-all duration-300 ease-in-out ${
+              hasScrolled
+                ? 'bg-background-200/75 dark:bg-background-200/75 backdrop-blur-xs'
+                : 'bg-background dark:bg-background'
             }`}>
             <nav className='flex flex-col p-6'>
               <NavLinks links={navLinks} orientation='vertical' onLinkClick={closeMenu} />

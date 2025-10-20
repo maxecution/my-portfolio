@@ -78,7 +78,7 @@ describe('NavBar', () => {
 
       const header = screen.getByRole('banner');
       expect(header).toHaveClass('bg-transparent');
-      expect(header).not.toHaveClass('bg-gray-200/75', 'dark:bg-gray-800/75', 'backdrop-blur-xs');
+      expect(header).not.toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
     });
 
     it('should apply blurred background when scrolled and pass hasScrolled state to BurgerMenu', () => {
@@ -87,7 +87,7 @@ describe('NavBar', () => {
 
       // Test that scroll state affects the header background
       const header = screen.getByRole('banner');
-      expect(header).toHaveClass('bg-gray-200/75', 'dark:bg-gray-800/75', 'backdrop-blur-xs');
+      expect(header).toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
 
       // Test that burger menu behaves correctly with scroll state by opening it
       const burgerButton = screen.getByRole('button', { name: 'Open navigation menu' });
@@ -95,7 +95,7 @@ describe('NavBar', () => {
 
       // When scrolled, the mobile menu should have the blurred background
       const mobileMenu = document.querySelector('[data-burger-menu]');
-      expect(mobileMenu).toHaveClass('bg-gray-200/75', 'dark:bg-gray-800/75', 'backdrop-blur-xs');
+      expect(mobileMenu).toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
     });
   });
 });

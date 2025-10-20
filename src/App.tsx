@@ -20,7 +20,7 @@ function LoremIpsum() {
 function App() {
   return (
     <ThemeProvider>
-      <div className='bg-primary-50 text-black dark:bg-primary-50 dark:text-white'>
+      <div className='bg-background text-text dark:bg-background dark:text-text'>
         <NavBar />
         <main className='min-h-screen'>
           <Section id='hero' ariaLabel='Hero' fullHeight>

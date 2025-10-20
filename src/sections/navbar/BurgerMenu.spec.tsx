@@ -62,11 +62,11 @@ describe('BurgerMenu', () => {
       const menu = document.querySelector('[data-burger-menu]');
 
       // Not scrolled - solid background
-      expect(menu).toHaveClass('bg-white', 'dark:bg-black');
+      expect(menu).toHaveClass('bg-background', 'dark:bg-background');
 
       // Scrolled - blurred background
       rerender(<BurgerMenu navLinks={mockLinks} hasScrolled={true} />);
-      expect(menu).toHaveClass('bg-gray-200/75', 'dark:bg-gray-800/75', 'backdrop-blur-xs');
+      expect(menu).toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
     });
 
     it('should render NavLinks with correct structure and handle link clicks', () => {
