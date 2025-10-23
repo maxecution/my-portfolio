@@ -20,15 +20,19 @@ export default function Section({ id, title, fullHeight = false, ariaLabel, chil
         id={`${id}`}
         aria-labelledby={headingId}
         aria-label={!title ? ariaLabel : undefined}
-        className={`w-full ${fullHeight ? 'min-h-screen flex items-start' : 'py-20'} px-6 md:px-20`}>
-        <div className='mx-auto w-full pl-5'>
+        className={`w-full ${
+          fullHeight
+            ? 'h-[calc(100vh-4rem)] md:h-[calc(100vh-4.5rem)] xl:h-[calc(100vh-5rem)] 2xl:h-[calc(100vh-6rem)]'
+            : 'py-20'
+        } px-6 md:px-20`}>
+        <div className={`mx-auto w-full h-full pl-5`}>
           {title && <SectionHeader id={headingId}>{title}</SectionHeader>}
-          {children}
+          <div className={`w-full ${fullHeight ? 'h-full' : 'h-auto'}`}>{children}</div>
         </div>
       </section>
       {/* Divider line at the bottom of section */}
       <div className='flex justify-center py-8' role='separator' aria-hidden='true'>
-        <div className='w-2/3 h-px bg-gradient-to-r from-transparent via-primary-400 to-transparent dark:from-transparent dark:via-primary-500 dark:to-transparent' />
+        <div className='w-2/3 h-px bg-gradient-to-r from-transparent via-primary-400 to-transparent dark:from-transparent dark:via-primary-400 dark:to-transparent' />
       </div>
     </>
   );

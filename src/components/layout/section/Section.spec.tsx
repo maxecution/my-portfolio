@@ -57,7 +57,13 @@ describe('Section Component', () => {
     );
 
     const sectionElement = document.getElementById(`${SECTION_ID}`);
-    expect(sectionElement).toHaveClass('min-h-screen', 'flex', 'items-start');
+    expect(sectionElement).toHaveClass(
+      'w-full',
+      'h-[calc(100vh-4rem)]',
+      'md:h-[calc(100vh-4.5rem)]',
+      'xl:h-[calc(100vh-5rem)]',
+      '2xl:h-[calc(100vh-6rem)]'
+    );
     expect(sectionElement).not.toHaveClass('py-20');
 
     // Should still have proper accessibility with title

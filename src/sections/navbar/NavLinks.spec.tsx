@@ -18,7 +18,7 @@ describe('NavLinks', () => {
   });
 
   describe('rendering', () => {
-    it('should render all links with correct content and attributes, and render horizontal by default', () => {
+    test('should render all links with correct content and attributes, and render horizontal by default', () => {
       render(<NavLinks links={mockLinks} />);
 
       mockLinks.forEach((link) => {
@@ -29,15 +29,14 @@ describe('NavLinks', () => {
         expect(linkElement).toHaveAttribute('aria-label', `Navigate to ${link.label} section`);
       });
 
-      const list = screen.getByRole('menu');
+      const list = screen.getByRole('list');
       expect(list).toHaveClass('flex-row', 'items-center');
       expect(list).not.toHaveClass('flex-col', 'space-y-6');
     });
 
-    it('should render vertical layout when specified', () => {
+    test('should render vertical layout when specified', () => {
       render(<NavLinks links={mockLinks} orientation='vertical' />);
 
-      // Vertical layout doesn't have role="menu" since it's used within BurgerMenu which already has that role
       const list = screen.getByRole('list');
       expect(list).toHaveClass('flex-col', 'space-y-6');
       expect(list).not.toHaveClass('flex-row', 'items-center');
@@ -52,7 +51,7 @@ describe('NavLinks', () => {
   });
 
   describe('interactions', () => {
-    it('should call onLinkClick when a link is clicked', () => {
+    test('should call onLinkClick when a link is clicked', () => {
       render(<NavLinks links={mockLinks} onLinkClick={mockOnLinkClick} />);
 
       const firstLink = screen.getByRole('link', { name: 'Navigate to About section' });
@@ -61,7 +60,7 @@ describe('NavLinks', () => {
       expect(mockOnLinkClick).toHaveBeenCalledTimes(1);
     });
 
-    it('should work without onLinkClick prop', () => {
+    test('should work without onLinkClick prop', () => {
       // Should not throw when onLinkClick is not provided
       expect(() => {
         render(<NavLinks links={mockLinks} />);
@@ -72,10 +71,10 @@ describe('NavLinks', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle empty links array', () => {
+    test('should handle empty links array', () => {
       render(<NavLinks links={[]} />);
 
-      const list = screen.getByRole('menu');
+      const list = screen.getByRole('list');
       expect(list).toBeInTheDocument();
       expect(screen.queryByRole('menuitem')).not.toBeInTheDocument();
     });

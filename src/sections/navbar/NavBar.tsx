@@ -20,7 +20,7 @@ export default function NavBar(): JSX.Element {
           href='#'
           aria-label='Navigate to Home section'
           title='Navigate to Home section'
-          className='flex items-center font-bold text-xl text-primary dark:text-primary hover:scale-105 hover:text-shadow-lg text-shadow-primary-50 group'>
+          className='flex items-center font-bold text-xl text-primary hover:scale-105 hover:text-shadow-lg text-shadow-primary-50 group'>
           <div className='w-12 h-12 md:w-14 md:h-14 xl:w-16 xl:h-16 2xl:w-18 2xl:h-18 flex items-center justify-center border-3 rounded-md group-hover:shadow-lg shadow-primary-50'>
             <div className='text-base md:text-lg xl:text-xl 2xl:text-2xl font-bold'>{navIcon.initials}</div>
           </div>

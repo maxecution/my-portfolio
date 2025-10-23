@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ThemeToggleButton from './ThemeToggleButton';
-import { useTheme } from '@contexts/ThemeProvider/useTheme';
 
 // Mock the useTheme hook
 jest.mock('@contexts/ThemeProvider/useTheme');
+import { useTheme } from '@contexts/ThemeProvider/useTheme'; // import after mocking
 const mockUseTheme = useTheme as jest.MockedFunction<typeof useTheme>;
 
 // Mock document.startViewTransition
@@ -51,7 +51,7 @@ describe('ThemeToggleButton', () => {
   });
 
   describe('rendering', () => {
-    it('should render button with correct accessibility attributes', () => {
+    test('should render button with correct accessibility attributes', () => {
       render(<ThemeToggleButton />);
 
       const button = screen.getByRole('button', { name: 'Theme toggle button' });
@@ -60,7 +60,7 @@ describe('ThemeToggleButton', () => {
       expect(button).toHaveAttribute('aria-label', 'Theme toggle button');
     });
 
-    it('should render with theme icons', () => {
+    test('should render with theme icons', () => {
       render(<ThemeToggleButton />);
 
       // Should have icons for both light and dark themes
@@ -69,7 +69,7 @@ describe('ThemeToggleButton', () => {
   });
 
   describe('click handling without view transitions', () => {
-    it('should call toggleTheme when view transitions are not supported', () => {
+    test('should call toggleTheme when view transitions are not supported', () => {
       // document.startViewTransition is undefined by default in beforeEach
       render(<ThemeToggleButton />);
       const button = screen.getByRole('button');
@@ -79,7 +79,7 @@ describe('ThemeToggleButton', () => {
       expect(mockStartViewTransition).not.toHaveBeenCalled();
     });
 
-    it('should call toggleTheme when user prefers reduced motion', () => {
+    test('should call toggleTheme when user prefers reduced motion', () => {
       // Mock prefers-reduced-motion: reduce
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
@@ -116,7 +116,7 @@ describe('ThemeToggleButton', () => {
       });
     });
 
-    it('should use view transition when supported and motion is not reduced', () => {
+    test('should use view transition when supported and motion is not reduced', () => {
       render(<ThemeToggleButton />);
 
       const button = screen.getByRole('button');
@@ -126,7 +126,7 @@ describe('ThemeToggleButton', () => {
       expect(mockToggleTheme).toHaveBeenCalledTimes(1);
     });
 
-    it('should add and remove transition styles when using view transitions', () => {
+    test('should add and remove transition styles when using view transitions', () => {
       render(<ThemeToggleButton />);
 
       const button = screen.getByRole('button');
@@ -149,7 +149,7 @@ describe('ThemeToggleButton', () => {
       // Check that style element was removed
       expect(document.head.querySelectorAll('style[id^="theme-transition-"]')).toHaveLength(0);
     });
-    it('should handle multiple rapid clicks gracefully, and clean up styles after timeout', () => {
+    test('should handle multiple rapid clicks gracefully, and clean up styles after timeout', () => {
       setViewTransitionMock(mockStartViewTransition);
       mockStartViewTransition.mockImplementation((callback: () => void) => {
         callback();
