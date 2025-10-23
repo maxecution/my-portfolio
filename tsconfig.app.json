@@ -16,7 +16,8 @@
       "@sections/*": ["sections/*"],
       "@contexts/*": ["contexts/*"],
       "@data/*": ["data/*"],
-      "@hooks/*": ["hooks/*"]
+      "@hooks/*": ["hooks/*"],
+      "@shared/*": ["components/shared/*"]
     },
 
     /* Bundler mode */

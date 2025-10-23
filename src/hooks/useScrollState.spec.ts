@@ -46,7 +46,7 @@ describe('useScrollState', () => {
   });
 
   describe('default behavior with threshold = 10', () => {
-    it('should progress from false to true as scroll position increases through threshold', () => {
+    test('should progress from false to true as scroll position increases through threshold', () => {
       const { result } = renderHook(() => useScrollState());
 
       // Start at scroll position 0 - should be false
@@ -71,7 +71,7 @@ describe('useScrollState', () => {
     });
   });
   describe('custom threshold values', () => {
-    it('should work with custom threshold of 0', () => {
+    test('should work with custom threshold of 0', () => {
       const { result } = renderHook(() => useScrollState(0));
 
       // Should be false initially (0 is not > 0)
@@ -83,7 +83,7 @@ describe('useScrollState', () => {
       expect(result.current).toBe(true);
     });
 
-    it('should work with custom threshold of 50', () => {
+    test('should work with custom threshold of 50', () => {
       const { result } = renderHook(() => useScrollState(50));
 
       expect(result.current).toBe(false);
@@ -97,7 +97,7 @@ describe('useScrollState', () => {
       expect(result.current).toBe(true);
     });
 
-    it('should work with large threshold values', () => {
+    test('should work with large threshold values', () => {
       const { result } = renderHook(() => useScrollState(1000));
 
       mockScrollY(999);
@@ -111,7 +111,7 @@ describe('useScrollState', () => {
   });
 
   describe('scroll event handling', () => {
-    it('should update state when scroll events are triggered', () => {
+    test('should update state when scroll events are triggered', () => {
       const { result } = renderHook(() => useScrollState(20));
 
       expect(result.current).toBe(false);
@@ -127,7 +127,7 @@ describe('useScrollState', () => {
       expect(result.current).toBe(false);
     });
 
-    it('should handle multiple scroll events correctly', () => {
+    test('should handle multiple scroll events correctly', () => {
       const { result } = renderHook(() => useScrollState(10));
 
       // Multiple scrolls above threshold
@@ -144,7 +144,7 @@ describe('useScrollState', () => {
       expect(result.current).toBe(false);
     });
 
-    it('should use passive event listener for performance', () => {
+    test('should use passive event listener for performance', () => {
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
 
       renderHook(() => useScrollState());
@@ -156,7 +156,7 @@ describe('useScrollState', () => {
   });
 
   describe('cleanup and memory management', () => {
-    it('should remove event listener on unmount', () => {
+    test('should remove event listener on unmount', () => {
       const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
 
       const { unmount } = renderHook(() => useScrollState());
@@ -168,7 +168,7 @@ describe('useScrollState', () => {
       removeEventListenerSpy.mockRestore();
     });
 
-    it('should not cause memory leaks with multiple instances', () => {
+    test('should not cause memory leaks with multiple instances', () => {
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
       const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
 
@@ -190,7 +190,7 @@ describe('useScrollState', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle negative threshold values', () => {
+    test('should handle negative threshold values', () => {
       const { result } = renderHook(() => useScrollState(-10));
 
       // Any positive scroll should be greater than negative threshold
@@ -204,7 +204,7 @@ describe('useScrollState', () => {
       expect(result.current).toBe(true);
     });
 
-    it('should handle decimal threshold values', () => {
+    test('should handle decimal threshold values', () => {
       const { result } = renderHook(() => useScrollState(10.5));
 
       mockScrollY(10);
@@ -216,7 +216,7 @@ describe('useScrollState', () => {
       expect(result.current).toBe(true);
     });
 
-    it('should call handleScroll immediately on mount to set initial state', () => {
+    test('should call handleScroll immediately on mount to set initial state', () => {
       // Start with scroll position above threshold
       mockScrollY(50);
 

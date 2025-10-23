@@ -14,6 +14,7 @@ export default defineConfig({
       '@contexts': '/src/contexts',
       '@data': '/src/data',
       '@hooks': '/src/hooks',
+      '@shared': '/src/components/shared',
     },
   },
 });

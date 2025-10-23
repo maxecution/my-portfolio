@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@contexts/ThemeProvider/ThemeProvider';
 import Section from '@layout/section/Section';
 import NavBar from '@sections/navbar/NavBar';
+import Hero from '@sections/hero/Hero';
 
 // Component for testing sections
 function LoremIpsum() {
@@ -20,19 +21,19 @@ function LoremIpsum() {
 function App() {
   return (
     <ThemeProvider>
-      <div className='bg-background text-text dark:bg-background dark:text-text'>
+      <div className='bg-background text-text'>
         <NavBar />
         <main className='min-h-screen'>
           <Section id='hero' ariaLabel='Hero' fullHeight>
+            <Hero />
+          </Section>
+          <Section id='about' title='About Me'>
             <LoremIpsum />
           </Section>
-          <Section id='about' title='About Me' fullHeight>
+          <Section id='projects' title='Projects'>
             <LoremIpsum />
           </Section>
-          <Section id='projects' title='Projects' fullHeight>
-            <LoremIpsum />
-          </Section>
-          <Section id='contact' title='Contact' fullHeight>
+          <Section id='contact' title='Contact'>
             <LoremIpsum />
           </Section>
         </main>

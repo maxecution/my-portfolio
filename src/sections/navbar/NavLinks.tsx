@@ -14,8 +14,7 @@ export default function NavLinks({ links, orientation = 'horizontal', onLinkClic
     <ul
       className={`flex ${
         isVertical ? 'flex-col space-y-6' : 'flex-row items-center gap-8 md:gap-10 xl:gap-12 3xl:gap-16'
-      }`}
-      role={isVertical ? undefined : 'menu'}>
+      }`}>
       {links.map((link) => (
         <li key={link.href} className={isVertical ? 'border-b border-gray-500 hover:border-b-2' : ''}>
           <a

@@ -11,7 +11,7 @@ jest.mock('./ThemeToggleButton', () => {
 
 // Mock scroll state hook
 jest.mock('@hooks/useScrollState');
-import useScrollState from '@hooks/useScrollState';
+import useScrollState from '@hooks/useScrollState'; // import after mocking
 const mockUseScrollState = useScrollState as jest.MockedFunction<typeof useScrollState>;
 
 // Mock data using shared mock structure
@@ -35,7 +35,7 @@ describe('NavBar', () => {
   });
 
   describe('rendering', () => {
-    it('should render logo with correct content and accessibility', () => {
+    test('should render logo with correct content and accessibility', () => {
       render(<NavBar />);
 
       const logoLink = screen.getByRole('link', { name: 'Navigate to Home section' });
@@ -50,14 +50,14 @@ describe('NavBar', () => {
       expect(screen.getByText('Zimmer-Smith')).toBeVisible();
     });
 
-    it('should render all navigation components with relevant style classes', () => {
+    test('should render all navigation components with relevant style classes', () => {
       render(<NavBar />);
 
       expect(screen.getByRole('link', { name: 'Navigate to About section' })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Theme toggle button' })).toBeInTheDocument();
 
       // Should render navigation menu with links (horizontal desktop navigation)
-      const navMenu = screen.getByRole('menu');
+      const navMenu = screen.getByRole('list');
       expect(navMenu).toHaveClass('flex-row', 'items-center');
 
       // Desktop navigation should be hidden on mobile, visible on desktop
@@ -73,7 +73,7 @@ describe('NavBar', () => {
   });
 
   describe('scroll state integration', () => {
-    it('should apply transparent background when not scrolled', () => {
+    test('should apply transparent background when not scrolled', () => {
       render(<NavBar />);
 
       const header = screen.getByRole('banner');
@@ -81,7 +81,7 @@ describe('NavBar', () => {
       expect(header).not.toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
     });
 
-    it('should apply blurred background when scrolled and pass hasScrolled state to BurgerMenu', () => {
+    test('should apply blurred background when scrolled and pass hasScrolled state to BurgerMenu', () => {
       mockUseScrollState.mockReturnValue(true);
       render(<NavBar />);
 

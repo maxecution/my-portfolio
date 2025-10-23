@@ -69,7 +69,6 @@ export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps): 
           <div
             id='mobile-menu'
             data-burger-menu
-            role='menu'
             className={`fixed top-16 right-0 w-45 z-60 transition-all duration-300 ease-in-out ${
               hasScrolled
                 ? 'bg-background-200/75 dark:bg-background-200/75 backdrop-blur-xs'

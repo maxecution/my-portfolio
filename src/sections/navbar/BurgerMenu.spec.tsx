@@ -12,7 +12,7 @@ describe('BurgerMenu', () => {
   ];
 
   describe('burger button', () => {
-    it('should render button with correct accessibility and toggle behavior', () => {
+    test('should render button with correct accessibility and toggle behavior', () => {
       render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
 
       const button = screen.getByRole('button', { name: 'Open navigation menu' });
@@ -35,7 +35,7 @@ describe('BurgerMenu', () => {
       expect(document.querySelector('[data-burger-menu]')).not.toBeInTheDocument();
     });
 
-    it('should apply correct icon transforms when open', () => {
+    test('should apply correct icon transforms when open', () => {
       render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
 
       const button = screen.getByRole('button');
@@ -55,7 +55,7 @@ describe('BurgerMenu', () => {
   });
 
   describe('menu rendering', () => {
-    it('should render menu with correct background based on scroll state', () => {
+    test('should render menu with correct background based on scroll state', () => {
       const { rerender } = render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
 
       fireEvent.click(screen.getByRole('button'));
@@ -69,7 +69,7 @@ describe('BurgerMenu', () => {
       expect(menu).toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
     });
 
-    it('should render NavLinks with correct structure and handle link clicks', () => {
+    test('should render NavLinks with correct structure and handle link clicks', () => {
       render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
 
       fireEvent.click(screen.getByRole('button'));
@@ -88,7 +88,7 @@ describe('BurgerMenu', () => {
   });
 
   describe('outside click handling', () => {
-    it('should close menu when clicking outside but not when clicking menu or button', () => {
+    test('should close menu when clicking outside but not when clicking menu or button', () => {
       render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
 
       const button = screen.getByRole('button');
@@ -110,7 +110,7 @@ describe('BurgerMenu', () => {
   });
 
   describe('cleanup and edge cases', () => {
-    it('should clean up event listeners on unmount', () => {
+    test('should clean up event listeners on unmount', () => {
       const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
 
       const { unmount } = render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
@@ -122,7 +122,7 @@ describe('BurgerMenu', () => {
       removeEventListenerSpy.mockRestore();
     });
 
-    it('should handle empty navLinks and rapid toggling', () => {
+    test('should handle empty navLinks and rapid toggling', () => {
       // Test empty links first
       render(<BurgerMenu navLinks={[]} hasScrolled={false} />);
       const button = screen.getByRole('button');

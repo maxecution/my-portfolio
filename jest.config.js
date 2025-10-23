@@ -25,6 +25,7 @@ export default {
     '^@contexts/(.*)$': '<rootDir>/src/contexts/$1',
     '^@data/(.*)$': '<rootDir>/src/data/$1',
     '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    '^@shared/(.*)$': '<rootDir>/src/components/shared/$1',
     // Handle CSS imports in tests
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     // Handle static assets
