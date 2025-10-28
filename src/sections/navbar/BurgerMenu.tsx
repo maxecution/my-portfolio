@@ -47,17 +47,17 @@ export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps): 
         className='relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 rounded-md hover:cursor-pointer'>
         {/* Hamburger Lines */}
         <span
-          className={`block w-6 h-0.5 bg-black dark:bg-white transition-all duration-300 ease-in-out ${
+          className={`block w-6 h-0.5 bg-text transition-all duration-300 ease-in-out ${
             isOpen ? 'rotate-45 translate-y-2' : ''
           }`}
         />
         <span
-          className={`block w-6 h-0.5 bg-black dark:bg-white transition-all duration-300 ease-in-out ${
-            isOpen ? 'opacity-0' : ''
+          className={`block w-6 h-0.5 bg-text transition-all duration-300 ease-in-out origin-center ${
+            isOpen ? 'opacity-0 scale-x-0' : ''
           }`}
         />
         <span
-          className={`block w-6 h-0.5 bg-black dark:bg-white transition-all duration-300 ease-in-out ${
+          className={`block w-6 h-0.5 bg-text transition-all duration-300 ease-in-out ${
             isOpen ? '-rotate-45 -translate-y-2' : ''
           }`}
         />

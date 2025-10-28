@@ -25,7 +25,7 @@ export default function Hero() {
           Hi, I'm <GradientText>{heroData.name}</GradientText>
         </h1>
         {/* Typewriter effect container */}
-        <span className='px-2 py-2 bg-primary-200 rounded-full text-sm text-center' style={{ width: typewriterWidth }}>
+        <span className='p-2 bg-primary-200 rounded-full text-sm text-center' style={{ width: typewriterWidth }}>
           <TypewriterEffect phrases={heroData.typewriterPhrases} />
         </span>
         {/* Description */}

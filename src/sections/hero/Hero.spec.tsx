@@ -64,19 +64,16 @@ describe('Hero Component', () => {
       expect(srOnlyText).toHaveClass('sr-only');
 
       // Find the cursor and verify it's in an aria-hidden span
-      const cursor = screen.getByText('|');
-      const ariaHiddenSpan = cursor.parentElement;
+      const cursor = document.querySelector('.animate-cursor-blink') as HTMLElement;
+      const ariaHiddenSpan = cursor.previousSibling as HTMLElement;
       expect(ariaHiddenSpan).toHaveAttribute('aria-hidden', 'true');
-
-      // Should contain the cursor with proper animation class
-      expect(cursor).toHaveClass('animate-cursor-blink');
     });
 
     test('calculates width based on longest phrase in heroData', () => {
       render(<Hero />);
 
       // Find the typewriter container span that has the width style
-      const cursor = screen.getByText('|');
+      const cursor = document.querySelector('.animate-cursor-blink') as HTMLElement;
       const typewriterContainer = cursor.closest('span[style]'); // The span with width style
 
       // The longest phrase "TypeScript Advocate" has 19 characters

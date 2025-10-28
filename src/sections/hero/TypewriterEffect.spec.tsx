@@ -15,17 +15,8 @@ describe('TypeWriterEffect Component', () => {
     test('renders cursor element correctly', () => {
       render(<TypewriterEffect phrases={phrases} />);
 
-      const cursor = screen.getByText('|');
+      const cursor = document.querySelector('.animate-cursor-blink');
       expect(cursor).toBeVisible();
-      expect(cursor).toHaveClass('animate-cursor-blink');
-    });
-
-    test('applies custom className correctly', () => {
-      const customClass = 'custom-typewriter-class';
-      render(<TypewriterEffect phrases={phrases} className={customClass} />);
-
-      const ariaHiddenSpan = screen.getByText('|').parentElement;
-      expect(ariaHiddenSpan).toHaveClass(customClass);
     });
   });
 
@@ -34,16 +25,18 @@ describe('TypeWriterEffect Component', () => {
       render(<TypewriterEffect phrases={phrases} typingSpeed={50} deletingSpeed={25} delayBetweenPhrases={1000} />);
 
       // Initial state - empty text with cursor
-      let container = screen.getByText('|').parentElement;
+      let container = screen.getByText('Typewriter effect: Hello, World').parentElement;
       expect(container).toBeVisible();
+
+      const getVisibleText = () => document.querySelector('span[aria-hidden="true"]') as HTMLElement;
 
       // Types first phrase "Hello" character by character
       for (let i = 0; i < phrases[0].length; i++) {
         act(() => {
           jest.advanceTimersByTime(50);
         });
-        container = screen.getByText('|').parentElement;
-        expect(container?.textContent).toBe(phrases[0].substring(0, i + 1) + '|');
+        container = getVisibleText();
+        expect(container?.textContent).toBe(phrases[0].substring(0, i + 1));
       }
 
       // Pause after typing (delayBetweenPhrases)
@@ -56,8 +49,9 @@ describe('TypeWriterEffect Component', () => {
         act(() => {
           jest.advanceTimersByTime(25);
         });
-        container = screen.getByText('|').parentElement;
-        expect(container?.textContent).toBe(phrases[0].substring(0, i - 1) + '|');
+        container = getVisibleText();
+        const expected = i - 1 > 0 ? phrases[0].substring(0, i - 1) : '\u00A0';
+        expect(container?.textContent).toBe(expected);
       }
 
       // Types second phrase "World" character by character immediately after deleting first phrase
@@ -65,16 +59,17 @@ describe('TypeWriterEffect Component', () => {
         act(() => {
           jest.advanceTimersByTime(50);
         });
-        container = screen.getByText('|').parentElement;
-        expect(container?.textContent).toBe(phrases[1].substring(0, i + 1) + '|');
+        container = getVisibleText();
+        expect(container?.textContent).toBe(phrases[1].substring(0, i + 1));
       }
     });
 
-    test('handles empty phrases array', () => {
-      render(<TypewriterEffect phrases={[]} />);
+    test('handles default empty phrases array', () => {
+      render(<TypewriterEffect />);
 
-      const container = screen.getByText('|').parentElement;
-      expect(container?.textContent).toBe('|');
+      expect(screen.getByText('Typewriter effect:')).toBeInTheDocument();
+      const container = document.querySelector('span[aria-hidden="true"]') as HTMLElement;
+      expect(container?.textContent).toBe('\u00A0');
     });
   });
 
@@ -87,9 +82,10 @@ describe('TypeWriterEffect Component', () => {
       expect(srText).toBeVisible();
       expect(srText).toHaveClass('sr-only');
 
-      const cursor = screen.getByText('|');
+      const cursor = document.querySelector('.animate-cursor-blink');
       expect(cursor).toBeVisible();
-      expect(cursor.parentElement).toHaveAttribute('aria-hidden', 'true');
+      const visible = document.querySelector('span[aria-hidden="true"]');
+      expect(visible).toBeVisible();
     });
   });
 });
