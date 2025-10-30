@@ -1,7 +1,6 @@
-import type { JSX } from 'react';
 import { useTheme } from '@contexts/ThemeProvider/useTheme';
 
-export default function ThemeToggleButton(): JSX.Element {
+export default function ThemeToggleButton() {
   const { toggleTheme } = useTheme();
 
   const handleClick = (): void => {
