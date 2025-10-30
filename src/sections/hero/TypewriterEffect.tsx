@@ -61,7 +61,7 @@ export default function TypewriterEffect({
       <span className='sr-only'>Typewriter effect: {phrases.join(', ')}</span>
       {/* added no break space to maintain parent span height when going between phrases */}
       <span aria-hidden='true'>{currentText || '\u00A0'}</span>
-      <span aria-hidden='true' className='animate-cursor-blink inline-block w-0.5 h-4 bg-text ml-0.5 align-middle' />
+      <span aria-hidden='true' className='animate-cursor-blink inline-block w-0.5 h-4 bg-primary ml-0.5 align-middle' />
     </div>
   );
 }

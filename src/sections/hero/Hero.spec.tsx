@@ -14,7 +14,7 @@ jest.mock('@/data/hero/Hero.data', () => ({
 // Importing the now mocked heroData
 import { heroData } from '@/data/hero/Hero.data';
 const HERO_CONSTANTS = {
-  H1: "Hi, I'm " + heroData.name,
+  H1: "Well met, I'm " + heroData.name,
   TEXT: heroData.text,
   SR_TYPEWRITER: `Typewriter effect: ${heroData.typewriterPhrases.join(', ')}`,
 };
@@ -51,7 +51,7 @@ describe('Hero Component', () => {
       // Check the description
       const description = screen.getByText(TEXT);
       expect(description).toBeVisible();
-      expect(description).toHaveClass('text-xl', 'md:text-2xl', 'max-w-2xl', 'mx-auto', 'text-text-600', 'font-normal');
+      expect(description).toHaveClass('text-lg', 'md:text-xl', 'max-w-2xl', 'mx-auto', 'text-muted-foreground');
     });
   });
 
@@ -77,8 +77,7 @@ describe('Hero Component', () => {
       const typewriterContainer = cursor.closest('span[style]'); // The span with width style
 
       // The longest phrase "TypeScript Advocate" has 19 characters
-      // 19 * 0.6 = 11.4em expected width
-      expect(typewriterContainer).toHaveStyle({ width: '11.4em' });
+      expect(typewriterContainer).toHaveStyle({ width: `${19 * 0.7}em` });
     });
   });
 

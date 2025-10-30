@@ -43,10 +43,10 @@ export default function ThemeToggleButton(): JSX.Element {
       title='Theme toggle button'
       onClick={handleClick}
       aria-label='Theme toggle button'
-      className='relative w-10 h-10 2xl:w-12 2xl:h-12 flex items-center justify-center hover:cursor-pointer rounded-md'>
+      className='text-muted-foreground hover:text-primary-400 relative w-10 h-10 2xl:w-12 2xl:h-12 flex items-center justify-center hover:cursor-pointer rounded-md'>
       {/* Sun icon */}
       <svg
-        className='absolute w-6 h-6 2xl:w-8 2xl:h-8 text-gray-800 transition-all duration-500 ease-in-out opacity-100 scale-100 translate-y-0 dark:opacity-0 dark:scale-75 dark:translate-y-6'
+        className='absolute w-6 h-6 2xl:w-8 2xl:h-8 transition-all duration-300 ease-in-out opacity-100 scale-100 translate-y-0 dark:opacity-0 dark:scale-75 dark:translate-y-6'
         fill='none'
         stroke='currentColor'
         strokeWidth='2'
@@ -64,7 +64,7 @@ export default function ThemeToggleButton(): JSX.Element {
 
       {/* Moon icon */}
       <svg
-        className='absolute w-6 h-6 2xl:w-8 2xl:h-8 text-gray-200 transition-all duration-500 ease-in-out opacity-0 scale-75 translate-y-6 dark:opacity-100 dark:scale-100 dark:translate-y-0'
+        className='absolute w-6 h-6 2xl:w-8 2xl:h-8 transition-all duration-500 ease-in-out opacity-0 scale-75 translate-y-6 dark:opacity-100 dark:scale-100 dark:translate-y-0'
         fill='currentColor'
         viewBox='0 0 24 24'>
         <path d='M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79z' />

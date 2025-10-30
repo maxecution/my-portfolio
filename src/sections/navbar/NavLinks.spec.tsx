@@ -38,14 +38,14 @@ describe('NavLinks', () => {
       render(<NavLinks links={mockLinks} orientation='vertical' />);
 
       const list = screen.getByRole('list');
-      expect(list).toHaveClass('flex-col', 'space-y-6');
+      expect(list).toHaveClass('flex-col', 'space-y-4');
       expect(list).not.toHaveClass('flex-row', 'items-center');
 
       // Vertical layout should have border styling on list items
-      const listItems = screen.getAllByRole('listitem');
-      expect(listItems).toHaveLength(4);
-      listItems.forEach((item) => {
-        expect(item).toHaveClass('border-b', 'border-gray-500');
+      const listLinks = screen.getAllByRole('link');
+      expect(listLinks).toHaveLength(4);
+      listLinks.forEach((item) => {
+        expect(item).toHaveClass('text-muted-foreground', 'border-b', 'border-foreground', 'hover:border-primary-400');
       });
     });
   });

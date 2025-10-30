@@ -10,7 +10,7 @@ function getTypewriterWidth(phrases: string[]): string {
 
   // Calculate approximate width based on character count
   // Using a base of 0.6em per character as a rough estimate for most fonts
-  const estimatedWidth = longestPhrase.length * 0.6;
+  const estimatedWidth = longestPhrase.length * 0.7;
   return `${estimatedWidth}em`;
 }
 
@@ -22,14 +22,16 @@ export default function Hero() {
       {/* Main content */}
       <div className='flex flex-col text-center items-center justify-center gap-6 md:gap-8 lg:gap-10'>
         <h1 className='text-5xl md:text-7xl tracking-tight font-medium'>
-          Hi, I'm <GradientText>{heroData.name}</GradientText>
+          Well met, I'm <GradientText>{heroData.name}</GradientText>
         </h1>
         {/* Typewriter effect container */}
-        <span className='p-2 bg-primary-200 rounded-full text-sm text-center' style={{ width: typewriterWidth }}>
+        <span
+          className='p-2 bg-primary/10 backdrop-blur-sm border-2 border-primary/50 rounded-full text-sm text-center font-display text-muted-foreground'
+          style={{ width: typewriterWidth }}>
           <TypewriterEffect phrases={heroData.typewriterPhrases} />
         </span>
         {/* Description */}
-        <p className='text-xl md:text-2xl max-w-2xl mx-auto text-text-600 font-normal'>{heroData.text}</p>
+        <p className='text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto'>{heroData.text}</p>
       </div>
 
       {/* Arrow positioned at bottom */}

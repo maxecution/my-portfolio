@@ -32,6 +32,20 @@ describe('NavBar', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseScrollState.mockReturnValue(false);
+    // Mock matchMedia
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
   });
 
   describe('rendering', () => {
@@ -87,7 +101,7 @@ describe('NavBar', () => {
 
       // Test that scroll state affects the header background
       const header = screen.getByRole('banner');
-      expect(header).toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
+      expect(header).toHaveClass('bg-card/75', 'backdrop-blur-md', 'shadow-lg', 'shadow-primary/20');
 
       // Test that burger menu behaves correctly with scroll state by opening it
       const burgerButton = screen.getByRole('button', { name: 'Open navigation menu' });
@@ -95,7 +109,7 @@ describe('NavBar', () => {
 
       // When scrolled, the mobile menu should have the blurred background
       const mobileMenu = document.querySelector('[data-burger-menu]');
-      expect(mobileMenu).toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
+      expect(mobileMenu).toHaveClass('bg-card/75', 'backdrop-blur-md', 'shadow-md', 'shadow-primary/20');
     });
   });
 });
