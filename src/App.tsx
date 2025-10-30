@@ -6,7 +6,7 @@ import Hero from '@sections/hero/Hero';
 // Component for testing sections
 function LoremIpsum() {
   return (
-    <div>
+    <div className='text-muted-foreground'>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ullamcorper mauris vel urna pellentesque rutrum.
       Sed leo dolor, vestibulum a finibus eu, auctor sit amet nunc. Integer tempor molestie enim, at pellentesque ante
       efficitur a. Nunc eu fringilla metus, a vulputate quam. Mauris pellentesque nunc vel malesuada placerat. In sed
@@ -21,24 +21,22 @@ function LoremIpsum() {
 function App() {
   return (
     <ThemeProvider>
-      <div className='bg-background text-text'>
-        <NavBar />
-        <main className='min-h-screen'>
-          <Section id='hero' ariaLabel='Hero' fullHeight>
-            <Hero />
-          </Section>
-          <Section id='about' title='About Me'>
-            <LoremIpsum />
-          </Section>
-          <Section id='projects' title='Projects'>
-            <LoremIpsum />
-          </Section>
-          <Section id='contact' title='Contact'>
-            <LoremIpsum />
-          </Section>
-        </main>
-        Footer
-      </div>
+      <NavBar />
+      <main className='min-h-screen'>
+        <Section id='hero' ariaLabel='Hero' fullHeight>
+          <Hero />
+        </Section>
+        <Section id='about' title='About Me'>
+          <LoremIpsum />
+        </Section>
+        <Section id='projects' title='Projects'>
+          <LoremIpsum />
+        </Section>
+        <Section id='contact' title='Contact'>
+          <LoremIpsum />
+        </Section>
+      </main>
+      Footer
     </ThemeProvider>
   );
 }

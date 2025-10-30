@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import type { JSX } from 'react';
 import type { NavLink } from '@data/navbar/NavBar.data';
 import NavLinks from './NavLinks';
 
@@ -9,13 +8,13 @@ interface BurgerMenuProps {
   hasScrolled: boolean;
 }
 
-export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps): JSX.Element {
+export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleMenu = (): void => setIsOpen((prev) => !prev);
   const closeMenu = (): void => setIsOpen(false);
 
-  // Close on outside click
+  // Close on outside click or changing viewport size
   useEffect(() => {
     if (!isOpen) return;
 
@@ -28,10 +27,21 @@ export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps): 
         closeMenu();
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
+
+    const mq = window.matchMedia('(min-width: 768px)');
+
+    const handleMatch = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        setIsOpen(false);
+      }
+    };
+
+    mq.addEventListener('change', handleMatch);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      mq.removeEventListener('change', handleMatch);
     };
   }, [isOpen]);
 
@@ -47,17 +57,17 @@ export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps): 
         className='relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 rounded-md hover:cursor-pointer'>
         {/* Hamburger Lines */}
         <span
-          className={`block w-6 h-0.5 bg-black dark:bg-white transition-all duration-300 ease-in-out ${
+          className={`block w-6 h-0.5 bg-muted-foreground transition-all duration-300 ease-in-out ${
             isOpen ? 'rotate-45 translate-y-2' : ''
           }`}
         />
         <span
-          className={`block w-6 h-0.5 bg-black dark:bg-white transition-all duration-300 ease-in-out ${
-            isOpen ? 'opacity-0' : ''
+          className={`block w-6 h-0.5 bg-muted-foreground transition-all duration-300 ease-in-out origin-center ${
+            isOpen ? 'opacity-0 scale-x-0' : ''
           }`}
         />
         <span
-          className={`block w-6 h-0.5 bg-black dark:bg-white transition-all duration-300 ease-in-out ${
+          className={`block w-6 h-0.5 bg-muted-foreground transition-all duration-300 ease-in-out ${
             isOpen ? '-rotate-45 -translate-y-2' : ''
           }`}
         />
@@ -70,11 +80,9 @@ export default function BurgerMenu({ navLinks, hasScrolled }: BurgerMenuProps): 
             id='mobile-menu'
             data-burger-menu
             className={`fixed top-16 right-0 w-45 z-60 transition-all duration-300 ease-in-out ${
-              hasScrolled
-                ? 'bg-background-200/75 dark:bg-background-200/75 backdrop-blur-xs'
-                : 'bg-background dark:bg-background'
+              hasScrolled ? 'bg-card/75 backdrop-blur-md shadow-md shadow-primary/20' : 'bg-background'
             }`}>
-            <nav className='flex flex-col p-6'>
+            <nav className='flex flex-col p-4'>
               <NavLinks links={navLinks} orientation='vertical' onLinkClick={closeMenu} />
             </nav>
           </div>,

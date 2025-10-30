@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 
 interface TypewriterEffectProps {
-  phrases: string[];
-  className?: string;
+  phrases?: string[];
   typingSpeed?: number;
   deletingSpeed?: number;
   delayBetweenPhrases?: number;
 }
 
 export default function TypewriterEffect({
-  phrases,
-  className = '',
+  phrases = [],
   typingSpeed = 100,
   deletingSpeed = 50,
   delayBetweenPhrases = 2000,
@@ -21,7 +19,7 @@ export default function TypewriterEffect({
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    const currentPhrase = phrases[currentWordIndex];
+    const currentPhrase = phrases[currentWordIndex] || '';
 
     if (isPaused) {
       const pauseTimeout = setTimeout(() => {
@@ -59,12 +57,11 @@ export default function TypewriterEffect({
   }, [currentText, isDeleting, isPaused, currentWordIndex, phrases, typingSpeed, deletingSpeed, delayBetweenPhrases]);
 
   return (
-    <>
+    <div className={`items-center justify-center flex`}>
       <span className='sr-only'>Typewriter effect: {phrases.join(', ')}</span>
-      <span aria-hidden='true' className={`${className}`}>
-        {currentText}
-        <span className='animate-cursor-blink'>|</span>
-      </span>
-    </>
+      {/* added no break space to maintain parent span height when going between phrases */}
+      <span aria-hidden='true'>{currentText || '\u00A0'}</span>
+      <span aria-hidden='true' className='animate-cursor-blink inline-block w-0.5 h-4 bg-primary ml-0.5 align-middle' />
+    </div>
   );
 }

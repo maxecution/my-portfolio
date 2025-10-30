@@ -4,6 +4,32 @@ import BurgerMenu from './BurgerMenu';
 import type { NavLink } from '@data/navbar/NavBar.data';
 
 describe('BurgerMenu', () => {
+  const listeners: Record<string, ((e: MediaQueryListEvent) => void)[]> = {};
+
+  beforeEach(() => {
+    // Reset listeners
+    for (const key in listeners) delete listeners[key];
+
+    // Mock matchMedia properly
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        addEventListener: (event: string, callback: (e: MediaQueryListEvent) => void) => {
+          if (!listeners[event]) listeners[event] = [];
+          listeners[event].push(callback);
+        },
+        removeEventListener: (event: string, callback: (e: MediaQueryListEvent) => void) => {
+          if (listeners[event]) {
+            listeners[event] = listeners[event].filter((cb) => cb !== callback);
+          }
+        },
+        dispatchEvent: jest.fn(),
+      })),
+    });
+  });
+
   const mockLinks: NavLink[] = [
     { href: '#', label: 'Home' },
     { href: '#about', label: 'About' },
@@ -62,11 +88,11 @@ describe('BurgerMenu', () => {
       const menu = document.querySelector('[data-burger-menu]');
 
       // Not scrolled - solid background
-      expect(menu).toHaveClass('bg-background', 'dark:bg-background');
+      expect(menu).toHaveClass('bg-background');
 
       // Scrolled - blurred background
       rerender(<BurgerMenu navLinks={mockLinks} hasScrolled={true} />);
-      expect(menu).toHaveClass('bg-background-200/75', 'dark:bg-background-200/75', 'backdrop-blur-xs');
+      expect(menu).toHaveClass('bg-card/75', 'backdrop-blur-md', 'shadow-md', 'shadow-primary/20');
     });
 
     test('should render NavLinks with correct structure and handle link clicks', () => {
@@ -87,7 +113,7 @@ describe('BurgerMenu', () => {
     });
   });
 
-  describe('outside click handling', () => {
+  describe('menu auto closing', () => {
     test('should close menu when clicking outside but not when clicking menu or button', () => {
       render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
 
@@ -105,6 +131,23 @@ describe('BurgerMenu', () => {
 
       // Should close when clicking outside
       act(() => fireEvent.mouseDown(document.body));
+      expect(menu).not.toBeInTheDocument();
+    });
+
+    test('should close menu when viewport resizes to above mobile breakpoint', async () => {
+      render(<BurgerMenu navLinks={mockLinks} hasScrolled={false} />);
+
+      const button = screen.getByRole('button');
+      fireEvent.click(button);
+      const menu = document.querySelector('[data-burger-menu]');
+      expect(menu).toBeVisible();
+
+      act(() => {
+        listeners['change'].forEach((cb) => cb({ matches: true } as MediaQueryListEvent));
+        listeners['change'].forEach((cb) => cb({ matches: false } as MediaQueryListEvent));
+        // Menu should still be closed even after moving back into mobile viewport
+      });
+
       expect(menu).not.toBeInTheDocument();
     });
   });

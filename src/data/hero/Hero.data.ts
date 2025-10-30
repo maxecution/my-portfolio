@@ -6,7 +6,7 @@ interface HeroData {
 
 export const heroData: HeroData = {
   name: 'Max',
-  text: 'A developer with a colourful past and a passion for learning. Focused on building accessible, user-centered applications with modern, scalable front-end technologies.',
+  text: 'Crafting immersive digital experiences with code and creativity. Embark on a journey through my portfolio.',
   typewriterPhrases: [
     'Frontend Developer',
     'React Specialist',

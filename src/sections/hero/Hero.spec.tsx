@@ -14,7 +14,7 @@ jest.mock('@/data/hero/Hero.data', () => ({
 // Importing the now mocked heroData
 import { heroData } from '@/data/hero/Hero.data';
 const HERO_CONSTANTS = {
-  H1: "Hi, I'm " + heroData.name,
+  H1: "Well met, I'm " + heroData.name,
   TEXT: heroData.text,
   SR_TYPEWRITER: `Typewriter effect: ${heroData.typewriterPhrases.join(', ')}`,
 };
@@ -51,7 +51,7 @@ describe('Hero Component', () => {
       // Check the description
       const description = screen.getByText(TEXT);
       expect(description).toBeVisible();
-      expect(description).toHaveClass('text-xl', 'md:text-2xl', 'max-w-2xl', 'mx-auto', 'text-text-600', 'font-normal');
+      expect(description).toHaveClass('text-lg', 'md:text-xl', 'max-w-2xl', 'mx-auto', 'text-muted-foreground');
     });
   });
 
@@ -64,24 +64,20 @@ describe('Hero Component', () => {
       expect(srOnlyText).toHaveClass('sr-only');
 
       // Find the cursor and verify it's in an aria-hidden span
-      const cursor = screen.getByText('|');
-      const ariaHiddenSpan = cursor.parentElement;
+      const cursor = document.querySelector('.animate-cursor-blink') as HTMLElement;
+      const ariaHiddenSpan = cursor.previousSibling as HTMLElement;
       expect(ariaHiddenSpan).toHaveAttribute('aria-hidden', 'true');
-
-      // Should contain the cursor with proper animation class
-      expect(cursor).toHaveClass('animate-cursor-blink');
     });
 
     test('calculates width based on longest phrase in heroData', () => {
       render(<Hero />);
 
       // Find the typewriter container span that has the width style
-      const cursor = screen.getByText('|');
+      const cursor = document.querySelector('.animate-cursor-blink') as HTMLElement;
       const typewriterContainer = cursor.closest('span[style]'); // The span with width style
 
       // The longest phrase "TypeScript Advocate" has 19 characters
-      // 19 * 0.6 = 11.4em expected width
-      expect(typewriterContainer).toHaveStyle({ width: '11.4em' });
+      expect(typewriterContainer).toHaveStyle({ width: `${19 * 0.7}em` });
     });
   });
 

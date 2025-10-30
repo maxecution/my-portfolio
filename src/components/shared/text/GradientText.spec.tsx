@@ -13,17 +13,17 @@ describe('GradientText Component', () => {
     expect(textElement).toHaveClass('bg-gradient-to-r', 'bg-clip-text', 'text-transparent', 'animate-gradient');
 
     // Check for default primary gradient classes
-    expect(textElement).toHaveClass('from-primary-200', 'via-primary-600', 'to-primary-200');
+    expect(textElement).toHaveClass('from-primary-600', 'via-primary-200', 'to-primary-600');
 
     // Check background size style
-    expect(textElement).toHaveStyle('background-size: 200% auto');
+    expect(textElement).toHaveStyle('background-size: 400% auto');
   });
 
   test('renders with custom variant', () => {
     render(<GradientText variant='accent'>Accent Text</GradientText>);
 
     const textElement = screen.getByText('Accent Text');
-    expect(textElement).toHaveClass('from-accent-200', 'via-accent-600', 'to-accent-200');
+    expect(textElement).toHaveClass('from-accent-600', 'via-accent-200', 'to-accent-600');
   });
 
   test('applies custom className', () => {
