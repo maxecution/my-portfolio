@@ -90,7 +90,7 @@ describe('Hero Component', () => {
       const arrowContainer = arrowLink.parentElement;
       expect(arrowContainer).toHaveClass(
         'absolute',
-        'bottom-0',
+        'bottom-5',
         'left-1/2',
         'transform',
         '-translate-x-1/2',

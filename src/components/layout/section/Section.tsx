@@ -25,15 +25,15 @@ export default function Section({ id, title, fullHeight = false, ariaLabel, chil
             ? 'h-[calc(100vh-4rem)] md:h-[calc(100vh-4.5rem)] xl:h-[calc(100vh-5rem)] 2xl:h-[calc(100vh-6rem)]'
             : 'py-20'
         } px-6 md:px-20`}>
-        <div className={`mx-auto w-full h-full pl-5`}>
+        <div className={`mx-auto w-full h-full`}>
           {title && <SectionHeader id={headingId}>{title}</SectionHeader>}
           <div className={`w-full ${fullHeight ? 'h-full' : 'h-auto'}`}>{children}</div>
         </div>
+        {/* Divider line at the bottom of section */}
+        <div className='flex justify-center py-8' role='separator' aria-hidden='true'>
+          <div className='w-2/3 h-px bg-gradient-to-r from-transparent via-primary-400 to-transparent' />
+        </div>
       </section>
-      {/* Divider line at the bottom of section */}
-      <div className='flex justify-center py-8' role='separator' aria-hidden='true'>
-        <div className='w-2/3 h-px bg-gradient-to-r from-transparent via-primary-400 to-transparent' />
-      </div>
     </>
   );
 }

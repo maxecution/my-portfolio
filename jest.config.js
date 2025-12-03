@@ -26,6 +26,8 @@ export default {
     '^@data/(.*)$': '<rootDir>/src/data/$1',
     '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
     '^@shared/(.*)$': '<rootDir>/src/components/shared/$1',
+    '^@ui/(.*)$': '<rootDir>/src/components/ui/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
     // Handle CSS imports in tests
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     // Handle static assets
