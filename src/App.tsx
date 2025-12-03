@@ -2,6 +2,7 @@ import { ThemeProvider } from '@contexts/ThemeProvider/ThemeProvider';
 import Section from '@layout/section/Section';
 import NavBar from '@sections/navbar/NavBar';
 import Hero from '@sections/hero/Hero';
+import About from '@sections/about/About';
 
 // Component for testing sections
 function LoremIpsum() {
@@ -27,7 +28,7 @@ function App() {
           <Hero />
         </Section>
         <Section id='about' title='About Me'>
-          <LoremIpsum />
+          <About />
         </Section>
         <Section id='projects' title='Projects'>
           <LoremIpsum />

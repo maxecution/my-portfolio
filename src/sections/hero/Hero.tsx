@@ -1,8 +1,8 @@
-import { heroData } from '@/data/hero/Hero.data';
-import { GradientText } from '@shared/text/GradientText';
+import { heroData } from '@data/hero/Hero.data';
+import { GradientText } from '@ui/text/GradientText';
 import TypewriterEffect from './TypewriterEffect';
 import useScrollState from '@hooks/useScrollState';
-import Arrow from '@shared/arrow/Arrow';
+import Arrow from '@ui/arrow/Arrow';
 
 // Helper function to determine the width based on the longest phrase
 function getTypewriterWidth(phrases: string[]): string {
@@ -36,7 +36,7 @@ export default function Hero() {
 
       {/* Arrow positioned at bottom */}
       <div
-        className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 transition-all duration-700 ease-in-out ${
+        className={`absolute bottom-5 left-1/2 transform -translate-x-1/2 transition-all duration-700 ease-in-out ${
           hasScrolled ? 'opacity-0 invisible' : 'opacity-100 visible animate-bounce'
         }`}
         aria-hidden={hasScrolled}>

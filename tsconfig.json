@@ -8,7 +8,9 @@
       "@contexts/*": ["contexts/*"],
       "@data/*": ["data/*"],
       "@hooks/*": ["hooks/*"],
-      "@shared/*": ["components/shared/*"]
+      "@shared/*": ["components/shared/*"],
+      "@ui/*": ["components/ui/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "files": [],

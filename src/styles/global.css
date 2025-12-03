@@ -2,14 +2,13 @@
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
-
-/* Custom Palette */
 @theme {
   /* Typography */
   --font-size: 16px;
   --font-display: 'Cinzel', serif;
   --font-body: 'Inter', sans-serif;
 
+  /* Custom Palette */
   --color-background: #f3e7d0;
   --color-foreground: #17233b;
   --color-card: #fff9f0;
