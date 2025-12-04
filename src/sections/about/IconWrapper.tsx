@@ -1,11 +1,11 @@
 import cn from '@utils/cn';
 export default function IconWrapper({
   children,
-  size,
+  size = 24,
   className = '',
 }: {
   children: React.ReactNode;
-  size: number;
+  size?: number;
   className?: string;
 }) {
   return (

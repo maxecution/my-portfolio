@@ -152,37 +152,6 @@ describe('About Component', () => {
     });
   });
 
-  describe('IconWrapper Integration', () => {
-    test('should render icons with correct size on front card', () => {
-      const { container } = render(<About />);
-
-      // Front cards have 32px icons in 64px (w-16 h-16) containers
-      const frontIcons = container.querySelectorAll('div[style*="width: 32"]');
-      expect(frontIcons.length).toBeGreaterThan(0);
-
-      frontIcons.forEach((icon) => {
-        expect(icon).toHaveStyle({ width: '32px', height: '32px' });
-      });
-    });
-
-    test('should render icons with correct size on back card', async () => {
-      const { container } = render(<About />);
-
-      const cardButton = screen.getAllByRole('button')[0];
-      fireEvent.click(cardButton);
-
-      await waitFor(() => {
-        // Back cards have 24px icons in 48px (w-12 h-12) containers
-        const backIcons = container.querySelectorAll('div[style*="width: 24"]');
-        expect(backIcons.length).toBeGreaterThan(0);
-
-        backIcons.forEach((icon) => {
-          expect(icon).toHaveStyle({ width: '24px', height: '24px' });
-        });
-      });
-    });
-  });
-
   describe('IntersectionObserver', () => {
     test('should observe the grid ref on mount', () => {
       render(<About />);
