@@ -139,7 +139,7 @@ export const attributes: Attribute[] = [
         <path d='M6.003 5.125a4 4 0 0 0-2.526 5.77' />
       </svg>
     ),
-    description: 'Type-driven foresight that strengthens code and prevents sneaky runtime errors.',
+    description: 'Type-driven foresight that strengthens code and prevents sneaky errors.',
     color: 'from-indigo-500 to-blue-600',
   },
   {
