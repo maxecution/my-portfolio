@@ -75,11 +75,11 @@ export default function About() {
                 <div className='absolute inset-0 bg-card border-2 border-primary/30 rounded-lg p-6 flex flex-col items-center justify-center'>
                   <div
                     className={`w-16 h-16 mb-4 rounded-full bg-gradient-to-br ${attribute.color} flex items-center justify-center drop-shadow-md drop-shadow-foreground/50`}>
-                    <IconWrapper size={32} className='text-primary-50'>
+                    <IconWrapper size={32} className='text-primary-50 dark:text-foreground'>
                       {attribute.icon}
                     </IconWrapper>
                   </div>
-                  <h4 className='text-xl mb-2 text-center text-primary-950'>{attribute.name}</h4>
+                  <h4 className='text-xl mb-2 text-center text-primary-950 dark:text-foreground'>{attribute.name}</h4>
                   <div className='text-4xl text-primary mb-2'>{attribute.value}</div>
                   <p className='text-muted-foreground text-center'>{attribute.stat}</p>
                   <p className='mt-4 text-xs text-primary/85'>Click to reveal</p>
@@ -89,7 +89,7 @@ export default function About() {
                 <div className='absolute inset-0 bg-card border-2 border-primary/30 rounded-lg p-6 flex flex-col items-center justify-center'>
                   <div
                     className={`w-12 h-12 mb-3 rounded-full bg-gradient-to-br ${attribute.color} flex items-center justify-center drop-shadow-md drop-shadow-foreground/50`}>
-                    <IconWrapper size={24} className='text-primary-50'>
+                    <IconWrapper size={24} className='text-primary-50 dark:text-foreground'>
                       {attribute.icon}
                     </IconWrapper>
                   </div>
