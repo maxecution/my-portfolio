@@ -13,8 +13,9 @@ jest.mock('@/data/hero/Hero.data', () => ({
 
 // Importing the now mocked heroData
 import { heroData } from '@/data/hero/Hero.data';
+import { authorData } from '@data/page/Page.data';
 const HERO_CONSTANTS = {
-  H1: "Well met, I'm " + heroData.name,
+  H1: "Well met, I'm " + authorData.firstName,
   TEXT: heroData.text,
   SR_TYPEWRITER: `Typewriter effect: ${heroData.typewriterPhrases.join(', ')}`,
 };

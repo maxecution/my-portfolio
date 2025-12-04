@@ -1,14 +1,15 @@
+import cn from '@utils/cn';
 export default function IconWrapper({
   children,
-  size,
+  size = 24,
   className = '',
 }: {
   children: React.ReactNode;
-  size: number;
+  size?: number;
   className?: string;
 }) {
   return (
-    <div style={{ width: size, height: size }} className={className}>
+    <div style={{ width: size, height: size }} className={cn('', className)}>
       {children}
     </div>
   );

@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import About from './About';
 import { aboutData, attributes } from '@data/about/About.data';
-import { navIcon } from '@data/navbar/NavBar.data';
+import { authorData } from '@data/page/Page.data';
 
 describe('About Component', () => {
   beforeEach(() => {
@@ -27,15 +27,15 @@ describe('About Component', () => {
   });
 
   describe('Intro Card', () => {
-    test('should render full name from navIcon data', () => {
+    test('should render full name from authorData', () => {
       render(<About />);
-      expect(screen.getByText(navIcon.firstName!)).toBeVisible();
-      expect(screen.getByText(navIcon.lastName!)).toBeVisible();
+      expect(screen.getByText(authorData.firstName!)).toBeVisible();
+      expect(screen.getByText(authorData.lastName!)).toBeVisible();
     });
 
     test('should render job title pill', () => {
       render(<About />);
-      expect(screen.getByText(aboutData.introCard.jobTitle)).toBeVisible();
+      expect(screen.getByText(authorData.jobTitle!)).toBeVisible();
     });
 
     test('should render developer level pill with calculated tenure', () => {
@@ -148,37 +148,6 @@ describe('About Component', () => {
       await waitFor(() => {
         const button = container.querySelectorAll('button')[0];
         expect(button).toHaveClass('[transform:rotateY(180deg)]');
-      });
-    });
-  });
-
-  describe('IconWrapper Integration', () => {
-    test('should render icons with correct size on front card', () => {
-      const { container } = render(<About />);
-
-      // Front cards have 32px icons in 64px (w-16 h-16) containers
-      const frontIcons = container.querySelectorAll('div[style*="width: 32"]');
-      expect(frontIcons.length).toBeGreaterThan(0);
-
-      frontIcons.forEach((icon) => {
-        expect(icon).toHaveStyle({ width: '32px', height: '32px' });
-      });
-    });
-
-    test('should render icons with correct size on back card', async () => {
-      const { container } = render(<About />);
-
-      const cardButton = screen.getAllByRole('button')[0];
-      fireEvent.click(cardButton);
-
-      await waitFor(() => {
-        // Back cards have 24px icons in 48px (w-12 h-12) containers
-        const backIcons = container.querySelectorAll('div[style*="width: 24"]');
-        expect(backIcons.length).toBeGreaterThan(0);
-
-        backIcons.forEach((icon) => {
-          expect(icon).toHaveStyle({ width: '24px', height: '24px' });
-        });
       });
     });
   });

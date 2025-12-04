@@ -2,7 +2,8 @@ import useScrollState from '@hooks/useScrollState';
 import NavLinks from './NavLinks';
 import BurgerMenu from './BurgerMenu';
 import ThemeToggleButton from './ThemeToggleButton';
-import { navLinks, navIcon } from '@data/navbar/NavBar.data';
+import { navLinks } from '@data/navbar/NavBar.data';
+import { authorData } from '@data/page/Page.data';
 
 export default function NavBar() {
   const hasScrolled = useScrollState();
@@ -21,11 +22,11 @@ export default function NavBar() {
           title='Navigate to Home section'
           className='flex items-center font-bold font-display text-xl text-primary hover:scale-105'>
           <div className='w-12 h-12 md:w-14 md:h-14 xl:w-16 xl:h-16 2xl:w-18 2xl:h-18 flex items-center justify-center border-3 rounded-md'>
-            <div className='text-base md:text-lg xl:text-xl 2xl:text-2xl font-bold'>{navIcon.initials}</div>
+            <div className='text-base md:text-lg xl:text-xl 2xl:text-2xl font-bold'>{authorData.initials}</div>
           </div>
           <div className='pl-2 hidden md:block'>
-            <div>{navIcon.firstName}</div>
-            <div>{navIcon.lastName}</div>
+            <div>{authorData.firstName}</div>
+            <div>{authorData.lastName}</div>
           </div>
         </a>
         {/* Right side: nav + toggle + burger */}
