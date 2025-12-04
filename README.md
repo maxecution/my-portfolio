@@ -19,14 +19,14 @@ I invite you to **check back soon** to see the progress as the site evolves.
 
 <!-- shield images taken from https://github.com/inttter/md-badges -->
 
-[<img src="https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB" alt="React badge logo with text React on a dark background and a blue atom symbol" />](https://react.dev/) [<img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff" alt="TypeScript badge logo with text TypeScript on a blue background and a white TS symbol" />](https://www.typescriptlang.org/) [<img src="https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff" alt="Vite badge logo with text Vite on a purple background and a yellow lightning bolt symbol" />](https://vitejs.dev/) [<img src="https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?logo=tailwind-css&logoColor=white" alt="TailwindCSS badge logo with text Tailwind CSS on a teal background and a white wave symbol" />](https://tailwindcss.com/) [<img src="https://img.shields.io/badge/Jest-C21325?logo=jest&logoColor=fff" />](https://jestjs.io/docs/getting-started) [<img src="https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white" alt="Vercel badge logo with text Vercel on a black background and a white triangle symbol" />](https://vercel.com/)
+[<img src="https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB" alt="React badge logo" />](https://react.dev/) [<img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff" alt="TypeScript badge logo" />](https://www.typescriptlang.org/) [<img src="https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff" alt="Vite badge logo" />](https://vitejs.dev/) [<img src="https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?logo=tailwind-css&logoColor=white" alt="TailwindCSS badge logo" />](https://tailwindcss.com/) [<img src="https://img.shields.io/badge/Jest-C21325?logo=jest&logoColor=fff" alt="Jest badge logo" />](https://jestjs.io/docs/getting-started) [<img src="https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white" alt="Vercel badge logo" />](https://vercel.com/) [<img src="https://img.shields.io/badge/pnpm-F69220?logo=pnpm&logoColor=fff" alt="pnpm badge logo" />](https://pnpm.io/) [<img src="https://img.shields.io/badge/Git-F05032?logo=git&logoColor=fff" alt="Git badge logo" />](https://git-scm.com/) [<img src="https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white" alt="GitHub Actions badge logo" />](https://github.com/features/actions) [<img src="https://img.shields.io/badge/Figma-F24E1E?logo=figma&logoColor=white" alt="Figma badge logo"/>](https://www.figma.com/)
 
 ---
 
 ## 📌 Planned Sections
 
-- **Hero** – Intro & call to action
-- **About** – Background and skills
+- **Hero** – ✅
+- **About** – ✅
 - **Projects** – Selected work and case studies
 - **Contact** – Ways to get in touch
 
@@ -36,4 +36,4 @@ I invite you to **check back soon** to see the progress as the site evolves.
 
 In the meantime, feel free to connect with me on:
 
-- [LinkedIn](https://www.linkedin.com/in/max-zimmer-smith/)
+[<img src="https://custom-icon-badges.demolab.com/badge/LinkedIn-0A66C2?logo=linkedin-white&logoColor=fff" alt="LinkedIn badge logo"/>](https://www.linkedin.com/in/max-zimmer-smith/)

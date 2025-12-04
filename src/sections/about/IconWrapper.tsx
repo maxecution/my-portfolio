@@ -1,3 +1,4 @@
+import cn from '@utils/cn';
 export default function IconWrapper({
   children,
   size,
@@ -8,7 +9,7 @@ export default function IconWrapper({
   className?: string;
 }) {
   return (
-    <div style={{ width: size, height: size }} className={className}>
+    <div style={{ width: size, height: size }} className={cn('', className)}>
       {children}
     </div>
   );

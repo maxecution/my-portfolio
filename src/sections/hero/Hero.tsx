@@ -1,4 +1,5 @@
 import { heroData } from '@data/hero/Hero.data';
+import { authorData } from '@data/page/Page.data';
 import { GradientText } from '@ui/text/GradientText';
 import TypewriterEffect from './TypewriterEffect';
 import useScrollState from '@hooks/useScrollState';
@@ -22,7 +23,7 @@ export default function Hero() {
       {/* Main content */}
       <div className='flex flex-col text-center items-center justify-center gap-6 md:gap-8 lg:gap-10'>
         <h1 className='text-5xl md:text-7xl tracking-tight font-medium'>
-          Well met, I'm <GradientText>{heroData.name}</GradientText>
+          Well met, I'm <GradientText>{authorData.firstName}</GradientText>
         </h1>
         {/* Typewriter effect container */}
         <span

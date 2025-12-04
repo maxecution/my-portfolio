@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import About from './About';
 import { aboutData, attributes } from '@data/about/About.data';
-import { navIcon } from '@data/navbar/NavBar.data';
+import { authorData } from '@data/page/Page.data';
 
 describe('About Component', () => {
   beforeEach(() => {
@@ -27,15 +27,15 @@ describe('About Component', () => {
   });
 
   describe('Intro Card', () => {
-    test('should render full name from navIcon data', () => {
+    test('should render full name from authorData', () => {
       render(<About />);
-      expect(screen.getByText(navIcon.firstName!)).toBeVisible();
-      expect(screen.getByText(navIcon.lastName!)).toBeVisible();
+      expect(screen.getByText(authorData.firstName!)).toBeVisible();
+      expect(screen.getByText(authorData.lastName!)).toBeVisible();
     });
 
     test('should render job title pill', () => {
       render(<About />);
-      expect(screen.getByText(aboutData.introCard.jobTitle)).toBeVisible();
+      expect(screen.getByText(authorData.jobTitle!)).toBeVisible();
     });
 
     test('should render developer level pill with calculated tenure', () => {
