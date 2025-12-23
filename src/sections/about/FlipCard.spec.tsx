@@ -22,7 +22,7 @@ describe('FlipCard Component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render front content with entrance animation when not flipped', () => {
+  test('should render front content with entrance animation when not flipped', () => {
     const { container } = render(
       <FlipCard front={mockFront} back={mockBack} flipped={false} onClick={mockOnClick} sectionVisible />
     );
@@ -37,7 +37,7 @@ describe('FlipCard Component', () => {
     expect(button).not.toHaveClass('[transform:rotateY(180deg)]');
   });
 
-  it('should hide when sectionVisible is false and button to not be selectable', () => {
+  test('should hide when sectionVisible is false and button to not be selectable', () => {
     const { container } = render(
       <FlipCard front={mockFront} back={mockBack} flipped={false} onClick={mockOnClick} sectionVisible={false} />
     );
@@ -50,7 +50,7 @@ describe('FlipCard Component', () => {
     expect(button).toHaveAttribute('tabindex', '-1');
   });
 
-  it('should apply flip transform and show back content when flipped', () => {
+  test('should apply flip transform and show back content when flipped', () => {
     const { container } = render(
       <FlipCard front={mockFront} back={mockBack} flipped onClick={mockOnClick} sectionVisible />
     );
@@ -61,7 +61,7 @@ describe('FlipCard Component', () => {
     expect(screen.getByText('Back description')).toBeVisible();
   });
 
-  it('should call onClick when card is clicked', () => {
+  test('should call onClick when card is clicked', () => {
     render(<FlipCard front={mockFront} back={mockBack} flipped={false} onClick={mockOnClick} sectionVisible />);
 
     const button = screen.getByRole('button');
@@ -70,7 +70,7 @@ describe('FlipCard Component', () => {
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
-  it('should apply transition delay when sectionVisible is true and delay is provided', () => {
+  test('should apply transition delay when sectionVisible is true and delay is provided', () => {
     const { container } = render(
       <FlipCard front={mockFront} back={mockBack} flipped={false} onClick={mockOnClick} sectionVisible delay={0.5} />
     );
@@ -79,7 +79,7 @@ describe('FlipCard Component', () => {
     expect(wrapper).toHaveStyle({ transitionDelay: '0.5s' });
   });
 
-  it('should default to 0s delay when no delay prop is provided', () => {
+  test('should default to 0s delay when no delay prop is provided', () => {
     const { container } = render(
       <FlipCard front={mockFront} back={mockBack} flipped={false} onClick={mockOnClick} sectionVisible />
     );
@@ -88,7 +88,7 @@ describe('FlipCard Component', () => {
     expect(wrapper).toHaveStyle({ transitionDelay: '0s' });
   });
 
-  it('should ignore delay when sectionVisible is false', () => {
+  test('should ignore delay when sectionVisible is false', () => {
     const { container } = render(
       <FlipCard
         front={mockFront}
@@ -104,7 +104,7 @@ describe('FlipCard Component', () => {
     expect(wrapper).toHaveStyle({ transitionDelay: '0s' });
   });
 
-  it('should merge custom className', () => {
+  test('should merge custom className', () => {
     const { container } = render(
       <FlipCard
         front={mockFront}
@@ -120,7 +120,7 @@ describe('FlipCard Component', () => {
     expect(wrapper).toHaveClass('transition-opacity', 'custom-class');
   });
 
-  it('should apply correct structural classes for 3D flip effect', () => {
+  test('should apply correct structural classes for 3D flip effect', () => {
     const { container } = render(
       <FlipCard front={mockFront} back={mockBack} flipped={false} onClick={mockOnClick} sectionVisible />
     );

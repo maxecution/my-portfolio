@@ -3,6 +3,7 @@ import Section from '@layout/section/Section';
 import NavBar from '@sections/navbar/NavBar';
 import Hero from '@sections/hero/Hero';
 import About from '@sections/about/About';
+import Projects from '@sections/projects/Projects';
 
 // Component for testing sections
 function LoremIpsum() {
@@ -31,7 +32,7 @@ function App() {
           <About />
         </Section>
         <Section id='projects' title='Projects'>
-          <LoremIpsum />
+          <Projects />
         </Section>
         <Section id='contact' title='Contact'>
           <LoremIpsum />
