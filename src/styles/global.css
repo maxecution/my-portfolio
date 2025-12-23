@@ -10,10 +10,12 @@
 
   /* Custom Palette */
   --color-background: #f3e7d0;
-  --color-foreground: #17233b;
+  --color-foreground: #060606;
   --color-card: #fff9f0;
   --color-muted-foreground: #6b5b4b;
   --color-secondary: #a02b27;
+  --color-badge: #fbf7ee;
+  --color-button: #b8941f;
 
   --color-primary: var(--color-primary-500);
   --color-primary-50: #fdeae0;
@@ -34,6 +36,8 @@
   --color-card: #1a1a24;
   --color-muted-foreground: #a89f8d;
   --color-secondary: #8b0000;
+  --color-badge: #0a0a0f;
+  --color-button: #725d18;
 
   --color-primary: var(--color-primary-500);
   --color-primary-50: #1c1502;
@@ -79,7 +83,7 @@
   }
 }
 
-/* Custom scrollbar for fantasy theme */
+/* Custom page scrollbar for fantasy theme */
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -127,4 +131,23 @@
 
 .animate-cursor-blink {
   animation: cursor-blink 1s infinite;
+}
+
+/* Project Section Carousel: hide horizontal ScrollBar */
+.carousel-hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.carousel-hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-hide-scrollbar.dragging {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  cursor: grabbing;
+  cursor: grabbing;
 }
