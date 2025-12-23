@@ -28,10 +28,11 @@ export default function Carousel({ data }: Props) {
     gap: 0,
   });
 
-  const [itemsPerView, setItemsPerView] = useState(3);
-  const [cardWidthPx, setCardWidthPx] = useState(0);
-  const [gapPx, setGapPx] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState<number>(3);
+  const [cardWidthPx, setCardWidthPx] = useState<number>(0);
+  const [gapPx, setGapPx] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [showArrows, setShowArrows] = useState<boolean>(true);
 
   /* Responsive itemsPerView */
 
@@ -39,15 +40,18 @@ export default function Carousel({ data }: Props) {
     const update = () => {
       const w = window.innerWidth;
 
-      const desired = w >= 1024 ? 3 : w >= 768 ? 2 : 1;
+      const desiredItemsPerView = w >= 1024 ? 3 : w >= 768 ? 2 : 1;
 
-      setItemsPerView(Math.min(desired, data.length));
+      const effectiveItemsPerView = Math.min(desiredItemsPerView, data.length);
+
+      setItemsPerView(effectiveItemsPerView);
+      setShowArrows(data.length > effectiveItemsPerView);
     };
 
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, []);
+  }, [data.length]);
 
   /* Layout calculation + scroll tracking */
 
@@ -131,23 +135,26 @@ export default function Carousel({ data }: Props) {
           maxWidth: itemsPerView * MAX_CARD_WIDTH + gapPx * (itemsPerView - 1) + HOVER_BUFFER * 2,
         }}>
         {/* Left Arrow */}
-        <button
-          aria-label='Previous'
-          onClick={() => scrollByCards(-1)}
-          className='hidden md:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute left-[-44px] top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'>
-            <path d='m15 18-6-6 6-6' />
-          </svg>
-        </button>
+        {showArrows && (
+          <button
+            aria-label='Previous'
+            aria-hidden={!showArrows}
+            onClick={() => scrollByCards(-1)}
+            className='hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute left-[-44px] top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='24'
+              height='24'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'>
+              <path d='m15 18-6-6 6-6' />
+            </svg>
+          </button>
+        )}
 
         <div
           ref={containerRef}
@@ -183,36 +190,41 @@ export default function Carousel({ data }: Props) {
         </div>
 
         {/* Right Arrow */}
-        <button
-          aria-label='Next'
-          onClick={() => scrollByCards(1)}
-          className='hidden md:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute right-[-44px] top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'>
-            <path d='m9 18 6-6-6-6' />
-          </svg>
-        </button>
+        {showArrows && (
+          <button
+            aria-label='Next'
+            aria-hidden={!showArrows}
+            onClick={() => scrollByCards(1)}
+            className='hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute right-[-44px] top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='24'
+              height='24'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'>
+              <path d='m9 18 6-6-6-6' />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Dots */}
-      <div className='flex justify-center gap-2 mt-4'>
-        {Array.from({
-          length: Math.max(1, data.length - itemsPerView + 1),
-        }).map((_, i) => (
-          <span
-            key={i}
-            className={`w-3 h-3 rounded-full ${i === activeIndex ? 'bg-primary' : 'bg-muted-foreground/40'}`}
-          />
-        ))}
-      </div>
+      {showArrows && (
+        <div className='flex justify-center gap-2 mt-4'>
+          {Array.from({
+            length: Math.max(1, data.length - itemsPerView + 1),
+          }).map((_, i) => (
+            <span
+              key={i}
+              className={`w-3 h-3 rounded-full ${i === activeIndex ? 'bg-primary' : 'bg-muted-foreground/40'}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
