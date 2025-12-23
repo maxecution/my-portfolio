@@ -6,7 +6,6 @@ export interface ProjectCardDetails {
   title: string;
   description: string;
   techStack: string[];
-  image: string;
   githubUrl: string;
   liveUrl: string;
   difficulty: 'Easy' | 'Medium' | 'Hard' | 'Legendary' | 'Unknown';
@@ -39,7 +38,6 @@ export const projectsData: ProjectCardDetails[] = [
       'handling',
       'capabilities',
     ],
-    image: '/images/portfolio.png',
     githubUrl: 'https://github.com/maxecution/my-portfolio/',
     liveUrl: 'https://maxecution.github.io/portfolio-website/',
     difficulty: 'Easy',
@@ -48,7 +46,6 @@ export const projectsData: ProjectCardDetails[] = [
     title: 'Placeholder Project 2',
     description: 'A placeholder for testing until final version of page is deployed.',
     techStack: ['React', 'TypeScript', 'Tailwind CSS'],
-    image: '/images/portfolio.png',
     githubUrl: 'https://github.com/maxecution/my-portfolio/',
     liveUrl: 'https://maxecution.github.io/portfolio-website/',
     difficulty: 'Medium',
@@ -57,7 +54,6 @@ export const projectsData: ProjectCardDetails[] = [
     title: 'Placeholder Project 3',
     description: 'A placeholder for testing until final version of page is deployed.',
     techStack: ['React', 'TypeScript', 'Tailwind CSS', 'Jest'],
-    image: '/images/portfolio.png',
     githubUrl: 'https://github.com/maxecution/my-portfolio/',
     liveUrl: 'https://maxecution.github.io/portfolio-website/',
     difficulty: 'Hard',
@@ -66,7 +62,6 @@ export const projectsData: ProjectCardDetails[] = [
     title: 'Placeholder Project 4',
     description: 'A placeholder for testing until final version of page is deployed.',
     techStack: ['React', 'TypeScript', 'Tailwind CSS', 'Jest', 'Vercel'],
-    image: '/images/portfolio.png',
     githubUrl: 'https://github.com/maxecution/my-portfolio/',
     liveUrl: 'https://maxecution.github.io/portfolio-website/',
     difficulty: 'Legendary',
@@ -75,7 +70,6 @@ export const projectsData: ProjectCardDetails[] = [
     title: 'Placeholder Project 5',
     description: 'A placeholder for testing until final version of page is deployed.',
     techStack: ['React', 'TypeScript'],
-    image: '/images/portfolio.png',
     githubUrl: 'https://github.com/maxecution/my-portfolio/',
     liveUrl: 'https://maxecution.github.io/portfolio-website/',
     difficulty: 'Unknown',

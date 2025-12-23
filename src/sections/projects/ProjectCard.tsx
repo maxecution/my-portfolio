@@ -2,12 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import type { ProjectCardDetails } from '@data/projects/Projects.data';
 import DifficultyBadge from './DifficultyBadge';
 import ProjectCardTechStack from './ProjectCardTechStack';
+import getScreenshot from '@utils/getScreenshot';
 
 export default function ProjectCard({
   title,
   description,
   techStack,
-  image,
   githubUrl,
   liveUrl,
   difficulty,
@@ -36,9 +36,16 @@ export default function ProjectCard({
         <div className='absolute top-4 right-4 z-10'>
           <DifficultyBadge difficulty={difficulty} />
         </div>
-        <div className='relative h-48 bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 overflow-hidden'>
+        <div className='relative h-full bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 overflow-hidden'>
           <div className='absolute inset-0 flex items-center justify-center'>
-            <img src={image} alt={title + ' image'} className='object-contain h-full w-full' />
+            <img
+              src={getScreenshot(title)}
+              onError={(e) => {
+                e.currentTarget.src = '/projectScreenshots/placeholder-screenshot.png';
+              }}
+              alt={title + ' image'}
+              className='object-fill h-full w-full rounded-lg'
+            />
           </div>
           <div className='absolute inset-0 bg-gradient-to-t from-card to-transparent'></div>
         </div>

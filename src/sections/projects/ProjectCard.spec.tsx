@@ -1,14 +1,14 @@
 import '@testing-library/jest-dom';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ProjectCardDetails } from '@data/projects/Projects.data';
 import ProjectCard from './ProjectCard';
+import getScreenshot from '@utils/getScreenshot';
 
 const sample: ProjectCardDetails = {
   title: 'Test Project',
   description: 'A demo project',
   techStack: ['React', 'Jest'],
-  image: '/img.png',
   githubUrl: 'https://github.com/example',
   liveUrl: 'https://example.com',
   difficulty: 'Medium',
@@ -29,7 +29,7 @@ describe('ProjectCard', () => {
     }) as HTMLImageElement;
 
     expect(img).toBeVisible();
-    expect(img.src).toContain(sample.image);
+    expect(img.src).toContain(getScreenshot(sample.title));
 
     const codeLink = screen.getByRole('link', { name: 'Code' });
     const liveLink = screen.getByRole('link', { name: 'Live' });
@@ -38,6 +38,18 @@ describe('ProjectCard', () => {
     expect(liveLink).toHaveAttribute('href', sample.liveUrl);
 
     expect(screen.getByText(sample.difficulty)).toBeVisible();
+  });
+
+  test('falls back to placeholder image when screenshot fails to load', () => {
+    render(<ProjectCard {...sample} />);
+
+    const img = screen.getByRole('img', {
+      name: `${sample.title} image`,
+    }) as HTMLImageElement;
+
+    fireEvent.error(img);
+
+    expect(img.src).toContain('/projectScreenshots/placeholder-screenshot.png');
   });
 
   test('opens tech stack modal and closes when expected', async () => {
