@@ -38,9 +38,10 @@ export default function Carousel({ data }: Props) {
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w >= 1024) setItemsPerView(3);
-      else if (w >= 768) setItemsPerView(2);
-      else setItemsPerView(1);
+
+      const desired = w >= 1024 ? 3 : w >= 768 ? 2 : 1;
+
+      setItemsPerView(Math.min(desired, data.length));
     };
 
     update();

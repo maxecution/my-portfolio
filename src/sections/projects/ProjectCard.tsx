@@ -51,7 +51,7 @@ export default function ProjectCard({
             onModalOpen={() => setIsModalOpen(true)}
             onModalClose={() => setIsModalOpen(false)}
           />
-          <div className='flex gap-3 pt-4 border-t border-primary/20 mt-auto'>
+          <div className='flex flex-col sm:flex-row gap-3 pt-4 border-t border-primary/20 mt-auto'>
             <a
               href={githubUrl}
               target='_blank'

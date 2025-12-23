@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type ProjectCardDetails, projectsData } from '@data/projects/Projects.data';
+import { type ProjectCardDetails } from '@data/projects/Projects.data';
 import Carousel from './Carousel';
 
 const resizeObservers: MockResizeObserver[] = [];
@@ -64,7 +64,71 @@ jest.mock('@hooks/useAutoplay', () => ({
   }),
 }));
 
-const data: ProjectCardDetails[] = projectsData;
+const data: ProjectCardDetails[] = [
+  {
+    title: 'Portfolio Website',
+    description: 'A personal portfolio website to showcase my projects and skills.',
+    techStack: [
+      'React',
+      'TypeScript',
+      'Tailwind CSS',
+      'Jest',
+      'GitHub',
+      'Vercel',
+      'more',
+      'technologies',
+      'to',
+      'demonstrate',
+      'the',
+      'scrolling',
+      'effect',
+      'and',
+      'layout',
+      'handling',
+      'capabilities',
+    ],
+    image: '/images/portfolio.png',
+    githubUrl: 'https://github.com/maxecution/my-portfolio/',
+    liveUrl: 'https://maxecution.github.io/portfolio-website/',
+    difficulty: 'Medium',
+  },
+  {
+    title: 'Portfolio Website 2',
+    description: 'A personal portfolio website to showcase my projects and skills.',
+    techStack: ['React', 'TypeScript', 'Tailwind CSS'],
+    image: '/images/portfolio.png',
+    githubUrl: 'https://github.com/maxecution/my-portfolio/',
+    liveUrl: 'https://maxecution.github.io/portfolio-website/',
+    difficulty: 'Medium',
+  },
+  {
+    title: 'Portfolio Website 3',
+    description: 'A personal portfolio website to showcase my projects and skills.',
+    techStack: ['React', 'TypeScript', 'Tailwind CSS', 'Jest'],
+    image: '/images/portfolio.png',
+    githubUrl: 'https://github.com/maxecution/my-portfolio/',
+    liveUrl: 'https://maxecution.github.io/portfolio-website/',
+    difficulty: 'Hard',
+  },
+  {
+    title: 'Portfolio Website 4',
+    description: 'A personal portfolio website to showcase my projects and skills.',
+    techStack: ['React', 'TypeScript', 'Tailwind CSS', 'Jest', 'Vercel'],
+    image: '/images/portfolio.png',
+    githubUrl: 'https://github.com/maxecution/my-portfolio/',
+    liveUrl: 'https://maxecution.github.io/portfolio-website/',
+    difficulty: 'Legendary',
+  },
+  {
+    title: 'Portfolio Website 5',
+    description: 'A personal portfolio website to showcase my projects and skills.',
+    techStack: ['React', 'TypeScript'],
+    image: '/images/portfolio.png',
+    githubUrl: 'https://github.com/maxecution/my-portfolio/',
+    liveUrl: 'https://maxecution.github.io/portfolio-website/',
+    difficulty: 'Unknown',
+  },
+];
 
 function getCarouselRegion() {
   return screen.getByRole('region', { name: 'Projects carousel' }) as HTMLDivElement;
