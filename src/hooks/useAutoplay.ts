@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type UseAutoplayOptions = {
   delay: number;
@@ -10,6 +10,8 @@ export function useAutoplay(callback: () => void, { delay, enabled = true }: Use
   const savedCallback = useRef(callback);
   const intervalRef = useRef<number | null>(null);
 
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
   useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
@@ -19,18 +21,26 @@ export function useAutoplay(callback: () => void, { delay, enabled = true }: Use
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    setIsPlaying(false);
   };
 
   const start = () => {
-    clear();
-    if (!enabled) return;
+    if (!enabled || delay <= 0) {
+      clear();
+      return;
+    }
+
+    if (intervalRef.current != null) return;
 
     intervalRef.current = window.setInterval(() => {
       savedCallback.current();
     }, delay);
+
+    setIsPlaying(true);
   };
 
   useEffect(() => {
+    clear();
     start();
 
     const onVisibilityChange = () => {
@@ -49,5 +59,6 @@ export function useAutoplay(callback: () => void, { delay, enabled = true }: Use
   return {
     pause: clear,
     resume: start,
+    isPlaying,
   };
 }

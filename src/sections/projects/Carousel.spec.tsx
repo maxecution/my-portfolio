@@ -317,14 +317,33 @@ describe('Carousel Component', () => {
       const { unmount } = render(<Carousel data={data} />);
       const region = getCarouselRegion();
 
-      const down = new window.PointerEvent('pointerdown', {
-        bubbles: true,
-        pointerId: 21,
-        pointerType: 'touch',
-      });
-      region.dispatchEvent(down);
-      const up = new window.PointerEvent('pointerup', { bubbles: true, pointerId: 21, pointerType: 'touch' });
-      region.dispatchEvent(up);
+      region.dispatchEvent(
+        new window.PointerEvent('pointerdown', {
+          bubbles: true,
+          pointerId: 21,
+          clientX: 100,
+          clientY: 0,
+          pointerType: 'touch',
+        })
+      );
+
+      window.dispatchEvent(
+        new window.PointerEvent('pointermove', {
+          bubbles: true,
+          pointerId: 21,
+          clientX: 50,
+          clientY: 0,
+          pointerType: 'touch',
+        })
+      );
+
+      window.dispatchEvent(
+        new window.PointerEvent('pointerup', {
+          bubbles: true,
+          pointerId: 21,
+          pointerType: 'touch',
+        })
+      );
 
       unmount();
       expect(clearSpy).toHaveBeenCalled();

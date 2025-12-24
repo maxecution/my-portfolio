@@ -1,7 +1,8 @@
 import type { RefObject } from 'react';
 
-const MAX_CARD_WIDTH = 380;
-const HOVER_BUFFER = 24;
+export const MAX_CARD_WIDTH = 380;
+export const HOVER_BUFFER = 24;
+export const AXIS_LOCK_THRESHOLD = 6;
 
 export function computeCardLayout(el: HTMLElement, itemsPerView: number) {
   const style = getComputedStyle(el);
@@ -82,7 +83,16 @@ type LayoutRef = { current: { cardWidth: number; gap: number } };
 
 export function setupPointerHandlers(options: {
   containerRef: RefObject<HTMLElement | null>;
-  drag: { current: { active: boolean; startX: number; scrollStart: number; desiredScroll: number } };
+  drag: {
+    current: {
+      active: boolean;
+      startX: number;
+      startY: number;
+      scrollStart: number;
+      desiredScroll: number;
+      lockedAxis: 'x' | 'y' | null;
+    };
+  };
   rafRef: { current: number | null };
   layoutRef: LayoutRef;
   autoplay: { pause: () => void; resume: () => void };
@@ -101,21 +111,24 @@ export function setupPointerHandlers(options: {
   const onPointerDown = (e: PointerEvent) => {
     autoplay.pause();
 
+    drag.current.active = true;
+    drag.current.lockedAxis = null;
+    drag.current.startX = e.clientX;
+    drag.current.startY = e.clientY;
+    drag.current.scrollStart = el.scrollLeft;
+    drag.current.desiredScroll = el.scrollLeft;
+
     if (e.pointerType === 'touch') {
-      hasMobileDragged = true;
+      hasMobileDragged = false;
     } else {
       const target = e.target as HTMLElement | null;
       if (
         target &&
         target.closest('button, a, input, textarea, select, label, [role="button"], [contenteditable], [data-no-drag]')
       ) {
+        drag.current.active = false;
         return;
       }
-
-      drag.current.active = true;
-      drag.current.startX = e.clientX;
-      drag.current.scrollStart = el.scrollLeft;
-      drag.current.desiredScroll = el.scrollLeft;
 
       if (snapRestoreTimeout) {
         clearTimeout(snapRestoreTimeout);
@@ -133,26 +146,49 @@ export function setupPointerHandlers(options: {
   const onPointerMove = (e: PointerEvent) => {
     if (!drag.current.active) return;
 
-    const dx = drag.current.startX - e.clientX;
-    drag.current.desiredScroll = drag.current.scrollStart + dx;
+    const dx = e.clientX - drag.current.startX;
+    const dy = e.clientY - drag.current.startY;
+
+    // Axis not yet determined
+    if (!drag.current.lockedAxis) {
+      if (Math.abs(dx) < AXIS_LOCK_THRESHOLD && Math.abs(dy) < AXIS_LOCK_THRESHOLD) {
+        return;
+      }
+
+      drag.current.lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+
+      if (drag.current.lockedAxis === 'x') {
+        drag.current.active = true;
+        el.classList.add('dragging');
+        el.style.scrollBehavior = 'auto';
+        el.style.scrollSnapType = 'none';
+        if (e.pointerType === 'touch') {
+          hasMobileDragged = true;
+        }
+      } else {
+        // Vertical intent, let browser scroll the page
+        return;
+      }
+    }
+
+    drag.current.desiredScroll = drag.current.scrollStart - dx;
 
     if (rafRef.current == null) {
       const step = () => {
         el.scrollLeft = drag.current.desiredScroll;
-
-        if (drag.current.active) {
-          rafRef.current = requestAnimationFrame(step);
-        } else {
-          rafRef.current = null;
-        }
+        rafRef.current = drag.current.active ? requestAnimationFrame(step) : null;
       };
       rafRef.current = requestAnimationFrame(step);
     }
   };
 
   const onPointerUp = (e: PointerEvent) => {
+    const wasHorizontalDrag = drag.current.lockedAxis === 'x';
+
+    drag.current.active = false;
+    drag.current.lockedAxis = null;
+
     if (e.pointerType !== 'touch') {
-      drag.current.active = false;
       el.releasePointerCapture?.(e.pointerId);
       el.classList.remove('dragging');
       el.style.scrollBehavior = 'smooth';
@@ -166,6 +202,8 @@ export function setupPointerHandlers(options: {
         hasMobileDragged = false;
         mobilePauseTimeout = null;
       }, 15000);
+    } else {
+      autoplay.resume();
     }
 
     if (rafRef.current != null) {
@@ -173,11 +211,14 @@ export function setupPointerHandlers(options: {
       rafRef.current = null;
     }
 
-    const { cardWidth, gap } = layoutRef.current;
-    const step = getStep(cardWidth, gap);
-    const nearest = Math.round(el.scrollLeft / step);
-    goToIndex(nearest);
-    enableSnapAfterScroll();
+    // Only snap if this interaction was a horizontal drag
+    if (wasHorizontalDrag) {
+      const { cardWidth, gap } = layoutRef.current;
+      const step = getStep(cardWidth, gap);
+      const nearest = Math.round(el.scrollLeft / step);
+      goToIndex(nearest);
+      enableSnapAfterScroll();
+    }
   };
 
   const enableSnapAfterScroll = () => {
