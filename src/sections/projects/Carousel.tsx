@@ -2,10 +2,15 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAutoplay } from '@hooks/useAutoplay';
 import type { ProjectCardDetails } from '@data/projects/Projects.data';
 import ProjectCard from './ProjectCard';
-import { getStep, applyLayoutToRef, goToIndexImpl, scrollByCardsImpl, setupPointerHandlers } from './Carousel.utils';
-
-const MAX_CARD_WIDTH = 380;
-const HOVER_BUFFER = 24;
+import {
+  getStep,
+  applyLayoutToRef,
+  goToIndexImpl,
+  scrollByCardsImpl,
+  setupPointerHandlers,
+  MAX_CARD_WIDTH,
+  HOVER_BUFFER,
+} from './Carousel.utils';
 
 type Props = {
   data: ProjectCardDetails[];
@@ -17,8 +22,10 @@ export default function Carousel({ data }: Props) {
   const drag = useRef({
     active: false,
     startX: 0,
+    startY: 0,
     scrollStart: 0,
     desiredScroll: 0,
+    lockedAxis: null,
   });
 
   const rafRef = useRef<number | null>(null);
@@ -140,7 +147,7 @@ export default function Carousel({ data }: Props) {
             aria-label='Previous'
             aria-hidden={!showArrows}
             onClick={() => scrollByCards(-1)}
-            className='hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute left-[-44px] top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
+            className='hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute -left-11 top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               width='24'
@@ -175,8 +182,8 @@ export default function Carousel({ data }: Props) {
               scrollByCards(-1);
             }
           }}
-          className='carousel-hide-scrollbar flex gap-6 py-6 overflow-x-auto overflow-y-visible scroll-smooth touch-pan-x focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
-          style={{ scrollSnapType: 'x mandatory', paddingInline: HOVER_BUFFER, scrollPaddingInline: HOVER_BUFFER }}>
+          className='carousel-hide-scrollbar flex gap-6 py-6 overflow-x-auto overflow-y-visible scroll-smooth touch-pan-y focus:outline-none focus-visible:ring-2 focus-visible:ring-primary snap-x snap-mandatory'
+          style={{ paddingInline: HOVER_BUFFER, scrollPaddingInline: HOVER_BUFFER }}>
           {data.map((d, i) => (
             <div
               key={`${d.title}-${i}`}
@@ -195,7 +202,7 @@ export default function Carousel({ data }: Props) {
             aria-label='Next'
             aria-hidden={!showArrows}
             onClick={() => scrollByCards(1)}
-            className='hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute right-[-44px] top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
+            className='hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-primary bg-card border border-primary/20 absolute -right-11 top-1/2 -translate-y-1/2 hover:scale-105 hover:bg-primary/10'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               width='24'

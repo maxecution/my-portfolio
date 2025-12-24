@@ -6,6 +6,7 @@ import {
   goToIndexImpl,
   scrollByCardsImpl,
   setupPointerHandlers,
+  AXIS_LOCK_THRESHOLD,
 } from './Carousel.utils';
 
 describe('Carousel utils', () => {
@@ -58,8 +59,10 @@ describe('Carousel utils', () => {
       current: {
         active: false,
         startX: 0,
+        startY: 0,
         scrollStart: 0,
         desiredScroll: 0,
+        lockedAxis: null,
       },
     };
 
@@ -200,7 +203,7 @@ describe('Carousel utils', () => {
     test('returns a no-op cleanup when containerRef.current is null', () => {
       const cleanup = setupPointerHandlers({
         containerRef: { current: null },
-        drag: { current: { active: false, startX: 0, scrollStart: 0, desiredScroll: 0 } },
+        drag: { current: { active: false, startX: 0, startY: 0, scrollStart: 0, desiredScroll: 0, lockedAxis: null } },
         rafRef: { current: null },
         layoutRef: { current: { cardWidth: 0, gap: 0 } },
         autoplay: { pause: () => undefined, resume: () => undefined },
@@ -210,7 +213,6 @@ describe('Carousel utils', () => {
       expect(typeof cleanup).toBe('function');
       expect(() => cleanup()).not.toThrow();
     });
-
     test('rAF step sets rafRef.current=null when drag ends', () => {
       const { el, rafRef, cleanup } = setup();
 
@@ -237,35 +239,92 @@ describe('Carousel utils', () => {
       window.requestAnimationFrame = originalRAF;
     });
 
-    test('pointermove without active drag does not schedule rAF', () => {
-      setup();
+    test('pointerdown returns early when non-touch event originates from an interactive element', () => {
+      const { el, drag, autoplay, cleanup, PE } = setup();
+
+      const button = document.createElement('button');
+      el.appendChild(button);
+
+      button.dispatchEvent(
+        new PE('pointerdown', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 100,
+          clientY: 0,
+          pointerId: 1,
+        })
+      );
+
+      expect(drag.current.active).toBe(false);
+      expect(drag.current.lockedAxis).toBeNull();
+      expect(el.classList.contains('dragging')).toBe(false);
+      expect(autoplay.pause).toHaveBeenCalledTimes(1);
+
+      cleanup();
+    });
+
+    test('pointermove returns early when movement is below AXIS_LOCK_THRESHOLD', () => {
+      const { el, drag, rafRef, cleanup, PE } = setup();
+
       const spyRAF = jest.spyOn(window, 'requestAnimationFrame');
 
-      const move = new PointerEvent('pointermove', { bubbles: true, clientX: 10, pointerType: 'mouse' });
-      window.dispatchEvent(move);
+      el.dispatchEvent(
+        new PE('pointerdown', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 100,
+          clientY: 100,
+        })
+      );
 
+      window.dispatchEvent(
+        new PE('pointermove', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 100 + AXIS_LOCK_THRESHOLD - 1,
+          clientY: 100 + AXIS_LOCK_THRESHOLD - 1,
+        })
+      );
+
+      expect(drag.current.lockedAxis).toBeNull();
+      expect(drag.current.active).toBe(true);
       expect(spyRAF).not.toHaveBeenCalled();
+      expect(rafRef.current).toBeNull();
+      expect(el.scrollLeft).toBe(0);
+
+      cleanup();
       spyRAF.mockRestore();
     });
 
-    test('pointermove during active drag schedules rAF only once', () => {
-      const { el, drag, cleanup } = setup();
+    test('pointermove with vertical intent exits early and does not start horizontal drag', () => {
+      const { el, drag, rafRef, cleanup, PE } = setup();
       const spyRAF = jest.spyOn(window, 'requestAnimationFrame');
 
-      // Start drag
-      el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 100, pointerType: 'mouse' }));
-      drag.current.active = true;
+      drag.current.scrollStart = 50;
+      el.scrollLeft = 50;
 
-      // Multiple moves
-      window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, pointerType: 'mouse' }));
-      window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 60, pointerType: 'mouse' }));
+      el.dispatchEvent(
+        new PE('pointerdown', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 100,
+          clientY: 100,
+        })
+      );
 
-      expect(spyRAF).toHaveBeenCalled();
-      // Only one rAF loop should be scheduled at a time
-      expect(spyRAF.mock.calls.length).toBeLessThanOrEqual(2);
+      window.dispatchEvent(
+        new PE('pointermove', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 102,
+          clientY: 120,
+        })
+      );
 
-      // End drag
-      el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 60, pointerType: 'mouse' }));
+      expect(drag.current.desiredScroll).toBe(drag.current.scrollStart);
+      expect(el.scrollLeft).toBe(50);
+      expect(rafRef.current).toBeNull();
+      expect(spyRAF).not.toHaveBeenCalled();
 
       cleanup();
       spyRAF.mockRestore();
@@ -284,25 +343,8 @@ describe('Carousel utils', () => {
       const layoutRef = { current: { cardWidth: 100, gap: 10 } };
 
       // Manually invoke goToIndexImpl via scrollByCardsImpl to simulate "wrap"
-      const nextIndex = scrollByCardsImpl(el, layoutRef, 1, 2, 3); // maxIndex = 2
-      expect(nextIndex).toBe(0); // wraps to start
-
-      cleanup();
-    });
-
-    test('does not start drag when pointerdown originates from an interactive element', () => {
-      const { el, drag, cleanup, PE } = setup();
-      const button = document.createElement('button');
-      el.appendChild(button);
-
-      const event = new PE('pointerdown', { bubbles: true, pointerType: 'mouse', clientX: 100 });
-      Object.defineProperty(event, 'target', { value: button });
-
-      el.dispatchEvent(event);
-
-      expect(drag.current.active).toBe(false);
-      expect(el.classList.contains('dragging')).toBe(false);
-
+      const nextIndex = scrollByCardsImpl(el, layoutRef, 1, 2, 3);
+      expect(nextIndex).toBe(0);
       cleanup();
     });
 
@@ -325,7 +367,72 @@ describe('Carousel utils', () => {
       cleanup();
     });
 
+    test('enableSnapAfterScroll restores scroll snap after scrolling stops', () => {
+      const { el, drag, cleanup, PE } = setup();
+      drag.current.active = true;
+
+      el.dispatchEvent(new PE('pointerdown', { pointerType: 'mouse', clientX: 100, clientY: 0 }));
+      window.dispatchEvent(new PE('pointermove', { pointerType: 'mouse', clientX: 50, clientY: 0 }));
+      window.dispatchEvent(new PE('pointerup', { pointerType: 'mouse' }));
+      el.dispatchEvent(new Event('scroll'));
+
+      expect(el.style.scrollSnapType).not.toBe('x mandatory');
+
+      jest.advanceTimersByTime(100);
+      expect(el.style.scrollSnapType).toBe('x mandatory');
+      expect(el.style.scrollBehavior).toBe('');
+
+      cleanup();
+    });
+
+    test('enableSnapAfterScroll does not attach multiple scroll listeners while already restoring', () => {
+      const { el, drag, cleanup, PE } = setup();
+      drag.current.active = true;
+
+      el.dispatchEvent(new PE('pointerdown', { pointerType: 'mouse', clientX: 100, clientY: 0 }));
+      window.dispatchEvent(new PE('pointermove', { pointerType: 'mouse', clientX: 50, clientY: 0 }));
+      window.dispatchEvent(new PE('pointerup', { pointerType: 'mouse' }));
+      el.dispatchEvent(new Event('scroll'));
+      el.dispatchEvent(new Event('scroll'));
+
+      expect(jest.getTimerCount()).toBe(1);
+
+      cleanup();
+    });
+
     describe('dragging behavior', () => {
+      test('pointermove without active drag does not schedule rAF', () => {
+        setup();
+        const spyRAF = jest.spyOn(window, 'requestAnimationFrame');
+
+        const move = new PointerEvent('pointermove', { bubbles: true, clientX: 10, pointerType: 'mouse' });
+        window.dispatchEvent(move);
+
+        expect(spyRAF).not.toHaveBeenCalled();
+        spyRAF.mockRestore();
+      });
+
+      test('pointermove during active drag schedules rAF only once', () => {
+        const { el, drag, cleanup } = setup();
+        const spyRAF = jest.spyOn(window, 'requestAnimationFrame');
+
+        el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 100, pointerType: 'mouse' }));
+        drag.current.active = true;
+
+        // Multiple moves
+        window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, pointerType: 'mouse' }));
+        window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 60, pointerType: 'mouse' }));
+
+        expect(spyRAF).toHaveBeenCalled();
+        // Only one rAF loop should be scheduled at a time
+        expect(spyRAF.mock.calls.length).toBeLessThanOrEqual(2);
+
+        el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 60, pointerType: 'mouse' }));
+
+        cleanup();
+        spyRAF.mockRestore();
+      });
+
       test('mouse drag updates scrollLeft smoothly and restores scrollSnap on release', () => {
         const { el, drag, cleanup, PE } = setup();
         let pendingCb: FrameRequestCallback | undefined;
@@ -357,16 +464,18 @@ describe('Carousel utils', () => {
       test('touch drag delays autoplay resume and clears timeout on additional touches', () => {
         const { el, autoplay, cleanup, PE } = setup();
 
-        el.dispatchEvent(new PE('pointerdown', { bubbles: true, pointerType: 'touch' }));
-        window.dispatchEvent(new PE('pointerup', { bubbles: true, pointerType: 'touch' }));
+        el.dispatchEvent(new PE('pointerdown', { pointerType: 'touch', clientX: 100, clientY: 0 }));
+        window.dispatchEvent(new PE('pointermove', { pointerType: 'touch', clientX: 50, clientY: 0 }));
+        window.dispatchEvent(new PE('pointerup', { pointerType: 'touch' }));
 
         expect(autoplay.resume).toHaveBeenCalledTimes(0);
 
         jest.advanceTimersByTime(15000);
         expect(autoplay.resume).toHaveBeenCalledTimes(1);
 
-        el.dispatchEvent(new PE('pointerdown', { bubbles: true, pointerType: 'touch' }));
-        window.dispatchEvent(new PE('pointerup', { bubbles: true, pointerType: 'touch' }));
+        el.dispatchEvent(new PE('pointerdown', { pointerType: 'touch', clientX: 100, clientY: 0 }));
+        window.dispatchEvent(new PE('pointermove', { pointerType: 'touch', clientX: 50, clientY: 0 }));
+        window.dispatchEvent(new PE('pointerup', { pointerType: 'touch' }));
 
         cleanup();
         jest.advanceTimersByTime(15000);
@@ -377,8 +486,11 @@ describe('Carousel utils', () => {
         const { el, drag, cleanup, PE } = setup();
         drag.current.active = true;
 
-        window.dispatchEvent(new PE('pointerup', { bubbles: true, pointerType: 'mouse', pointerId: 1 }));
+        el.dispatchEvent(new PE('pointerdown', { pointerType: 'mouse', clientX: 100, clientY: 0 }));
+        window.dispatchEvent(new PE('pointermove', { pointerType: 'mouse', clientX: 50, clientY: 0 }));
+        window.dispatchEvent(new PE('pointerup', { pointerType: 'mouse' }));
         el.dispatchEvent(new Event('scroll'));
+
         expect(jest.getTimerCount()).toBe(1);
 
         el.dispatchEvent(new PE('pointerdown', { bubbles: true, pointerType: 'mouse', pointerId: 2, clientX: 50 }));
@@ -386,36 +498,6 @@ describe('Carousel utils', () => {
 
         jest.advanceTimersByTime(200);
         expect(el.style.scrollSnapType).not.toBe('x mandatory');
-
-        cleanup();
-      });
-
-      test('enableSnapAfterScroll restores scroll snap after scrolling stops', () => {
-        const { el, drag, cleanup, PE } = setup();
-        drag.current.active = true;
-
-        window.dispatchEvent(new PE('pointerup', { bubbles: true, pointerType: 'mouse', pointerId: 1 }));
-        el.dispatchEvent(new Event('scroll'));
-        el.dispatchEvent(new Event('scroll'));
-
-        expect(el.style.scrollSnapType).not.toBe('x mandatory');
-
-        jest.advanceTimersByTime(100);
-        expect(el.style.scrollSnapType).toBe('x mandatory');
-        expect(el.style.scrollBehavior).toBe('');
-
-        cleanup();
-      });
-
-      test('enableSnapAfterScroll does not attach multiple scroll listeners while already restoring', () => {
-        const { el, drag, cleanup, PE } = setup();
-        drag.current.active = true;
-
-        window.dispatchEvent(new PE('pointerup', { bubbles: true, pointerType: 'mouse', pointerId: 1 }));
-        el.dispatchEvent(new Event('scroll'));
-        el.dispatchEvent(new Event('scroll'));
-
-        expect(jest.getTimerCount()).toBe(1);
 
         cleanup();
       });

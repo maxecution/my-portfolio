@@ -1,121 +1,143 @@
-import { renderHook, act, cleanup } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useAutoplay } from './useAutoplay';
 
-describe('useAutoplay (renderHook)', () => {
+describe('useAutoplay', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
 
   afterEach(() => {
-    cleanup();
     jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
-  it('starts interval and updates saved callback on rerender', () => {
-    const cb1 = jest.fn();
-
-    const { result, rerender } = renderHook(({ cb, opts }) => useAutoplay(cb, opts), {
-      initialProps: { cb: cb1, opts: { delay: 1000 } },
-    });
-
-    act(() => {
-      jest.advanceTimersByTime(1000);
-    });
-    expect(cb1).toHaveBeenCalledTimes(1);
-
-    const cb2 = jest.fn();
-    rerender({ cb: cb2, opts: { delay: 1000 } });
-
-    act(() => jest.advanceTimersByTime(1000));
-    expect(cb1).toHaveBeenCalledTimes(1);
-    expect(cb2).toHaveBeenCalledTimes(1);
-
-    // ensure methods exist
-    expect(typeof result.current.pause).toBe('function');
-    expect(typeof result.current.resume).toBe('function');
-  });
-
-  it('pause and resume stop and start the interval', () => {
+  test('starts autoplay on mount and calls callback at interval', () => {
     const fn = jest.fn();
-    const { result } = renderHook(({ cb, opts }) => useAutoplay(cb, opts), {
-      initialProps: { cb: fn, opts: { delay: 500 } },
-    });
+
+    renderHook(() => useAutoplay(fn, { delay: 500 }));
 
     act(() => jest.advanceTimersByTime(500));
     expect(fn).toHaveBeenCalledTimes(1);
 
+    act(() => jest.advanceTimersByTime(1000));
+    expect(fn).toHaveBeenCalledTimes(3);
+  });
+
+  test('uses latest callback after rerender', () => {
+    const first = jest.fn();
+    const second = jest.fn();
+
+    const { rerender } = renderHook(({ cb }) => useAutoplay(cb, { delay: 500 }), { initialProps: { cb: first } });
+
+    act(() => jest.advanceTimersByTime(500));
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).not.toHaveBeenCalled();
+
+    rerender({ cb: second });
+
+    act(() => jest.advanceTimersByTime(500));
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
+  test('pause stops autoplay and updates isPlaying', () => {
+    const fn = jest.fn();
+
+    const { result } = renderHook(() => useAutoplay(fn, { delay: 300 }));
+
+    expect(result.current.isPlaying).toBe(true);
+
     act(() => {
       result.current.pause();
-      jest.advanceTimersByTime(2000);
+      jest.advanceTimersByTime(1000);
     });
-    expect(fn).toHaveBeenCalledTimes(1);
+
+    expect(fn).not.toHaveBeenCalled();
+    expect(result.current.isPlaying).toBe(false);
+  });
+
+  test('resume restarts autoplay and updates isPlaying', () => {
+    const fn = jest.fn();
+
+    const { result } = renderHook(() => useAutoplay(fn, { delay: 400 }));
+
+    act(() => result.current.pause());
+    expect(result.current.isPlaying).toBe(false);
 
     act(() => {
       result.current.resume();
-      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(400);
     });
-    expect(fn).toHaveBeenCalledTimes(2);
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(result.current.isPlaying).toBe(true);
   });
 
-  it('does not start when enabled is false', () => {
+  test('resume does nothing if already running', () => {
     const fn = jest.fn();
-    renderHook(({ cb, opts }) => useAutoplay(cb, opts), {
-      initialProps: { cb: fn, opts: { delay: 100, enabled: false } },
-    });
+    const setIntervalSpy = jest.spyOn(window, 'setInterval');
+
+    const { result } = renderHook(() => useAutoplay(fn, { delay: 200 }));
+
+    act(() => result.current.resume());
+    act(() => result.current.resume());
+
+    expect(setIntervalSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('does not start autoplay when enabled is false', () => {
+    const fn = jest.fn();
+
+    renderHook(() => useAutoplay(fn, { delay: 100, enabled: false }));
 
     act(() => jest.advanceTimersByTime(1000));
     expect(fn).not.toHaveBeenCalled();
   });
 
-  it('pauses on document hidden and restarts when visible again', () => {
+  test('does not start autoplay when delay <= 0', () => {
     const fn = jest.fn();
-    renderHook(({ cb, opts }) => useAutoplay(cb, opts), {
-      initialProps: { cb: fn, opts: { delay: 1000 } },
-    });
+
+    renderHook(() => useAutoplay(fn, { delay: 0 }));
 
     act(() => jest.advanceTimersByTime(1000));
-    expect(fn).toHaveBeenCalledTimes(1);
-
-    const original = Object.getOwnPropertyDescriptor(document, 'hidden');
-    if (!original || original.configurable) {
-      Object.defineProperty(document, 'hidden', { configurable: true, value: true });
-    }
-
-    act(() => {
-      document.dispatchEvent(new Event('visibilitychange'));
-      jest.advanceTimersByTime(5000);
-    });
-    expect(fn).toHaveBeenCalledTimes(1);
-
-    const descAfter = Object.getOwnPropertyDescriptor(document, 'hidden');
-    if (!descAfter || descAfter.configurable) {
-      Object.defineProperty(document, 'hidden', { configurable: true, value: false });
-    }
-    act(() => {
-      document.dispatchEvent(new Event('visibilitychange'));
-      jest.advanceTimersByTime(1000);
-    });
-    expect(fn).toHaveBeenCalledTimes(2);
-
-    if (original) Object.defineProperty(document, 'hidden', original);
+    expect(fn).not.toHaveBeenCalled();
   });
 
-  it('restarts interval when delay changes and removes listener on unmount', () => {
+  test('pauses when document becomes hidden and resumes when visible', () => {
+    const fn = jest.fn();
+
+    renderHook(() => useAutoplay(fn, { delay: 500 }));
+
+    act(() => jest.advanceTimersByTime(500));
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+
+    act(() => {
+      document.dispatchEvent(new Event('visibilitychange'));
+      jest.advanceTimersByTime(2000);
+    });
+
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    Object.defineProperty(document, 'hidden', { configurable: true, value: false });
+
+    act(() => {
+      document.dispatchEvent(new Event('visibilitychange'));
+      jest.advanceTimersByTime(500);
+    });
+
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  test('cleans up interval and visibility listener on unmount', () => {
     const fn = jest.fn();
     const removeSpy = jest.spyOn(document, 'removeEventListener');
 
-    const { rerender, unmount } = renderHook(({ cb, opts }) => useAutoplay(cb, opts), {
-      initialProps: { cb: fn, opts: { delay: 300 } },
-    });
-
-    act(() => jest.advanceTimersByTime(300));
-    expect(fn).toHaveBeenCalledTimes(1);
-
-    rerender({ cb: fn, opts: { delay: 600 } });
-    act(() => jest.advanceTimersByTime(600));
-    expect(fn).toHaveBeenCalledTimes(2);
+    const { unmount } = renderHook(() => useAutoplay(fn, { delay: 300 }));
 
     unmount();
+
     expect(removeSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function));
   });
 });

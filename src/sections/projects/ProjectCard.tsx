@@ -31,12 +31,12 @@ export default function ProjectCard({
     };
   }, [isModalOpen]);
   return (
-    <div className='flex-shrink-0 relative' ref={cardRef}>
-      <div className='bg-card border-2 border-primary/30 rounded-lg h-120 flex flex-col group relative hover:scale-105 transition-transform'>
+    <div className='shrink-0 relative' ref={cardRef}>
+      <div className='bg-card border-2 border-primary/30 rounded-lg h-120 flex flex-col min-h-0 group relative hover:scale-105 transition-transform'>
         <div className='absolute top-4 right-4 z-10'>
           <DifficultyBadge difficulty={difficulty} />
         </div>
-        <div className='relative h-full bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 overflow-hidden'>
+        <div className='relative h-full min-h-0 bg-linear-to-br from-primary/20 via-secondary/20 to-primary/20 overflow-hidden'>
           <div className='absolute inset-0 flex items-center justify-center'>
             <img
               src={getScreenshot(title)}
@@ -47,7 +47,7 @@ export default function ProjectCard({
               className='object-fill h-full w-full rounded-lg'
             />
           </div>
-          <div className='absolute inset-0 bg-gradient-to-t from-card to-transparent'></div>
+          <div className='absolute inset-0 bg-linear-to-t from-card to-transparent'></div>
         </div>
         <div className='p-6 flex-1 flex flex-col'>
           <h3 className='text-xl mb-3 group-hover:text-primary'>{title}</h3>
@@ -107,7 +107,7 @@ export default function ProjectCard({
           </div>
         </div>
         <div className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none'>
-          <div className='absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent'></div>
+          <div className='absolute inset-0 bg-linear-to-t from-primary/5 to-transparent'></div>
         </div>
       </div>
     </div>
