@@ -249,7 +249,6 @@ describe('Carousel Component', () => {
     });
 
     test('keyboard arrow navigation scrolls and pauses autoplay', async () => {
-      const user = userEvent.setup();
       render(<Carousel data={data} />);
       const region = getCarouselRegion();
 
@@ -273,6 +272,53 @@ describe('Carousel Component', () => {
       const dots = document.querySelectorAll('.flex.justify-center.gap-2.mt-4 > span');
       const classes = [...dots].map((d) => d.className);
       expect(new Set(classes).size).toBeGreaterThan(1);
+    });
+
+    test('mouse drag release triggers goToIndex wrapper (smooth snap to nearest)', async () => {
+      render(<Carousel data={data} />);
+
+      const region = getCarouselRegion();
+
+      Object.defineProperties(region, {
+        clientWidth: { value: 900, configurable: true },
+        scrollWidth: { value: 2000, configurable: true },
+      });
+
+      const ro = getLastResizeObserver();
+      ro.trigger();
+
+      const scrollToSpy = jest.spyOn(region, 'scrollTo');
+
+      region.dispatchEvent(
+        new PointerEvent('pointerdown', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 100,
+          clientY: 10,
+        })
+      );
+
+      window.dispatchEvent(
+        new PointerEvent('pointermove', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 180,
+          clientY: 12,
+        })
+      );
+
+      window.dispatchEvent(
+        new PointerEvent('pointerup', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: 180,
+          clientY: 12,
+        })
+      );
+
+      expect(scrollToSpy).toHaveBeenCalled();
+
+      scrollToSpy.mockRestore();
     });
   });
 
