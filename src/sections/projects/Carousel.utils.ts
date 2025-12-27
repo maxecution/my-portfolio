@@ -104,12 +104,19 @@ export function setupPointerHandlers(options: {
   if (!el) return () => {};
 
   let snapRestoreTimeout: number | null = null;
-  let isRestoringSnap = false;
   let mobilePauseTimeout: number | null = null;
-  let hasMobileDragged = false;
 
   const onPointerDown = (e: PointerEvent) => {
     autoplay.pause();
+
+    if (e.pointerType === 'touch') {
+      clearTimeout(mobilePauseTimeout!);
+      mobilePauseTimeout = window.setTimeout(() => {
+        autoplay.resume();
+        mobilePauseTimeout = null;
+      }, 15000);
+      return;
+    }
 
     drag.current.active = true;
     drag.current.lockedAxis = null;
@@ -118,43 +125,34 @@ export function setupPointerHandlers(options: {
     drag.current.scrollStart = el.scrollLeft;
     drag.current.desiredScroll = el.scrollLeft;
 
-    if (e.pointerType === 'touch') {
-      hasMobileDragged = false;
-    } else {
-      const target = e.target as HTMLElement | null;
-      if (
-        target &&
-        target.closest('button, a, input, textarea, select, label, [role="button"], [contenteditable], [data-no-drag]')
-      ) {
-        drag.current.active = false;
-        return;
-      }
-
-      if (snapRestoreTimeout) {
-        clearTimeout(snapRestoreTimeout);
-        snapRestoreTimeout = null;
-        isRestoringSnap = false;
-      }
-
-      el.setPointerCapture?.(e.pointerId);
-      el.classList.add('dragging');
-      el.style.scrollBehavior = 'auto';
-      el.style.scrollSnapType = 'none';
+    const target = e.target as HTMLElement | null;
+    if (
+      target &&
+      target.closest('button, a, input, textarea, select, label, [role="button"], [contenteditable], [data-no-drag]')
+    ) {
+      drag.current.active = false;
+      return;
     }
+
+    if (snapRestoreTimeout) {
+      clearTimeout(snapRestoreTimeout);
+      snapRestoreTimeout = null;
+    }
+
+    el.setPointerCapture?.(e.pointerId);
+    el.classList.add('dragging');
+    el.style.scrollBehavior = 'auto';
+    el.style.scrollSnapType = 'none';
   };
 
   const onPointerMove = (e: PointerEvent) => {
-    if (!drag.current.active) return;
+    if (!drag.current.active || e.pointerType === 'touch') return;
 
     const dx = e.clientX - drag.current.startX;
     const dy = e.clientY - drag.current.startY;
 
-    // Axis not yet determined
     if (!drag.current.lockedAxis) {
-      if (Math.abs(dx) < AXIS_LOCK_THRESHOLD && Math.abs(dy) < AXIS_LOCK_THRESHOLD) {
-        return;
-      }
-
+      if (Math.abs(dx) < AXIS_LOCK_THRESHOLD && Math.abs(dy) < AXIS_LOCK_THRESHOLD) return;
       drag.current.lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
 
       if (drag.current.lockedAxis === 'x') {
@@ -162,9 +160,6 @@ export function setupPointerHandlers(options: {
         el.classList.add('dragging');
         el.style.scrollBehavior = 'auto';
         el.style.scrollSnapType = 'none';
-        if (e.pointerType === 'touch') {
-          hasMobileDragged = true;
-        }
       } else {
         // Vertical intent, let browser scroll the page
         return;
@@ -172,7 +167,6 @@ export function setupPointerHandlers(options: {
     }
 
     drag.current.desiredScroll = drag.current.scrollStart - dx;
-
     if (rafRef.current == null) {
       const step = () => {
         el.scrollLeft = drag.current.desiredScroll;
@@ -195,23 +189,11 @@ export function setupPointerHandlers(options: {
       el.style.scrollSnapType = 'none';
     }
 
-    if (e.pointerType === 'touch' && hasMobileDragged) {
-      clearTimeout(mobilePauseTimeout!);
-      mobilePauseTimeout = window.setTimeout(() => {
-        autoplay.resume();
-        hasMobileDragged = false;
-        mobilePauseTimeout = null;
-      }, 15000);
-    } else {
-      autoplay.resume();
-    }
-
     if (rafRef.current != null) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
 
-    // Only snap if this interaction was a horizontal drag
     if (wasHorizontalDrag) {
       const { cardWidth, gap } = layoutRef.current;
       const step = getStep(cardWidth, gap);
@@ -222,17 +204,13 @@ export function setupPointerHandlers(options: {
   };
 
   const enableSnapAfterScroll = () => {
-    if (isRestoringSnap) return;
-    isRestoringSnap = true;
-
     const onScrollEnd = () => {
-      if (snapRestoreTimeout) clearTimeout(snapRestoreTimeout);
+      clearTimeout(snapRestoreTimeout!);
       snapRestoreTimeout = window.setTimeout(() => {
         el.style.scrollBehavior = '';
         el.style.scrollSnapType = 'x mandatory';
         el.removeEventListener('scroll', onScrollEnd);
         snapRestoreTimeout = null;
-        isRestoringSnap = false;
       }, 100);
     };
 

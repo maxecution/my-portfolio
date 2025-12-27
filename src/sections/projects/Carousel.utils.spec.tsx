@@ -81,7 +81,7 @@ describe('Carousel utils', () => {
     });
 
     const PE = (
-      window as unknown as {
+      window as {
         PointerEvent: new (type: string, props?: PointerEventInit) => PointerEvent;
       }
     ).PointerEvent;

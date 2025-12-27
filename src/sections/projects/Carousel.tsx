@@ -182,7 +182,7 @@ export default function Carousel({ data }: Props) {
               scrollByCards(-1);
             }
           }}
-          className='carousel-hide-scrollbar flex gap-6 py-6 overflow-x-auto overflow-y-visible scroll-smooth touch-pan-y focus:outline-none focus-visible:ring-2 focus-visible:ring-primary snap-x snap-mandatory'
+          className='carousel-hide-scrollbar flex gap-6 py-6 overflow-x-auto overflow-y-visible touch-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary snap-x snap-mandatory'
           style={{ paddingInline: HOVER_BUFFER, scrollPaddingInline: HOVER_BUFFER }}>
           {data.map((d, i) => (
             <div
