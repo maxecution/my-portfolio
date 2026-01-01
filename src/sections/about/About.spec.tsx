@@ -1,18 +1,48 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import About from './About';
 import { aboutData, attributes } from '@data/about/About.data';
 import { authorData } from '@data/page/Page.data';
 
 describe('About Component', () => {
+  const listeners: Record<string, ((e: MediaQueryListEvent) => void)[]> = {};
+  let observeCallback: IntersectionObserverCallback;
+
+  function dispatchChange(matches: boolean) {
+    (listeners['change'] ?? []).forEach((cb) => cb({ matches } as MediaQueryListEvent));
+  }
+
   beforeEach(() => {
-    window.IntersectionObserver = jest.fn().mockImplementation((callback) => ({
-      observe: jest.fn(() => {
-        callback([{ isIntersecting: true }]);
-      }),
-      disconnect: jest.fn(),
-      unobserve: jest.fn(),
-    }));
+    window.IntersectionObserver = jest.fn(function (callback: IntersectionObserverCallback) {
+      observeCallback = callback;
+      return {
+        observe: jest.fn(),
+        disconnect: jest.fn(),
+        unobserve: jest.fn(),
+        takeRecords: jest.fn(),
+        root: null,
+        rootMargin: '',
+        thresholds: [],
+      };
+    });
+
+    for (const key in listeners) delete listeners[key];
+
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: jest.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: (event: string, cb: (e: MediaQueryListEvent) => void) => {
+          if (!listeners[event]) listeners[event] = [];
+          listeners[event].push(cb);
+        },
+        removeEventListener: (event: string, cb: (e: MediaQueryListEvent) => void) => {
+          listeners[event] = listeners[event]?.filter((x) => x !== cb) ?? [];
+        },
+      })),
+    });
   });
 
   afterEach(() => {
@@ -83,7 +113,7 @@ describe('About Component', () => {
       const firstButton = cardButtons[0] as HTMLElement;
 
       // Initially not flipped
-      expect(firstButton).not.toHaveClass('[transform:rotateY(180deg)]');
+      expect(firstButton).not.toHaveClass('transform-[rotateY(180deg)]');
 
       // Back content should have aria-hidden=true when not flipped
       const backContent = screen.getByText(attributes[0].description).closest('[aria-hidden]');
@@ -93,7 +123,7 @@ describe('About Component', () => {
 
       // Should now be flipped
       await waitFor(() => {
-        expect(firstButton).toHaveClass('[transform:rotateY(180deg)]');
+        expect(firstButton).toHaveClass('transform-[rotateY(180deg)]');
       });
 
       // Back content should now have aria-hidden=false
@@ -113,19 +143,23 @@ describe('About Component', () => {
       // Click first card to flip it
       fireEvent.click(buttons[0]);
       await waitFor(() => {
-        expect(buttons[0]).toHaveClass('[transform:rotateY(180deg)]');
+        expect(buttons[0]).toHaveClass('transform-[rotateY(180deg)]');
       });
 
       // Click second card - first should unflip
       fireEvent.click(buttons[1]);
       await waitFor(() => {
-        expect(buttons[1]).toHaveClass('[transform:rotateY(180deg)]');
-        expect(buttons[0]).not.toHaveClass('[transform:rotateY(180deg)]');
+        expect(buttons[1]).toHaveClass('transform-[rotateY(180deg)]');
+        expect(buttons[0]).not.toHaveClass('transform-[rotateY(180deg)]');
       });
     });
 
     test('should handle flipping same card multiple times', async () => {
       const { container } = render(<About />);
+
+      act(() => {
+        observeCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+      });
 
       const cardButton = screen.getAllByRole('button')[0];
 
@@ -133,21 +167,21 @@ describe('About Component', () => {
       fireEvent.click(cardButton);
       await waitFor(() => {
         const button = container.querySelectorAll('button')[0];
-        expect(button).toHaveClass('[transform:rotateY(180deg)]');
+        expect(button).toHaveClass('transform-[rotateY(180deg)]');
       });
 
       // Flip back to front
       fireEvent.click(cardButton);
       await waitFor(() => {
         const button = container.querySelectorAll('button')[0];
-        expect(button).not.toHaveClass('[transform:rotateY(180deg)]');
+        expect(button).not.toHaveClass('transform-[rotateY(180deg)]');
       });
 
       // Flip to back again
       fireEvent.click(cardButton);
       await waitFor(() => {
         const button = container.querySelectorAll('button')[0];
-        expect(button).toHaveClass('[transform:rotateY(180deg)]');
+        expect(button).toHaveClass('transform-[rotateY(180deg)]');
       });
     });
   });
@@ -156,6 +190,64 @@ describe('About Component', () => {
     test('should observe the grid ref on mount', () => {
       render(<About />);
       expect(window.IntersectionObserver).toHaveBeenCalled();
+    });
+
+    test('should hide About section after intersection out when not mobile', async () => {
+      render(<About />);
+
+      // Default Desktop View
+      // Intersection IN
+      act(() => {
+        observeCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+      });
+
+      const cardTitle = screen.getByText(attributes[0].name);
+      const wrapper = cardTitle.closest('div[aria-hidden][class*="transition-opacity"]');
+
+      // Section becomes visible
+      expect(wrapper).toHaveAttribute('aria-hidden', 'false');
+
+      // Intersection OUT
+      act(() => {
+        observeCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver);
+      });
+
+      // Section should now be hidden
+      await waitFor(() => {
+        expect(wrapper).toHaveAttribute('aria-hidden', 'true');
+        expect(wrapper).toHaveClass('opacity-0');
+      });
+    });
+
+    test('keeps About section visible after intersection out when mobile', async () => {
+      render(<About />);
+
+      // Mobile View
+      act(() => {
+        dispatchChange(true);
+      });
+
+      // Intersection IN
+      act(() => {
+        observeCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+      });
+
+      const cardTitle = screen.getByText(attributes[0].name);
+      const wrapper = cardTitle.closest('div[aria-hidden][class*="transition-opacity"]');
+
+      // Section becomes visible
+      expect(wrapper).toHaveAttribute('aria-hidden', 'false');
+
+      // Intersection OUT
+      act(() => {
+        observeCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver);
+      });
+
+      // Section should stay visible
+      await waitFor(() => {
+        expect(wrapper).toHaveAttribute('aria-hidden', 'false');
+        expect(wrapper).toHaveClass('opacity-100');
+      });
     });
 
     test('should disconnect observer on unmount', () => {

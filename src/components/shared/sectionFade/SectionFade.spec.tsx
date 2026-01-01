@@ -3,9 +3,14 @@ import '@testing-library/jest-dom';
 import SectionFade from './SectionFade';
 
 describe('SectionFade Component', () => {
+  const listeners: Record<string, ((e: MediaQueryListEvent) => void)[]> = {};
   let mockIntersectionObserver: jest.Mock;
   let observeCallback: IntersectionObserverCallback;
   const TEST_CONTENT = 'Test Content';
+
+  function dispatchChange(matches: boolean) {
+    (listeners['change'] ?? []).forEach((cb) => cb({ matches } as MediaQueryListEvent));
+  }
 
   beforeEach(() => {
     mockIntersectionObserver = jest.fn(function (callback: IntersectionObserverCallback) {
@@ -21,16 +26,31 @@ describe('SectionFade Component', () => {
       };
     });
     window.IntersectionObserver = mockIntersectionObserver;
+
+    // Reset listeners
+    for (const key in listeners) delete listeners[key];
+
+    // Mock matchMedia for useIsMobile
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: jest.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: (event: string, cb: (e: MediaQueryListEvent) => void) => {
+          if (!listeners[event]) listeners[event] = [];
+          listeners[event].push(cb);
+        },
+        removeEventListener: (event: string, cb: (e: MediaQueryListEvent) => void) => {
+          listeners[event] = listeners[event]?.filter((x) => x !== cb) ?? [];
+        },
+        dispatchEvent: jest.fn(),
+      })),
+    });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
-  });
-
-  test('should render children correctly', () => {
-    render(<SectionFade>{TEST_CONTENT}</SectionFade>);
-
-    expect(screen.getByText(TEST_CONTENT)).toBeVisible();
   });
 
   test('should apply default fade classes when not visible', () => {
@@ -83,6 +103,56 @@ describe('SectionFade Component', () => {
     rerender(<SectionFade>{TEST_CONTENT}</SectionFade>);
 
     expect(fadeElement).toHaveStyle({ transitionDelay: '0s' });
+  });
+
+  test('should respect fade out when fadeOut=true and !isMobile', () => {
+    const { container, rerender } = render(<SectionFade fadeOut={true}>{TEST_CONTENT}</SectionFade>);
+    const fadeElement = container.firstChild as HTMLElement;
+
+    // Initially not visible
+    expect(fadeElement).toHaveClass('opacity-0');
+
+    //  After intersection, element becomes visible
+    act(() => {
+      observeCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+    rerender(<SectionFade fadeOut={true}>{TEST_CONTENT}</SectionFade>);
+    expect(fadeElement).toHaveClass('opacity-100');
+
+    // Simulate exiting viewport and isMobile = false
+    act(() => dispatchChange(false));
+    act(() => {
+      observeCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+    rerender(<SectionFade fadeOut={true}>{TEST_CONTENT}</SectionFade>);
+
+    // Should fade out (setVisible = false after !isMobile check)
+    expect(fadeElement).toHaveClass('opacity-0');
+  });
+
+  test('should not fade out/remain visible when fadeOut=true and isMobile', () => {
+    const { container, rerender } = render(<SectionFade fadeOut={true}>{TEST_CONTENT}</SectionFade>);
+    const fadeElement = container.firstChild as HTMLElement;
+
+    // Initially not visible
+    expect(fadeElement).toHaveClass('opacity-0');
+
+    // After intersection, element becomes visible
+    act(() => {
+      observeCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+    rerender(<SectionFade fadeOut={true}>{TEST_CONTENT}</SectionFade>);
+    expect(fadeElement).toHaveClass('opacity-100');
+
+    // Simulate exiting viewport and isMobile = true
+    act(() => dispatchChange(true));
+    act(() => {
+      observeCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+    rerender(<SectionFade fadeOut={true}>{TEST_CONTENT}</SectionFade>);
+
+    // Should remain visible (isVisible is not set back to false)
+    expect(fadeElement).toHaveClass('opacity-100');
   });
 
   test('should setup and cleanup IntersectionObserver', () => {

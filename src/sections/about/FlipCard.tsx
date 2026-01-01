@@ -30,22 +30,22 @@ export default function FlipCard({
       )}
       aria-hidden={!sectionVisible}>
       {/* Inner div handles hover scaling separately */}
-      <div className='h-64 relative w-full [perspective:1000px] hover:scale-105 transition-transform duration-300'>
+      <div className='h-64 relative w-full perspective-[1000px] hover:scale-105 transition-transform duration-300'>
         <button
           className={cn(
-            'relative w-full h-full [transform-style:preserve-3d] transition-transform duration-700',
-            flipped && '[transform:rotateY(180deg)]'
+            'relative w-full h-full transform-3d transition-transform duration-700',
+            flipped && 'transform-[rotateY(180deg)]'
           )}
           onClick={onClick}
           tabIndex={sectionVisible ? 0 : -1}>
           {/* Front */}
-          <div className='absolute inset-0 [backface-visibility:hidden] cursor-pointer' aria-hidden={flipped}>
+          <div className='absolute inset-0 backface-hidden cursor-pointer' aria-hidden={flipped}>
             {front}
           </div>
 
           {/* Back */}
           <div
-            className='absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] cursor-pointer'
+            className='absolute inset-0 transform-[rotateY(180deg)] backface-hidden cursor-pointer'
             aria-hidden={!flipped}>
             {back}
           </div>

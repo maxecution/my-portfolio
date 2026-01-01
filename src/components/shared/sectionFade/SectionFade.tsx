@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import cn from '@/utils/cn';
+import useIsMobile from '@hooks/useIsMobile';
 
 type FadeDirection = 'bottom-up' | 'top-down' | 'left-right' | 'right-left' | 'none';
 
@@ -8,6 +9,7 @@ interface SectionFadeProps {
   delay?: number;
   className?: string;
   direction?: FadeDirection;
+  fadeOut?: boolean;
 }
 
 const directionClasses: Record<FadeDirection, { initial: string; visible: string }> = {
@@ -23,17 +25,28 @@ export default function SectionFade({
   delay = 0,
   className = '',
   direction = 'bottom-up',
+  fadeOut = true,
 }: SectionFadeProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const el = ref.current!;
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.3 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+        } else if (fadeOut && !isMobile) {
+          setVisible(false);
+        }
+      },
+      { threshold: 0.3 }
+    );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [fadeOut, isMobile]);
 
   const classes = directionClasses[direction];
 
@@ -42,7 +55,7 @@ export default function SectionFade({
       ref={ref}
       style={{ transitionDelay: `${visible ? delay : 0}s` }}
       className={cn(
-        'transition-all duration-700 ease-out opacity-0',
+        'transition-all duration-700 ease-out opacity-0 min-w-0',
         classes.initial,
         visible && 'opacity-100',
         visible && classes.visible,

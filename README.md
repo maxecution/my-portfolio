@@ -27,7 +27,7 @@ I invite you to **check back soon** to see the progress as the site evolves.
 
 - **Hero** – ✅
 - **About** – ✅
-- **Projects** – Selected work and case studies
+- **Projects** – ✅ TODO: Adjust carousel scroll snap style
 - **Contact** – Ways to get in touch
 
 ---

@@ -1,6 +1,5 @@
 import { projectIntro, projectsData } from '@data/projects/Projects.data';
 import SectionFade from '@shared/sectionFade/SectionFade';
-// import ProjectCard from './ProjectCard';
 import Carousel from './Carousel';
 
 export default function Projects() {

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { aboutData, attributes } from '@data/about/About.data';
 import { authorData } from '@data/page/Page.data';
 import SectionFade from '@shared/sectionFade/SectionFade';
+import useIsMobile from '@hooks/useIsMobile';
 import Card from '@shared/card/Card';
 import Pill from '@shared/pill/Pill';
 import FlipCard from './FlipCard';
@@ -14,15 +15,23 @@ export default function About() {
   const [flippedCard, setFlippedCard] = useState<string | null>(null);
   const [sectionVisible, setSectionVisible] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => setSectionVisible(entry.isIntersecting), {
-      threshold: 0.3,
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSectionVisible(true);
+        } else if (!isMobile) {
+          setSectionVisible(false);
+        }
+      },
+      { threshold: 0.3 }
+    );
 
     observer.observe(gridRef.current!);
     return () => observer.disconnect();
-  }, []);
+  }, [isMobile]);
 
   return (
     <div>
@@ -49,7 +58,7 @@ export default function About() {
               </div>
             </div>
           </div>
-          <div className='justify-self-center w-2/3 h-px bg-gradient-to-r from-transparent via-primary-400 to-transparent my-4' />
+          <div className='justify-self-center w-2/3 h-px bg-linear-to-r from-transparent via-primary-400 to-transparent my-4' />
           <div className='text-start text-muted-foreground leading-relaxed gap-4 flex flex-col'>
             <p>{aboutData.introCard.paragraph1}</p>
             <p>{aboutData.introCard.paragraph2}</p>
@@ -74,7 +83,7 @@ export default function About() {
               front={
                 <div className='absolute inset-0 bg-card border-2 border-primary/30 rounded-lg p-6 flex flex-col items-center justify-center'>
                   <div
-                    className={`w-16 h-16 mb-4 rounded-full bg-gradient-to-br ${attribute.color} flex items-center justify-center drop-shadow-md drop-shadow-foreground/50`}>
+                    className={`w-16 h-16 mb-4 rounded-full bg-linear-to-br ${attribute.color} flex items-center justify-center drop-shadow-md drop-shadow-foreground/50`}>
                     <IconWrapper size={32} className='text-primary-50 dark:text-foreground'>
                       {attribute.icon}
                     </IconWrapper>
@@ -88,7 +97,7 @@ export default function About() {
               back={
                 <div className='absolute inset-0 bg-card border-2 border-primary/30 rounded-lg p-6 flex flex-col items-center justify-center'>
                   <div
-                    className={`w-12 h-12 mb-3 rounded-full bg-gradient-to-br ${attribute.color} flex items-center justify-center drop-shadow-md drop-shadow-foreground/50`}>
+                    className={`w-12 h-12 mb-3 rounded-full bg-linear-to-br ${attribute.color} flex items-center justify-center drop-shadow-md drop-shadow-foreground/50`}>
                     <IconWrapper size={24} className='text-primary-50 dark:text-foreground'>
                       {attribute.icon}
                     </IconWrapper>
