@@ -17,12 +17,12 @@ export default function ContactLinks() {
                 href={link.url}
                 target='_blank'
                 rel='noopener noreferrer'
-                className={`flex items-center gap-4 p-4 bg-background border border-primary/20 rounded-lg hover:border-primary/50 hover:translate-x-2 transition-all group ${link.color}`}>
-                <div className='w-10 h-10 rounded-full bg-primary/10 flex shrink-0 items-center justify-center group-hover:bg-primary/20 transition-colors'>
+                className={`flex items-center gap-4 p-4 bg-background border border-primary/20 rounded-lg hover:border-primary/50 hover:translate-x-2 transition-transform group ${link.color}`}>
+                <div className='w-10 h-10 rounded-full bg-primary/10 flex shrink-0 items-center justify-center group-hover:bg-primary/20'>
                   {link.icon}
                 </div>
                 <div className='min-w-0'>
-                  <div className='text-start group-hover:text-primary transition-colors'>{link.name}</div>
+                  <div className='text-start group-hover:text-primary'>{link.name}</div>
                   <div className='text-sm text-muted-foreground truncate block'>{link.handle}</div>
                 </div>
               </a>

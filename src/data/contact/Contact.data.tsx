@@ -1,3 +1,5 @@
+import type React from 'react';
+
 interface ContactIntro {
   sectionHeader: string;
 }
@@ -8,6 +10,12 @@ interface SocialLink {
   icon: React.ReactNode;
   url: string;
   color: string;
+}
+
+export interface QuickInfoCard {
+  icon: React.ReactNode;
+  title: string;
+  info: React.ReactNode;
 }
 
 export const contactIntro: ContactIntro = {
@@ -32,7 +40,7 @@ export const socialLinks: SocialLink[] = [
         <path d='M9 18c-4.51 2-5-2-7-2'></path>
       </svg>
     ),
-    url: 'https://github.com',
+    url: 'https://github.com/maxecution',
     color: 'hover:text-purple-400',
   },
   {
@@ -54,7 +62,7 @@ export const socialLinks: SocialLink[] = [
         <circle cx='4' cy='4' r='2' />
       </svg>
     ),
-    url: 'https://linkedin.com',
+    url: 'https://www.linkedin.com/in/max-zimmer-smith/',
     color: 'hover:text-blue-400',
   },
   {
@@ -75,7 +83,51 @@ export const socialLinks: SocialLink[] = [
         <rect x='2' y='4' width='20' height='16' rx='2' />
       </svg>
     ),
-    url: 'mailto:max@example.com',
+    url: 'mailto:max.zimmersmith@gmail.com',
     color: 'hover:text-red-400',
+  },
+];
+
+export const quickInfoCards: QuickInfoCard[] = [
+  {
+    icon: (
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        className='h-5 w-5 text-primary'>
+        <path d='M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0' />
+        <circle cx='12' cy='8' r='2' />
+        <path d='M8.714 14h-3.71a1 1 0 0 0-.948.683l-2.004 6A1 1 0 0 0 3 22h18a1 1 0 0 0 .948-1.316l-2-6a1 1 0 0 0-.949-.684h-3.712' />
+      </svg>
+    ),
+    title: 'Location',
+    info: 'Based in Scotland, UK. Open to working remotely with guilds across the realms.',
+  },
+  {
+    icon: (
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        className='w-5 h-5 text-primary'>
+        <circle cx='12' cy='13' r='8' />
+        <path d='M5 3 2 6' />
+        <path d='m22 6-3-3' />
+        <path d='M6.38 18.7 4 21' />
+        <path d='M17.64 18.67 20 21' />
+        <path d='m9 13 2 2 4-4' />
+      </svg>
+    ),
+    title: 'Response Time',
+    info: 'Expect a response within a day. Your call to adventure will never go unanswered!',
   },
 ];

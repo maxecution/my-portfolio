@@ -46,10 +46,12 @@ export default function ContactForm() {
         </div>
         <button
           type='submit'
-          className='relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-background rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed group'>
+          disabled={false}
+          className='relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-background rounded-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group'>
           <span
             aria-hidden='true'
-            className='bg-button absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 z-0'></span>
+            className='bg-button absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-700 z-0'
+          />
           <span className='relative z-10 flex items-center gap-2'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
