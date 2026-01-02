@@ -20,8 +20,8 @@ export default function Contact() {
         </div>
         <div className='grid md:grid-cols-2 gap-6 lg:max-w-3/4 xl:max-w-2/3 mx-auto w-full'>
           {quickInfoCards.map((card, index) => (
-            <SectionFade delay={0.3} direction='bottom-up' className='flex gap-6'>
-              <ContactQuickInfoCard key={index} icon={card.icon} title={card.title} info={card.info} />
+            <SectionFade key={index} delay={0.3} direction='bottom-up' className='flex gap-6'>
+              <ContactQuickInfoCard icon={card.icon} title={card.title} info={card.info} />
             </SectionFade>
           ))}
         </div>
