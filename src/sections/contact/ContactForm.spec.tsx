@@ -20,15 +20,15 @@ describe('ContactForm (userEvent, no console checks)', () => {
   test('renders fields and allows controlled input updates', async () => {
     render(<ContactForm />);
 
-    const nameInput = screen.getByLabelText('Your Name');
-    const emailInput = screen.getByLabelText('Your Email');
-    const messageTextarea = screen.getByLabelText('Your message');
+    const nameInput = screen.getByLabelText(/Your Name/i);
+    const emailInput = screen.getByLabelText(/Your Email/i);
+    const messageTextarea = screen.getByLabelText(/Your message/i);
     const button = screen.getByRole('button', { name: /cast sending/i });
 
     expect(nameInput).toHaveValue('');
     expect(emailInput).toHaveValue('');
     expect(messageTextarea).toHaveValue('');
-    expect(button).toBeEnabled();
+    expect(button).toBeDisabled();
 
     await user.type(nameInput, 'Aragorn');
     expect(nameInput).toHaveValue('Aragorn');
@@ -40,6 +40,7 @@ describe('ContactForm (userEvent, no console checks)', () => {
     expect(messageTextarea).toHaveValue('For Frodo!');
 
     // Submit
+    expect(button).toBeEnabled();
     await user.click(button);
 
     // Immediately: status = submitting
@@ -80,7 +81,7 @@ describe('ContactForm (userEvent, no console checks)', () => {
       jest.advanceTimersByTime(1500);
     });
 
-    expect(button).toBeEnabled();
+    expect(button).toBeDisabled();
     expect(screen.getByText('Cast Sending')).toBeInTheDocument();
   });
 });

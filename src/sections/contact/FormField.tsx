@@ -30,8 +30,15 @@ export default function FormField({
 }: FormFieldProps) {
   return (
     <div className={containerClassName}>
-      <label htmlFor={id} className={cn('block text-sm mb-2 text-start text-foreground', labelClassName)}>
+      <label
+        htmlFor={id}
+        className={cn('flex items-baseline gap-1 text-sm mb-2 text-start text-foreground', labelClassName)}>
         {label}
+        {required && (
+          <span aria-hidden='true' className='text-secondary'>
+            *
+          </span>
+        )}
       </label>
 
       {type === 'textarea' ? (

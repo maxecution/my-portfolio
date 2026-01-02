@@ -18,9 +18,16 @@ export default function ContactForm() {
   });
 
   const [status, setStatus] = useState<SubmitStatus>('idle');
+  const isSubmittingOrSuccess = status === 'submitting' || status === 'success';
+  const isSubmitDisabled = isSubmittingOrSuccess || !isFormValid(formData);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!isFormValid(formData) || status === 'submitting') {
+      return;
+    }
+
     setStatus('submitting');
     // TODO: form submission logic here
     await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate async operation
@@ -39,6 +46,15 @@ export default function ContactForm() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  function isFormValid(data: FormData): boolean {
+    return (
+      data.name.trim().length > 0 &&
+      data.email.trim().length > 0 &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) &&
+      data.message.trim().length > 0
+    );
+  }
 
   return (
     <Card className='h-full'>
@@ -69,7 +85,7 @@ export default function ContactForm() {
         />
         <button
           type='submit'
-          disabled={['submitting', 'success'].includes(status)}
+          disabled={isSubmitDisabled}
           className={`relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 ${
             status === 'success' ? 'bg-green-500' : 'bg-primary'
           } text-background rounded-lg transition-color cursor-pointer disabled:cursor-not-allowed group`}>
@@ -97,7 +113,9 @@ export default function ContactForm() {
                   strokeWidth='2'
                   strokeLinecap='round'
                   strokeLinejoin='round'
-                  className='group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform'
+                  className={`${
+                    !isSubmitDisabled ? 'group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform' : ''
+                  }`}
                   aria-hidden='true'
                   focusable='false'>
                   <path d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z' />

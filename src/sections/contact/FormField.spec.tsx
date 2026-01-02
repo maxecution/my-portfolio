@@ -23,11 +23,11 @@ describe('FormField', () => {
     render(<FormField {...baseProps} />);
 
     // Label exists and linked via htmlFor
-    const label = screen.getByText('My Field');
+    const label = screen.getByText(/My Field/i);
     expect(label).toHaveAttribute('for', 'my-field');
 
     // Input is rendered (default type === "text")
-    const input = screen.getByLabelText('My Field');
+    const input = screen.getByLabelText(/My Field/i);
     expect(input.tagName).toBe('INPUT');
     expect(input).toHaveAttribute('type', 'text');
     // autocomplete for input uses id
@@ -44,7 +44,7 @@ describe('FormField', () => {
   test('renders email input when type="email"', async () => {
     render(<FormField {...baseProps} type='email' required={false} placeholder='your@email.com' value='foo' />);
 
-    const input = screen.getByLabelText('My Field');
+    const input = screen.getByLabelText(/My Field/i);
     expect(input).toHaveAttribute('type', 'email');
     expect(input).not.toBeRequired();
     expect(input).toHaveAttribute('placeholder', 'your@email.com');
@@ -67,7 +67,7 @@ describe('FormField', () => {
       />
     );
 
-    const textarea = screen.getByLabelText('Message');
+    const textarea = screen.getByLabelText(/Message/i);
     expect(textarea.tagName).toBe('TEXTAREA');
     expect(textarea).toBeRequired();
     expect(textarea).toHaveAttribute('placeholder', 'Write your message…');
@@ -92,13 +92,13 @@ describe('FormField', () => {
       />
     );
 
-    const container = screen.getByText('My Field').closest('div');
+    const container = screen.getByText(/My Field/i).closest('div');
     expect(container).toHaveClass('container-extra');
 
-    const label = screen.getByText('My Field');
+    const label = screen.getByText(/My Field/i);
     expect(label).toHaveClass('label-extra');
 
-    const input = screen.getByLabelText('My Field');
+    const input = screen.getByLabelText(/My Field/i);
     expect(input).toHaveClass('input-extra');
   });
 });
