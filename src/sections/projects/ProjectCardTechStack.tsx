@@ -55,7 +55,9 @@ export default function ProjectCardTechStack({
               strokeWidth='2'
               strokeLinecap='round'
               strokeLinejoin='round'
-              className='text-muted-foreground'>
+              className='text-muted-foreground'
+              aria-hidden='true'
+              focusable='false'>
               <circle cx='12' cy='12' r='1'></circle>
               <circle cx='19' cy='12' r='1'></circle>
               <circle cx='5' cy='12' r='1'></circle>
@@ -69,7 +71,7 @@ export default function ProjectCardTechStack({
         <div className='absolute inset-0 z-50 bg-card border-2 border-primary/30 rounded-lg flex flex-col'>
           <div className='p-6 flex flex-col h-full' onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
-            <div className='flex items-center justify-between mb-4 flex-shrink-0'>
+            <div className='flex items-center justify-between mb-4 shrink-0'>
               <h3 className='text-lg font-semibold'>Tech Stack</h3>
               <button
                 onClick={onModalClose}
@@ -84,7 +86,9 @@ export default function ProjectCardTechStack({
                   stroke='currentColor'
                   strokeWidth='2'
                   strokeLinecap='round'
-                  strokeLinejoin='round'>
+                  strokeLinejoin='round'
+                  aria-hidden='true'
+                  focusable='false'>
                   <path d='M18 6 6 18'></path>
                   <path d='m6 6 12 12'></path>
                 </svg>
