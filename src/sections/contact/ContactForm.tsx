@@ -63,12 +63,11 @@ export default function ContactForm() {
         <button
           type='submit'
           disabled={isSubmitting}
-          className={`relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-background rounded-lg transition-all cursor-pointer disabled:cursor-not-allowed group`}>
-          <span
-            aria-hidden='true'
-            className={`${
-              hasSubmitted ? 'bg-green-500' : ''
-            } absolute inset-0 origin-left transform transition-transform z-0`}
+          className={`relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 ${
+            hasSubmitted ? 'bg-green-500' : 'bg-primary'
+          } text-background rounded-lg transition-all cursor-pointer disabled:cursor-not-allowed group`}>
+          <div
+            className={`absolute inset-y-0 left-0 bg-primary-400 ${isSubmitting ? 'w-full duration-2000' : 'w-0'}`}
           />
           {isSubmitting ? (
             <span className='relative z-10'>Sending...</span>
