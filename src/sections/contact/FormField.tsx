@@ -3,7 +3,7 @@ import cn from '@utils/cn';
 type FormFieldProps = {
   id: string;
   label: string;
-  type?: 'text' | 'email' | 'password' | 'textarea';
+  type?: 'text' | 'email' | 'textarea';
   placeholder?: string;
   value: string;
   required?: boolean;
@@ -22,7 +22,7 @@ export default function FormField({
   type = 'text',
   placeholder,
   value,
-  required = false,
+  required = true,
   onChange,
   containerClassName,
   labelClassName,
@@ -38,17 +38,20 @@ export default function FormField({
         <textarea
           id={id}
           name={id}
+          autoComplete='off'
           value={value}
+          rows={5}
           onChange={onChange}
           required={required}
           placeholder={placeholder}
-          className={cn(`${baseClass} min-h-35 resize-none`, inputClassName)}
+          className={cn(`${baseClass} resize-vertical`, inputClassName)}
         />
       ) : (
         <input
           id={id}
           name={id}
           type={type}
+          autoComplete={id}
           value={value}
           onChange={onChange}
           required={required}

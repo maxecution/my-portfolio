@@ -1,36 +1,43 @@
 import { useState } from 'react';
 import Card from '@shared/card/Card';
 import FormField from './FormField';
+
+type SubmitStatus = 'idle' | 'submitting' | 'success';
+
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
+
 export default function ContactForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     message: '',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [status, setStatus] = useState<SubmitStatus>('idle');
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsSubmitting(true);
+    setStatus('submitting');
     // TODO: form submission logic here
     await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate async operation
     console.log('Form submitted!' + JSON.stringify(formData));
 
-    setIsSubmitting(false);
-    setHasSubmitted(true);
+    setStatus('success');
 
-    setTimeout(() => setHasSubmitted(false), 1500);
+    setTimeout(() => setStatus('idle'), 1500);
 
     setFormData({ name: '', email: '', message: '' });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   return (
@@ -62,36 +69,47 @@ export default function ContactForm() {
         />
         <button
           type='submit'
-          disabled={isSubmitting}
+          disabled={['submitting', 'success'].includes(status)}
           className={`relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 ${
-            hasSubmitted ? 'bg-green-500' : 'bg-primary'
-          } text-background rounded-lg transition-all cursor-pointer disabled:cursor-not-allowed group`}>
+            status === 'success' ? 'bg-green-500' : 'bg-primary'
+          } text-background rounded-lg transition-color cursor-pointer disabled:cursor-not-allowed group`}>
           <div
-            className={`absolute inset-y-0 left-0 bg-primary-400 ${isSubmitting ? 'w-full duration-2000' : 'w-0'}`}
+            data-testid='submit-progress-fill'
+            aria-hidden='true'
+            className={`absolute inset-y-0 left-0 bg-primary-400 ${
+              status === 'submitting' ? 'w-full duration-2000' : 'w-0'
+            }`}
           />
-          {isSubmitting ? (
-            <span className='relative z-10'>Sending...</span>
-          ) : hasSubmitted ? (
-            <span className='relative z-10'>Sent!</span>
-          ) : (
-            <span className='relative z-10 flex items-center gap-2'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                className='group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform'>
-                <path d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z' />
-                <path d='m21.854 2.147-10.94 10.939' />
-              </svg>
-              <span>Cast Sending</span>
+          <span className='relative z-10 flex items-center gap-2'>
+            {status === 'submitting' ? (
+              'Sending...'
+            ) : status === 'success' ? (
+              'Sent!'
+            ) : (
+              <>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  className='group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform'
+                  aria-hidden='true'
+                  focusable='false'>
+                  <path d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z' />
+                  <path d='m21.854 2.147-10.94 10.939' />
+                </svg>
+                <span>Cast Sending</span>
+              </>
+            )}
+            <span className='sr-only' aria-live='polite'>
+              {status === 'submitting' ? 'Sending message' : status === 'success' ? 'Message sent' : ''}
             </span>
-          )}
+          </span>
         </button>
       </form>
     </Card>
