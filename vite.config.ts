@@ -19,4 +19,9 @@ export default defineConfig({
       '@utils': '/src/utils',
     },
   },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3000',
+    },
+  },
 });

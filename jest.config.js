@@ -12,8 +12,8 @@ export default {
           jsx: 'react-jsx',
           esModuleInterop: true,
           allowSyntheticDefaultImports: true,
-          lib: ['es2017', 'dom', 'dom.iterable'],
-          target: 'es2017',
+          lib: ['es2023', 'dom', 'dom.iterable'],
+          target: 'es2023',
         },
       },
     ],
@@ -35,6 +35,7 @@ export default {
   },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   collectCoverageFrom: [
+    'api/**/*.{ts,tsx}',
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
     '!src/main.tsx',
@@ -44,7 +45,12 @@ export default {
     '!src/config/**',
     '!src/data/**',
   ],
-  testMatch: ['<rootDir>/src/**/__tests__/**/*.{ts,tsx}', '<rootDir>/src/**/*.{test,spec}.{ts,tsx}'],
+  testMatch: [
+    '<rootDir>/src/**/__tests__/**/*.{ts,tsx}',
+    '<rootDir>/src/**/*.{test,spec}.{ts,tsx}',
+    '<rootDir>/api/**/__tests__/**/*.{ts,tsx}',
+    '<rootDir>/api/**/*.{test,spec}.{ts,tsx}',
+  ],
   // Performance and behavior optimizations
   clearMocks: true,
   restoreMocks: true,

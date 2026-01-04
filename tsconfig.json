@@ -11,7 +11,8 @@
       "@shared/*": ["components/shared/*"],
       "@ui/*": ["components/ui/*"],
       "@utils/*": ["utils/*"]
-    }
+    },
+    "types": ["node", "vite/client", "jest"]
   },
   "files": [],
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]

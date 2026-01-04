@@ -2,11 +2,12 @@ import { useState } from 'react';
 import Card from '@shared/card/Card';
 import FormField from './FormField';
 
-type SubmitStatus = 'idle' | 'submitting' | 'success';
+type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 interface FormData {
   name: string;
   email: string;
+  subject?: string;
   message: string;
 }
 
@@ -14,38 +15,12 @@ export default function ContactForm() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
+    subject: '',
     message: '',
   });
-
   const [status, setStatus] = useState<SubmitStatus>('idle');
-  const isSubmittingOrSuccess = status === 'submitting' || status === 'success';
-  const isSubmitDisabled = isSubmittingOrSuccess || !isFormValid(formData);
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!isFormValid(formData) || status === 'submitting') {
-      return;
-    }
-
-    setStatus('submitting');
-    // TODO: form submission logic here
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate async operation
-    console.log('Form submitted!' + JSON.stringify(formData));
-
-    setStatus('success');
-
-    setTimeout(() => setStatus('idle'), 1500);
-
-    setFormData({ name: '', email: '', message: '' });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const isIdle = status === 'idle';
+  const isSubmitDisabled = !isIdle || !isFormValid(formData);
 
   function isFormValid(data: FormData): boolean {
     return (
@@ -55,6 +30,40 @@ export default function ContactForm() {
       data.message.trim().length > 0
     );
   }
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!isFormValid(formData) || !isIdle) return;
+
+    setStatus('submitting');
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const { error } = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(error || 'Failed to send');
+      }
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setStatus('idle'), 1500);
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 2500);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
     <Card className='h-full'>
@@ -76,10 +85,19 @@ export default function ContactForm() {
           onChange={handleChange}
         />
         <FormField
+          id='subject'
+          label='Subject'
+          type='text'
+          placeholder='State your purpose...'
+          value={formData.subject || ''}
+          required={false}
+          onChange={handleChange}
+        />
+        <FormField
           id='message'
           label='Your message'
           type='textarea'
-          placeholder='Tell me about your quest'
+          placeholder='What brings you to this crossroads?'
           value={formData.message}
           onChange={handleChange}
         />
@@ -87,7 +105,7 @@ export default function ContactForm() {
           type='submit'
           disabled={isSubmitDisabled}
           className={`relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 ${
-            status === 'success' ? 'bg-green-500' : 'bg-primary'
+            status === 'success' ? 'bg-green-500' : status === 'error' ? 'bg-secondary' : 'bg-primary'
           } text-background rounded-lg transition-color cursor-pointer disabled:cursor-not-allowed group`}>
           <div
             data-testid='submit-progress-fill'
@@ -101,6 +119,8 @@ export default function ContactForm() {
               'Sending...'
             ) : status === 'success' ? (
               'Sent!'
+            ) : status === 'error' ? (
+              'Failed - try again!'
             ) : (
               <>
                 <svg
@@ -125,7 +145,13 @@ export default function ContactForm() {
               </>
             )}
             <span className='sr-only' aria-live='polite'>
-              {status === 'submitting' ? 'Sending message' : status === 'success' ? 'Message sent' : ''}
+              {status === 'submitting'
+                ? 'Sending message'
+                : status === 'error'
+                ? 'Failed to send message'
+                : status === 'success'
+                ? 'Message sent'
+                : ''}
             </span>
           </span>
         </button>
