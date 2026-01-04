@@ -1,8 +1,37 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { kv } from '@vercel/kv';
 import { Resend } from 'resend';
+import crypto from 'crypto';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Very small HTML escape helper to avoid breaking markup
+function escapeHtml(s: string) {
+  return String(s)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function getIp(request: VercelRequest): string | undefined {
+  const headers = request.headers ?? {};
+  const xfwd = headers['x-forwarded-for'];
+  const ip = Array.isArray(xfwd) ? xfwd[0] : xfwd ?? request.socket?.remoteAddress;
+  return ip?.toString();
+}
+
+function hashIdentifier(ip: string) {
+  const SALT = process.env.RATE_LIMIT_SALT;
+  if (!SALT) {
+    throw new Error('RATE_LIMIT_SALT is not configured');
+  }
+  return crypto
+    .createHash('sha256')
+    .update(ip + SALT)
+    .digest('hex');
+}
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.method !== 'POST') {
     response.setHeader('Allow', ['POST']);
@@ -22,6 +51,14 @@ export default async function handler(request: VercelRequest, response: VercelRe
       !message.trim()
     ) {
       return response.status(400).json({ error: 'Invalid payload' });
+    }
+
+    // Rate Limit check
+    const identifier = getIp(request) || email.trim().toLowerCase();
+    const key = `contact:${hashIdentifier(identifier)}`;
+    const exists = await kv.get(key);
+    if (exists) {
+      return response.status(429).json({ error: 'You may only submit one message every 24 hours.' });
     }
 
     const subjectToUse = typeof subject === 'string' && subject.trim().length > 0 ? subject.trim() : `${name} enquiry`;
@@ -45,19 +82,12 @@ export default async function handler(request: VercelRequest, response: VercelRe
       return response.status(502).json({ error: error.message || 'Failed to send email' });
     }
 
+    // Set rate limit key with 24h TTL
+    await kv.set(key, true, { ex: 60 * 60 * 24 });
+
     return response.status(200).json({ id: data?.id || 'ok' });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Internal Server Error';
     return response.status(500).json({ error: message });
   }
-}
-
-// Very small HTML escape helper to avoid breaking markup
-function escapeHtml(s: string) {
-  return String(s)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
 }
