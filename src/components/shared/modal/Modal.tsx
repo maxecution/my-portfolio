@@ -14,9 +14,11 @@ export default function Modal({ title, content, className = '', children }: Moda
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const wasOpen = useRef(false);
 
   const openModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    wasOpen.current = true;
     setIsOpen(true);
   };
 
@@ -25,7 +27,9 @@ export default function Modal({ title, content, className = '', children }: Moda
   // Lock body scroll and trap focus while modal is open
   useEffect(() => {
     if (!isOpen) {
-      triggerRef.current?.focus();
+      if (wasOpen.current) {
+        triggerRef.current?.focus();
+      }
       return;
     }
 
@@ -66,7 +70,6 @@ export default function Modal({ title, content, className = '', children }: Moda
 
   return (
     <>
-      {/* Trigger */}
       <button ref={triggerRef} onClick={openModal} className={cn('inline-block cursor-pointer', className)}>
         {children}
       </button>
