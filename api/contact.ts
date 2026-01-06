@@ -1,9 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 import crypto from 'crypto';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
 
 // Very small HTML escape helper to avoid breaking markup
 function escapeHtml(s: string) {
@@ -56,7 +60,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
     // Rate Limit check
     const identifier = getIp(request) || email.trim().toLowerCase();
     const key = `contact:${hashIdentifier(identifier)}`;
-    const exists = await kv.get(key);
+    const exists = await redis.get(key);
     if (exists) {
       return response.status(429).json({ error: 'You may only submit one message every 24 hours.' });
     }
@@ -83,7 +87,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
     }
 
     // Set rate limit key with 24h TTL
-    await kv.set(key, true, { ex: 60 * 60 * 24 });
+    await redis.set(key, true, { ex: 60 * 60 * 24 });
 
     return response.status(200).json({ id: data?.id || 'ok' });
   } catch (err: unknown) {

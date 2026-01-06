@@ -11,9 +11,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.19.2)(yaml@2.8.2))
-      '@vercel/kv':
-        specifier: ^3.0.0
-        version: 3.0.0
+      '@upstash/redis':
+        specifier: ^1.36.0
+        version: 1.36.0
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1770,10 +1770,6 @@ packages:
 
   '@vercel/introspection@0.0.7':
     resolution: {integrity: sha512-8JjxYqUsdxHaExbUANvGftAJeRTxVGYwTmaV9KcOA+C3SVvYSUertnQeTgKiau0Fc2cHmxh9e0poLxs2N3gZ2A==}
-
-  '@vercel/kv@3.0.0':
-    resolution: {integrity: sha512-pKT8fRnfyYk2MgvyB6fn6ipJPCdfZwiKDdw7vB+HL50rjboEBHDVBEcnwfkEpVSp2AjNtoaOUH7zG+bVC/rvSg==}
-    engines: {node: '>=14.6'}
 
   '@vercel/nestjs@0.2.19':
     resolution: {integrity: sha512-Fy/7TjPLZOptkpA66Cp6sulzTNEh6NPeLPXrjAThB8utRCoFDT1gWQQUALz/6y886wor2cPnj4kFHqjKreO38Q==}
@@ -5713,10 +5709,6 @@ snapshots:
     dependencies:
       path-to-regexp: 8.3.0
       zod: 3.22.4
-
-  '@vercel/kv@3.0.0':
-    dependencies:
-      '@upstash/redis': 1.36.0
 
   '@vercel/nestjs@0.2.19(rollup@4.54.0)':
     dependencies:

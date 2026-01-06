@@ -2,11 +2,11 @@ const mockSend = jest.fn();
 const mockKvGet = jest.fn();
 const mockKvSet = jest.fn();
 
-jest.mock('@vercel/kv', () => ({
-  kv: {
+jest.mock('@upstash/redis', () => ({
+  Redis: jest.fn().mockImplementation(() => ({
     get: mockKvGet,
     set: mockKvSet,
-  },
+  })),
 }));
 
 jest.mock('resend', () => {
