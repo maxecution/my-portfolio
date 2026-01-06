@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { privacyNotice } from '@data/page/Page.data';
 import Card from '@shared/card/Card';
 import FormField from './FormField';
+import Modal from '@shared/modal/Modal';
 
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -155,6 +157,12 @@ export default function ContactForm() {
             </span>
           </span>
         </button>
+        <div className='text-xs text-muted-foreground'>
+          By submitting this form, you agree to our{' '}
+          <Modal className='underline' title={privacyNotice.title} content={privacyNotice.content}>
+            Privacy Policy
+          </Modal>
+        </div>
       </form>
     </Card>
   );

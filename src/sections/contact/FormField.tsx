@@ -28,6 +28,14 @@ export default function FormField({
   labelClassName,
   inputClassName,
 }: FormFieldProps) {
+  function getAutoCompleteFormId(id: string): string {
+    const AUTOCOMPLETE_TOKENS = ['name', 'email'];
+
+    if (AUTOCOMPLETE_TOKENS.includes(id)) return id;
+
+    return 'off';
+  }
+
   return (
     <div className={containerClassName}>
       <label
@@ -45,7 +53,7 @@ export default function FormField({
         <textarea
           id={id}
           name={id}
-          autoComplete='off'
+          autoComplete={getAutoCompleteFormId(id)}
           value={value}
           rows={5}
           onChange={onChange}
@@ -58,7 +66,7 @@ export default function FormField({
           id={id}
           name={id}
           type={type}
-          autoComplete={id}
+          autoComplete={getAutoCompleteFormId(id)}
           value={value}
           onChange={onChange}
           required={required}

@@ -5,6 +5,7 @@ import Hero from '@sections/hero/Hero';
 import About from '@sections/about/About';
 import Projects from '@sections/projects/Projects';
 import Contact from '@sections/contact/Contact';
+import Footer from '@sections/footer/Footer';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
           <Contact />
         </Section>
       </main>
-      Footer
+      <Footer />
     </ThemeProvider>
   );
 }
