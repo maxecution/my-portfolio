@@ -36,7 +36,7 @@ describe('Card Component', () => {
 
   test('should render top-left corner with correct classes', () => {
     const { container } = render(<Card>Content</Card>);
-    const topLeft = container.querySelector('.top-\\[-2px\\].left-\\[-2px\\]');
+    const topLeft = container.querySelector('.\\-top-0\\.5.\\-left-0\\.5');
 
     expect(topLeft).toBeVisible();
     expect(topLeft).toHaveClass('border-t-2', 'border-l-2', 'rounded-tl-sm');
@@ -44,7 +44,7 @@ describe('Card Component', () => {
 
   test('should render top-right corner with correct classes', () => {
     const { container } = render(<Card>Content</Card>);
-    const topRight = container.querySelector('.top-\\[-2px\\].right-\\[-2px\\]');
+    const topRight = container.querySelector('.\\-top-0\\.5.\\-right-0\\.5');
 
     expect(topRight).toBeVisible();
     expect(topRight).toHaveClass('border-t-2', 'border-r-2', 'rounded-tr-sm');
@@ -52,7 +52,7 @@ describe('Card Component', () => {
 
   test('should render bottom-left corner with correct classes', () => {
     const { container } = render(<Card>Content</Card>);
-    const bottomLeft = container.querySelector('.bottom-\\[-2px\\].left-\\[-2px\\]');
+    const bottomLeft = container.querySelector('.\\-bottom-0\\.5.\\-left-0\\.5');
 
     expect(bottomLeft).toBeVisible();
     expect(bottomLeft).toHaveClass('border-b-2', 'border-l-2', 'rounded-bl-sm');
@@ -60,7 +60,7 @@ describe('Card Component', () => {
 
   test('should render bottom-right corner with correct classes', () => {
     const { container } = render(<Card>Content</Card>);
-    const bottomRight = container.querySelector('.bottom-\\[-2px\\].right-\\[-2px\\]');
+    const bottomRight = container.querySelector('.\\-bottom-0\\.5.\\-right-0\\.5');
 
     expect(bottomRight).toBeVisible();
     expect(bottomRight).toHaveClass('border-b-2', 'border-r-2', 'rounded-br-sm');

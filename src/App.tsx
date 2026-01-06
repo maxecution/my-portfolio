@@ -4,21 +4,8 @@ import NavBar from '@sections/navbar/NavBar';
 import Hero from '@sections/hero/Hero';
 import About from '@sections/about/About';
 import Projects from '@sections/projects/Projects';
-
-// Component for testing sections
-function LoremIpsum() {
-  return (
-    <div className='text-muted-foreground'>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ullamcorper mauris vel urna pellentesque rutrum.
-      Sed leo dolor, vestibulum a finibus eu, auctor sit amet nunc. Integer tempor molestie enim, at pellentesque ante
-      efficitur a. Nunc eu fringilla metus, a vulputate quam. Mauris pellentesque nunc vel malesuada placerat. In sed
-      nibh vulputate, accumsan tellus in, porttitor elit. Aenean volutpat magna at magna porttitor tristique. Mauris
-      dignissim sapien vel nulla sodales, eu convallis odio convallis. Aenean hendrerit fringilla vestibulum. Ut non
-      imperdiet diam. Fusce eu egestas libero. Sed hendrerit, mauris vel pretium posuere, ante erat varius orci, eget
-      cursus ipsum arcu eu nunc.
-    </div>
-  );
-}
+import Contact from '@sections/contact/Contact';
+import Footer from '@sections/footer/Footer';
 
 function App() {
   return (
@@ -35,10 +22,10 @@ function App() {
           <Projects />
         </Section>
         <Section id='contact' title='Contact'>
-          <LoremIpsum />
+          <Contact />
         </Section>
       </main>
-      Footer
+      <Footer />
     </ThemeProvider>
   );
 }

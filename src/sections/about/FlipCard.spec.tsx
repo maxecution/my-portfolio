@@ -34,7 +34,7 @@ describe('FlipCard Component', () => {
     expect(wrapper).toHaveClass('opacity-100', 'translate-y-0');
     expect(wrapper).toHaveAttribute('aria-hidden', 'false');
     expect(button).toHaveAttribute('tabindex', '0');
-    expect(button).not.toHaveClass('[transform:rotateY(180deg)]');
+    expect(button).not.toHaveClass('transform-[rotateY(180deg)]');
   });
 
   test('should hide when sectionVisible is false and button to not be selectable', () => {
@@ -56,7 +56,7 @@ describe('FlipCard Component', () => {
     );
     const button = container.querySelector('button');
 
-    expect(button).toHaveClass('[transform:rotateY(180deg)]');
+    expect(button).toHaveClass('transform-[rotateY(180deg)]');
     expect(screen.getByText('Back Title')).toBeVisible();
     expect(screen.getByText('Back description')).toBeVisible();
   });
@@ -124,13 +124,12 @@ describe('FlipCard Component', () => {
     const { container } = render(
       <FlipCard front={mockFront} back={mockBack} flipped={false} onClick={mockOnClick} sectionVisible />
     );
-
-    const innerDiv = container.querySelector('.\\[perspective\\:1000px\\]');
-    const frontDiv = container.querySelector('.\\[backface-visibility\\:hidden\\]');
-    const backDiv = container.querySelector('.\\[transform\\:rotateY\\(180deg\\)\\]');
+    const innerDiv = container.querySelector('.perspective-\\[1000px\\]');
+    const frontDiv = container.querySelector('.backface-hidden');
+    const backDiv = container.querySelector('.transform-\\[rotateY\\(180deg\\)\\]');
 
     expect(innerDiv).toHaveClass('h-64', 'relative', 'w-full', 'hover:scale-105', 'transition-transform');
-    expect(frontDiv).toHaveClass('[backface-visibility:hidden]');
-    expect(backDiv).toHaveClass('[backface-visibility:hidden]', '[transform:rotateY(180deg)]');
+    expect(frontDiv).toHaveClass('backface-hidden');
+    expect(backDiv).toHaveClass('backface-hidden', 'transform-[rotateY(180deg)]');
   });
 });
