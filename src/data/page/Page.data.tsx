@@ -5,7 +5,7 @@ export interface AuthorData {
   jobTitle?: string;
 }
 
-interface PrivacyNotice {
+interface PrivacyPolicy {
   title: string;
   content: React.ReactNode;
 }
@@ -16,7 +16,7 @@ export const authorData: AuthorData = {
   jobTitle: `Frontend Specialist`,
 };
 
-export const privacyNotice: PrivacyNotice = {
+export const privacyPolicy: PrivacyPolicy = {
   title: 'Privacy Notice',
   content: (
     <div>
