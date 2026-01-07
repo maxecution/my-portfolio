@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@contexts/ThemeProvider/ThemeProvider';
+import { ToasterProvider } from '@contexts/toasterProvider/ToasterProvider';
 import Section from '@layout/section/Section';
 import NavBar from '@sections/navbar/NavBar';
 import Hero from '@sections/hero/Hero';
@@ -10,22 +11,24 @@ import Footer from '@sections/footer/Footer';
 function App() {
   return (
     <ThemeProvider>
-      <NavBar />
-      <main className='min-h-screen'>
-        <Section id='hero' ariaLabel='Hero' fullHeight>
-          <Hero />
-        </Section>
-        <Section id='about' title='About Me'>
-          <About />
-        </Section>
-        <Section id='projects' title='Projects'>
-          <Projects />
-        </Section>
-        <Section id='contact' title='Contact'>
-          <Contact />
-        </Section>
-      </main>
-      <Footer />
+      <ToasterProvider>
+        <NavBar />
+        <main className='min-h-screen'>
+          <Section id='hero' ariaLabel='Hero' fullHeight>
+            <Hero />
+          </Section>
+          <Section id='about' title='About Me'>
+            <About />
+          </Section>
+          <Section id='projects' title='Projects'>
+            <Projects />
+          </Section>
+          <Section id='contact' title='Contact'>
+            <Contact />
+          </Section>
+        </main>
+        <Footer />
+      </ToasterProvider>
     </ThemeProvider>
   );
 }

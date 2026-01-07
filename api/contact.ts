@@ -29,7 +29,7 @@ function getIp(request: VercelRequest): string | undefined {
 function hashIdentifier(ip: string) {
   const SALT = process.env.RATE_LIMIT_SALT;
   if (!SALT) {
-    throw new Error('RATE_LIMIT_SALT is not configured');
+    throw new Error('RATE_LIMIT_UNAVAILABLE');
   }
   return crypto
     .createHash('sha256')
@@ -84,15 +84,15 @@ export default async function handler(request: VercelRequest, response: VercelRe
     });
 
     if (error) {
-      return response.status(502).json({ error: error.message || 'Failed to send email' });
+      return response.status(502).json({ error: error.message || 'Failed to send message.' });
     }
 
     // Set rate limit key with 24h TTL
     await redis.set(key, true, { ex: 60 * 60 * 24 });
 
     return response.status(200).json({ id: data?.id || 'ok' });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Internal Server Error';
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
     return response.status(500).json({ error: message });
   }
 }

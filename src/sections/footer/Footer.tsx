@@ -1,4 +1,5 @@
 import { authorData } from '@data/page/Page.data';
+import { crossedSwords, gamePad } from '@ui/icons/Icons';
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -9,9 +10,9 @@ export default function Footer() {
       <div className='mx-auto'>
         <div className='flex flex-col items-center space-y-4'>
           <div className='flex items-center gap-4 text-primary/40'>
-            <span className='text-2xl'>⚔</span>
-            <span className='text-xl'>✦</span>
-            <span className='text-2xl'>⚔</span>
+            <span className='text-2xl'>{crossedSwords}</span>
+            <span className='text-xl'>{gamePad}</span>
+            <span className='text-2xl'>{crossedSwords}</span>
           </div>
 
           <p className='text-center text-muted-foreground inline-flex gap-1'>

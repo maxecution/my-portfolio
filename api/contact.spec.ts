@@ -286,7 +286,7 @@ describe('/api/contact handler', () => {
 
     expect(response.status).toHaveBeenCalledWith(502);
     expect(response.json).toHaveBeenCalledWith({
-      error: 'Failed to send email',
+      error: 'Failed to send message.',
     });
   });
 
@@ -357,7 +357,7 @@ describe('/api/contact handler', () => {
 
     expect(response.status).toHaveBeenCalledWith(500);
     expect(response.json).toHaveBeenCalledWith({
-      error: 'RATE_LIMIT_SALT is not configured',
+      error: 'RATE_LIMIT_UNAVAILABLE',
     });
   });
 });
