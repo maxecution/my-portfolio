@@ -65,7 +65,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
       return response.status(429).json({ error: 'You may only submit one message every 24 hours.' });
     }
 
-    const subjectToUse = typeof subject === 'string' && subject.trim().length > 0 ? subject.trim() : `${name} enquiry`;
+    const subjectToUse =
+      typeof subject === 'string' && subject.trim().length > 0 ? escapeHtml(subject.trim()) : `${name} enquiry`;
     const from = 'Portfolio Contact <onboarding@resend.dev>';
 
     const { data, error } = await resend.emails.send({

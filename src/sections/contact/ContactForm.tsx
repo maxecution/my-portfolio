@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { privacyPolicy } from '@data/page/Page.data';
 import Card from '@shared/card/Card';
 import FormField from './FormField';
@@ -13,6 +13,8 @@ interface FormData {
   message: string;
 }
 
+type FormErrors = Partial<Record<keyof FormData, string>>;
+
 export default function ContactForm() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -20,23 +22,48 @@ export default function ContactForm() {
     subject: '',
     message: '',
   });
+
+  const [touched, setTouched] = useState<Record<keyof FormData, boolean>>({
+    name: false,
+    email: false,
+    subject: false,
+    message: false,
+  });
+
   const [status, setStatus] = useState<SubmitStatus>('idle');
   const isIdle = status === 'idle';
-  const isSubmitDisabled = !isIdle || !isFormValid(formData);
 
-  function isFormValid(data: FormData): boolean {
-    return (
-      data.name.trim().length > 0 &&
-      data.email.trim().length > 0 &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) &&
-      data.message.trim().length > 0
-    );
+  function getErrors(data: FormData): FormErrors {
+    const errors: FormErrors = {};
+    if (!data.name.trim()) errors.name = 'You must give a name.';
+    if (!data.email.trim()) errors.email = 'Needed to send word back.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errors.email = 'The runes look wrong.';
+    if (!data.message.trim()) errors.message = 'Share your message.';
+
+    return errors;
   }
+
+  const errors = useMemo(() => getErrors(formData), [formData]);
+  const isFormValid = Object.keys(errors).length === 0;
+  const isSubmitDisabled = !isIdle || !isFormValid;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!isFormValid(formData) || !isIdle) return;
+    if (!isFormValid || !isIdle) {
+      setTouched({
+        name: true,
+        email: true,
+        subject: touched.subject,
+        message: true,
+      });
+
+      const firstInvalid = (['name', 'email', 'message'] as const).find((k) => errors[k]);
+      if (firstInvalid) {
+        document.getElementById(firstInvalid)?.focus();
+      }
+      return;
+    }
 
     setStatus('submitting');
     try {
@@ -52,6 +79,7 @@ export default function ContactForm() {
       }
       setStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
+      setTouched({ name: false, email: false, subject: false, message: false });
       setTimeout(() => setStatus('idle'), 1500);
     } catch (error) {
       console.error('Error submitting contact form:', error);
@@ -67,6 +95,28 @@ export default function ContactForm() {
     }));
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+  };
+
+  const buttonLabel =
+    status === 'submitting'
+      ? 'Sending...'
+      : status === 'success'
+      ? 'Sent!'
+      : status === 'error'
+      ? 'Failed - try again!'
+      : isIdle && isSubmitDisabled
+      ? 'Prepare Sending'
+      : 'Cast Sending';
+
+  const baseBtnClass =
+    'relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-color cursor-pointer disabled:cursor-not-allowed group text-background';
+  const activeColorClass = status === 'success' ? 'bg-green-500' : status === 'error' ? 'bg-secondary' : 'bg-primary';
+  const disabledIdleClass = 'bg-gray-300 text-gray-600'; // safe Tailwind fallback
+  const btnClass = `${baseBtnClass} ${isIdle && isSubmitDisabled ? disabledIdleClass : activeColorClass}`;
+
   return (
     <Card className='h-full'>
       <form className='space-y-6' onSubmit={handleSubmit}>
@@ -77,6 +127,8 @@ export default function ContactForm() {
           placeholder='Enter your name'
           value={formData.name}
           onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.name ? errors.name : undefined}
         />
         <FormField
           id='email'
@@ -85,6 +137,8 @@ export default function ContactForm() {
           placeholder='your.email@example.com'
           value={formData.email}
           onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.email ? errors.email : undefined}
         />
         <FormField
           id='subject'
@@ -94,6 +148,7 @@ export default function ContactForm() {
           value={formData.subject || ''}
           required={false}
           onChange={handleChange}
+          onBlur={handleBlur}
         />
         <FormField
           id='message'
@@ -102,13 +157,10 @@ export default function ContactForm() {
           placeholder='What brings you to this crossroads?'
           value={formData.message}
           onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.message ? errors.message : undefined}
         />
-        <button
-          type='submit'
-          disabled={isSubmitDisabled}
-          className={`relative overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 ${
-            status === 'success' ? 'bg-green-500' : status === 'error' ? 'bg-secondary' : 'bg-primary'
-          } text-background rounded-lg transition-color cursor-pointer disabled:cursor-not-allowed group`}>
+        <button type='submit' disabled={isSubmitDisabled} className={btnClass}>
           <div
             data-testid='submit-progress-fill'
             aria-hidden='true'
@@ -117,13 +169,7 @@ export default function ContactForm() {
             }`}
           />
           <span className='relative z-10 flex items-center gap-2'>
-            {status === 'submitting' ? (
-              'Sending...'
-            ) : status === 'success' ? (
-              'Sent!'
-            ) : status === 'error' ? (
-              'Failed - try again!'
-            ) : (
+            {buttonLabel === 'Cast Sending' && (
               <>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -135,17 +181,15 @@ export default function ContactForm() {
                   strokeWidth='2'
                   strokeLinecap='round'
                   strokeLinejoin='round'
-                  className={`${
-                    !isSubmitDisabled ? 'group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform' : ''
-                  }`}
+                  className='group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform'
                   aria-hidden='true'
                   focusable='false'>
                   <path d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z' />
                   <path d='m21.854 2.147-10.94 10.939' />
                 </svg>
-                <span>Cast Sending</span>
               </>
             )}
+            <span>{buttonLabel}</span>
             <span className='sr-only' aria-live='polite'>
               {status === 'submitting'
                 ? 'Sending message'
@@ -153,6 +197,8 @@ export default function ContactForm() {
                 ? 'Failed to send message'
                 : status === 'success'
                 ? 'Message sent'
+                : isIdle && isSubmitDisabled
+                ? 'Form incomplete'
                 : ''}
             </span>
           </span>

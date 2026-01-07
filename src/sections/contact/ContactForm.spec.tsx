@@ -38,7 +38,7 @@ describe('ContactForm (userEvent, no console checks)', () => {
     fireEvent.submit(form);
 
     expect(fetch).not.toHaveBeenCalled();
-    expect(screen.getByText('Cast Sending')).toBeVisible();
+    expect(screen.getByText('Prepare Sending')).toBeVisible();
   });
 
   test('does not submit when not idle (already submitting)', async () => {
@@ -52,7 +52,7 @@ describe('ContactForm (userEvent, no console checks)', () => {
     const emailInput = screen.getByLabelText(/Your Email/i);
     const subjectInput = screen.getByLabelText(/Subject/i);
     const messageTextarea = screen.getByLabelText(/Your message/i);
-    const button = screen.getByRole('button', { name: /Cast Sending/i });
+    const button = screen.getByRole('button', { name: /Prepare Sending/i });
 
     await user.type(nameInput, 'Gimli');
     await user.type(emailInput, 'axe@erebor.me');
@@ -125,7 +125,7 @@ describe('ContactForm (userEvent, no console checks)', () => {
     const emailInput = screen.getByLabelText(/Your Email/i);
     const subjectInput = screen.getByLabelText(/Subject/i);
     const messageTextarea = screen.getByLabelText(/Your message/i);
-    const button = screen.getByRole('button', { name: /Cast Sending/i });
+    const button = screen.getByRole('button', { name: /Prepare Sending/i });
 
     // Initially disabled
     expect(button).toBeDisabled();
@@ -136,6 +136,7 @@ describe('ContactForm (userEvent, no console checks)', () => {
     await user.type(messageTextarea, 'The beacons are lit!');
 
     expect(button).toBeEnabled();
+    expect(screen.getByText('Cast Sending')).toBeVisible();
 
     await user.click(button);
 
@@ -168,7 +169,7 @@ describe('ContactForm (userEvent, no console checks)', () => {
     // Return to idle after 1.5s
     await act(async () => jest.advanceTimersByTime(1500));
 
-    expect(screen.getByText('Cast Sending')).toBeVisible();
+    expect(screen.getByText('Prepare Sending')).toBeVisible();
     expect(button).toBeDisabled();
   });
 
