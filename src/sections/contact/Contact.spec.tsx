@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithToasterProvider } from '@contexts/toasterProvider/renderWithToasterProvider';
 import '@testing-library/jest-dom';
 
 // Mock SectionFade to avoid intersection observer complexities
@@ -11,7 +12,7 @@ import { contactIntro } from '@data/contact/Contact.data';
 
 describe('Contact Component', () => {
   test('should render without crashing', () => {
-    render(<Contact />);
+    renderWithToasterProvider(<Contact />);
     expect(screen.getByText(contactIntro.sectionHeader)).toBeVisible();
   });
 });

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Pill from '@shared/pill/Pill';
+import { crossX } from '@ui/icons/Icons';
 
 interface ProjectCardTechStackProps {
   techStack: string[];
@@ -77,21 +78,7 @@ export default function ProjectCardTechStack({
                 onClick={onModalClose}
                 className='p-1 rounded-lg hover:bg-primary/10 transition-colors'
                 aria-label='Close modal'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='20'
-                  height='20'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  aria-hidden='true'
-                  focusable='false'>
-                  <path d='M18 6 6 18'></path>
-                  <path d='m6 6 12 12'></path>
-                </svg>
+                {crossX}
               </button>
             </div>
 

@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import { useToast } from '@contexts/toasterProvider/useToast';
+import type { ToastLevel } from '@contexts/toasterProvider/ToastContext';
 import { privacyPolicy } from '@data/page/Page.data';
 import Card from '@shared/card/Card';
 import FormField from './FormField';
@@ -14,8 +16,42 @@ interface FormData {
 }
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
+function mapContactError(
+  status: number,
+  fallback?: string
+): {
+  level: ToastLevel;
+  message: string;
+} {
+  switch (status) {
+    case 400:
+      return {
+        level: 'warning',
+        message: fallback ?? 'Please check the form fields and try again.',
+      };
+    case 429:
+      return {
+        level: 'warning',
+        message: fallback ?? 'You can only send one message every 24 hours.',
+      };
+    case 502:
+      return {
+        level: 'error',
+        message:
+          fallback ??
+          'Message service is temporarily unavailable. Please try again later, or use an alternative contact method.',
+      };
+    case 500:
+    default:
+      return {
+        level: 'error',
+        message: fallback ?? 'Something went wrong. Please try again later, or use an alternative contact method.',
+      };
+  }
+}
 
 export default function ContactForm() {
+  const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -74,15 +110,27 @@ export default function ContactForm() {
       });
 
       if (!response.ok) {
-        const { error } = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(error || 'Failed to send');
+        const { error } = await response.json().catch(() => ({}));
+
+        const { level, message } = mapContactError(response.status, error);
+
+        toast(level, message);
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 2500);
+        return;
       }
+
       setStatus('success');
+      toast('success', 'The sending stone hums, your words are on their way.');
       setFormData({ name: '', email: '', subject: '', message: '' });
       setTouched({ name: false, email: false, subject: false, message: false });
       setTimeout(() => setStatus('idle'), 1500);
     } catch (error) {
-      console.error('Error submitting contact form:', error);
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Try again later or use a different contact method.';
+      toast('error', message);
       setStatus('error');
       setTimeout(() => setStatus('idle'), 2500);
     }

@@ -189,7 +189,7 @@ export default function Carousel({ data }: Props) {
           {data.map((d, i) => (
             <div
               key={`${d.title}-${i}`}
-              className='snap-start'
+              className='snap-start snap-always'
               style={{
                 flex: `0 0 ${cardWidthPx}px`,
               }}>
