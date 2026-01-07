@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@contexts/themeProvider/ThemeProvider';
+import { ThemeProvider } from '@contexts/ThemeProvider/ThemeProvider';
 import { ToasterProvider } from '@contexts/toasterProvider/ToasterProvider';
 import Section from '@layout/section/Section';
 import NavBar from '@sections/navbar/NavBar';

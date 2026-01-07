@@ -3,8 +3,8 @@ import '@testing-library/jest-dom';
 import ThemeToggleButton from './ThemeToggleButton';
 
 // Mock the useTheme hook
-jest.mock('@contexts/themeProvider/useTheme');
-import { useTheme } from '@contexts/themeProvider/useTheme'; // import after mocking
+jest.mock('@contexts/ThemeProvider/useTheme');
+import { useTheme } from '@contexts/ThemeProvider/useTheme'; // import after mocking
 const mockUseTheme = useTheme as jest.MockedFunction<typeof useTheme>;
 
 // Mock document.startViewTransition
