@@ -94,7 +94,7 @@ describe('FormField', () => {
       />
     );
 
-    const container = screen.getByText(/My Field/i).closest('div');
+    const container = screen.getByTestId('form-field-container');
     expect(container).toHaveClass('container-extra');
 
     const label = screen.getByText(/My Field/i);
