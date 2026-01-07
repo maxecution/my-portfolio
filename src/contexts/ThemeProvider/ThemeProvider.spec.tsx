@@ -1,7 +1,7 @@
-import { render, screen, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import { ThemeProvider } from "./ThemeProvider";
-import { useTheme } from "./useTheme";
+import { render, screen, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { ThemeProvider } from './ThemeProvider';
+import { useTheme } from './useTheme';
 import {
   THEME_TEST_CONSTANTS,
   getCurrentThemeText,
@@ -9,41 +9,30 @@ import {
   setupThemeTestEnvironment,
   createMatchMediaMock,
   type LocalStorageMock,
-} from "./themeProviderTestUtils";
+} from './themeProviderTestUtils';
 
 // Destructure constants for easier use
-const { LIGHT, DARK, SYSTEM, SET_LIGHT, SET_DARK, SET_SYSTEM, TOGGLE, STORAGE_KEY } =
-  THEME_TEST_CONSTANTS;
+const { LIGHT, DARK, SYSTEM, SET_LIGHT, SET_DARK, SET_SYSTEM, TOGGLE, STORAGE_KEY } = THEME_TEST_CONSTANTS;
 
 // Test component that uses the theme context for UI interaction
 const TestComponent = () => {
   const { theme, setTheme, toggleTheme, actualTheme } = useTheme();
 
   return (
-    <div
-      data-testid='theme-container'
-      className='bg-white text-black dark:bg-gray-900 dark:text-white'>
+    <div data-testid='theme-container' className='bg-white text-black dark:bg-gray-900 dark:text-white'>
       <div data-testid='current-theme'>{getCurrentThemeText(theme)}</div>
       <div data-testid='resolved-theme'>{getResolvedThemeText(actualTheme)}</div>
       <div className='space-y-2'>
-        <button
-          className='px-4 py-2 bg-blue-500 text-white dark:bg-blue-700'
-          onClick={() => setTheme("light")}>
+        <button className='px-4 py-2 bg-blue-500 text-white dark:bg-blue-700' onClick={() => setTheme('light')}>
           {SET_LIGHT}
         </button>
-        <button
-          className='px-4 py-2 bg-blue-500 text-white dark:bg-blue-700'
-          onClick={() => setTheme("dark")}>
+        <button className='px-4 py-2 bg-blue-500 text-white dark:bg-blue-700' onClick={() => setTheme('dark')}>
           {SET_DARK}
         </button>
-        <button
-          className='px-4 py-2 bg-blue-500 text-white dark:bg-blue-700'
-          onClick={() => setTheme("system")}>
+        <button className='px-4 py-2 bg-blue-500 text-white dark:bg-blue-700' onClick={() => setTheme('system')}>
           {SET_SYSTEM}
         </button>
-        <button
-          className='px-4 py-2 bg-green-500 text-white dark:bg-green-700'
-          onClick={toggleTheme}>
+        <button className='px-4 py-2 bg-green-500 text-white dark:bg-green-700' onClick={toggleTheme}>
           {TOGGLE}
         </button>
       </div>
@@ -51,7 +40,7 @@ const TestComponent = () => {
   );
 };
 
-describe("ThemeProvider", () => {
+describe('ThemeProvider', () => {
   let localStorageMock: LocalStorageMock;
   let cleanup: () => void;
 
@@ -65,7 +54,7 @@ describe("ThemeProvider", () => {
     cleanup();
   });
 
-  test("should render with correct initial state and handle theme switching with persistence", () => {
+  test('should render with correct initial state and handle theme switching with persistence', () => {
     render(
       <ThemeProvider>
         <TestComponent />
@@ -77,11 +66,11 @@ describe("ThemeProvider", () => {
     expect(screen.getByText(getResolvedThemeText(DARK))).toBeVisible();
 
     // Test theme container has correct classes for Tailwind
-    expect(screen.getByTestId("theme-container")).toHaveClass(
-      "bg-white",
-      "text-black",
-      "dark:bg-gray-900",
-      "dark:text-white"
+    expect(screen.getByTestId('theme-container')).toHaveClass(
+      'bg-white',
+      'text-black',
+      'dark:bg-gray-900',
+      'dark:text-white'
     ); // Unable to test actual colours in JSDOM, so if tailwind classes are present,
     // and .dark/.light is applied to the document, we assume it's working correctly
 
@@ -110,7 +99,7 @@ describe("ThemeProvider", () => {
     expect(document.documentElement).not.toHaveClass(DARK);
   });
 
-  test("should toggle between themes when toggleTheme is used", () => {
+  test('should toggle between themes when toggleTheme is used', () => {
     render(
       <ThemeProvider>
         <TestComponent />
@@ -144,7 +133,7 @@ describe("ThemeProvider", () => {
     expect(document.documentElement).toHaveClass(DARK);
   });
 
-  test("should handle system theme with initial light preference", () => {
+  test('should handle system theme with initial light preference', () => {
     // Mock system preference to be light initially
     window.matchMedia = jest.fn().mockImplementation(
       () => createMatchMediaMock(false) // false = light theme
@@ -163,11 +152,11 @@ describe("ThemeProvider", () => {
     expect(screen.getByText(getResolvedThemeText(LIGHT))).toBeVisible();
   });
 
-  test("should handle system theme change dynamically", () => {
+  test('should handle system theme change dynamically', () => {
     let changeHandler: ((e: MediaQueryListEvent) => void) | null = null;
 
     const mockAddEventListener = jest.fn((event, handler) => {
-      if (event === "change") {
+      if (event === 'change') {
         changeHandler = handler;
       }
     });
@@ -202,7 +191,7 @@ describe("ThemeProvider", () => {
     expect(document.documentElement.classList.contains(DARK)).toBe(true);
   });
 
-  test("should load from localStorage, handle invalid values, and use custom storage key", () => {
+  test('should load from localStorage, handle invalid values, and use custom storage key', () => {
     // Test valid localStorage value
     localStorageMock.clear();
     localStorageMock.getItem.mockReturnValue(DARK);
@@ -222,7 +211,7 @@ describe("ThemeProvider", () => {
     localStorageMock.clear();
 
     // Test invalid localStorage value handling
-    localStorageMock.getItem.mockReturnValue("invalid");
+    localStorageMock.getItem.mockReturnValue('invalid');
 
     ({ unmount } = render(
       <ThemeProvider defaultTheme='light'>
@@ -245,6 +234,6 @@ describe("ThemeProvider", () => {
       </ThemeProvider>
     );
 
-    expect(localStorageMock.getItem).toHaveBeenCalledWith("custom-key");
+    expect(localStorageMock.getItem).toHaveBeenCalledWith('custom-key');
   });
 });
