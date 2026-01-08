@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { normaliseInput, isEmailValid, isMessageValid } from '@utils/formUtils';
 import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 import crypto from 'crypto';
@@ -49,10 +50,11 @@ export default async function handler(request: VercelRequest, response: VercelRe
       typeof name !== 'string' ||
       typeof email !== 'string' ||
       typeof message !== 'string' ||
-      !name.trim() ||
-      !email.trim() ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
-      !message.trim()
+      !normaliseInput(name) ||
+      !normaliseInput(email) ||
+      !isEmailValid(email) ||
+      !normaliseInput(message) ||
+      !isMessageValid(message)
     ) {
       return response.status(400).json({ error: 'Invalid payload' });
     }
