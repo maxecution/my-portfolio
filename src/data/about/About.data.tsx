@@ -53,7 +53,7 @@ export const attributes: Attribute[] = [
     id: 'dexterity',
     name: 'Dexterity',
     stat: 'CSS/Tailwind',
-    value: 17,
+    value: 15,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -102,7 +102,7 @@ export const attributes: Attribute[] = [
     id: 'intelligence',
     name: 'Intelligence',
     stat: 'Jest / Playwright',
-    value: 15,
+    value: 14,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -126,7 +126,7 @@ export const attributes: Attribute[] = [
     id: 'wisdom',
     name: 'Wisdom',
     stat: 'TypeScript',
-    value: 14,
+    value: 16,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'

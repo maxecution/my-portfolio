@@ -1,4 +1,4 @@
-import { heroData } from '@data/hero/Hero.data';
+import { heroData, cvURL } from '@data/hero/Hero.data';
 import { authorData } from '@data/page/Page.data';
 import { GradientText } from '@ui/text/GradientText';
 import TypewriterEffect from './TypewriterEffect';
@@ -33,6 +33,22 @@ export default function Hero() {
         </span>
         {/* Description */}
         <p className='text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto'>{heroData.text}</p>
+        <div className='flex flex-col md:flex-row gap-5'>
+          <a
+            href='#contact'
+            className='border-2 border-primary rounded-lg px-8 py-4 text-primary font-bold transition-transform hover:scale-105 shadow-primary/50 hover:shadow-lg'
+            data-testid='contact-link'>
+            Get in Touch
+          </a>
+          <a
+            href={cvURL}
+            download
+            rel='noopener noreferrer'
+            className='bg-primary rounded-lg px-8 py-4 text-background font-bold transition-transform hover:scale-105 shadow-primary/50 hover:shadow-lg'
+            data-testid='cv-download-link'>
+            Download CV
+          </a>
+        </div>
       </div>
 
       {/* Arrow positioned at bottom */}
@@ -41,7 +57,7 @@ export default function Hero() {
           hasScrolled ? 'opacity-0 invisible' : 'opacity-100 visible animate-bounce'
         }`}
         aria-hidden={hasScrolled}>
-        <a href='#about' className='text-primary'>
+        <a href='#about' className='text-primary' data-testid='scroll-arrow'>
           <Arrow className='text-primary' size={30} direction='down' aria-label='Scroll down to About section' />
         </a>
       </div>
