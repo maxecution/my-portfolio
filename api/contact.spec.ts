@@ -32,6 +32,48 @@ function createMockResponse() {
   return response as VercelResponse;
 }
 
+interface ContactPayload {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+
+const TEST_USER = 'Test User';
+const TEST_EMAIL = 'test@example.com';
+const TEST_SUBJECT = 'Test Subject';
+const TEST_MESSAGE = 'This is a sufficiently long test message.';
+
+const basePayload: ContactPayload = {
+  name: TEST_USER,
+  email: TEST_EMAIL,
+  subject: TEST_SUBJECT,
+  message: TEST_MESSAGE,
+};
+
+function buildPayload(overrides: Partial<ContactPayload> = {}): ContactPayload {
+  return {
+    ...basePayload,
+    ...overrides,
+  };
+}
+
+function buildRequest({
+  method = 'POST',
+  headers = {},
+  bodyOverrides,
+}: {
+  method?: string;
+  headers?: VercelRequest['headers'];
+  bodyOverrides?: ContactPayload;
+} = {}): VercelRequest {
+  return {
+    method,
+    headers,
+    body: bodyOverrides === undefined ? buildPayload() : buildPayload(bodyOverrides),
+  } as VercelRequest;
+}
+
 describe('/api/contact handler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -53,9 +95,11 @@ describe('/api/contact handler', () => {
 
     const request = {
       method: 'POST',
-      // headers intentionally undefined to trigger fallback
-      body: { name: 'NoHeader', email: 'noheader@example.com', message: 'Hello' },
-    } as unknown as VercelRequest;
+      // headers intentionally omitted
+      body: buildPayload({
+        email: TEST_EMAIL,
+      }),
+    } as VercelRequest;
 
     const response = createMockResponse();
     await handler(request, response);
@@ -65,7 +109,7 @@ describe('/api/contact handler', () => {
 
     const expectedHash = `contact:${crypto
       .createHash('sha256')
-      .update('noheader@example.com' + process.env.RATE_LIMIT_SALT)
+      .update(TEST_EMAIL + process.env.RATE_LIMIT_SALT)
       .digest('hex')}`;
 
     expect(mockKvSet).toHaveBeenCalledWith(expectedHash, true, { ex: 60 * 60 * 24 });
@@ -74,27 +118,24 @@ describe('/api/contact handler', () => {
   test('uses x-forwarded-for string as IP', async () => {
     mockSend.mockResolvedValueOnce({ data: { id: '1' }, error: null });
 
-    const request = {
-      method: 'POST',
+    const request = buildRequest({
       headers: { 'x-forwarded-for': '1.2.3.4' },
-      body: { name: 'Alice', email: 'alice@example.com', message: 'Hi' },
-    } as Partial<VercelRequest>;
+    });
 
     const response = createMockResponse();
     await handler(request as VercelRequest, response);
 
     expect(mockSend).toHaveBeenCalled();
+    expect(response.status).toHaveBeenCalledWith(200);
   });
 
   test('uses first element of x-forwarded-for array as IP', async () => {
     mockSend.mockResolvedValueOnce({ data: { id: '2' }, error: null });
 
     const ip = '5.6.7.8';
-    const request = {
-      method: 'POST',
+    const request = buildRequest({
       headers: { 'x-forwarded-for': [ip, '9.10.11.12'] },
-      body: { name: 'Bob', email: 'bob@example.com', message: 'Hello' },
-    } as Partial<VercelRequest>;
+    });
 
     const response = createMockResponse();
     await handler(request as VercelRequest, response);
@@ -108,6 +149,7 @@ describe('/api/contact handler', () => {
       .digest('hex')}`;
 
     expect(mockKvSet).toHaveBeenCalledWith(expectedHash, true, { ex: 60 * 60 * 24 });
+    expect(response.status).toHaveBeenCalledWith(200);
   });
 
   test('returns 405 for non-POST requests', async () => {
@@ -122,11 +164,13 @@ describe('/api/contact handler', () => {
   });
 
   test('returns 400 for invalid payload', async () => {
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: { name: '', email: 'bad', message: '' },
-    } as VercelRequest;
+    const request = buildRequest({
+      bodyOverrides: {
+        name: '',
+        email: 'bad',
+        message: '',
+      },
+    });
 
     const response = createMockResponse();
 
@@ -158,15 +202,14 @@ describe('/api/contact handler', () => {
       error: null,
     });
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
+    const request = buildRequest({
+      bodyOverrides: {
         name: 'Alice <script>',
         email: 'alice@example.com',
-        message: 'Hello & goodbye',
+        subject: '',
+        message: 'Hello & goodbye message',
       },
-    } as VercelRequest;
+    });
 
     const response = createMockResponse();
 
@@ -190,16 +233,11 @@ describe('/api/contact handler', () => {
       error: null,
     });
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
-        name: 'Bob',
-        email: 'bob@example.com',
+    const request = buildRequest({
+      bodyOverrides: {
         subject: '  Custom subject  ',
-        message: 'Test',
       },
-    } as VercelRequest;
+    });
 
     const response = createMockResponse();
 
@@ -218,15 +256,7 @@ describe('/api/contact handler', () => {
   test('returns 429 when rate limit key exists', async () => {
     mockKvGet.mockResolvedValueOnce(true);
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
-        name: 'Eowyn',
-        email: 'eowyn@rohan.me',
-        message: 'I am no man.',
-      },
-    } as VercelRequest;
+    const request = buildRequest();
 
     const response = createMockResponse();
 
@@ -246,15 +276,7 @@ describe('/api/contact handler', () => {
       error: { message: 'Resend failure' },
     });
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
-        name: 'Charlie',
-        email: 'charlie@example.com',
-        message: 'Hi',
-      },
-    } as VercelRequest;
+    const request = buildRequest();
 
     const response = createMockResponse();
 
@@ -270,15 +292,7 @@ describe('/api/contact handler', () => {
       error: {},
     });
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
-        name: 'Faramir',
-        email: 'faramir@gondor.me',
-        message: 'I do not love the sword.',
-      },
-    } as VercelRequest;
+    const request = buildRequest();
 
     const response = createMockResponse();
 
@@ -295,15 +309,7 @@ describe('/api/contact handler', () => {
       throw new Error('Boom');
     });
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
-        name: 'Dana',
-        email: 'dana@example.com',
-        message: 'Hello',
-      },
-    } as VercelRequest;
+    const request = buildRequest();
 
     const response = createMockResponse();
 
@@ -318,15 +324,7 @@ describe('/api/contact handler', () => {
       throw 'something very bad';
     });
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
-        name: 'Gimli',
-        email: 'gimli@erebor.me',
-        message: 'And my axe!',
-      },
-    } as VercelRequest;
+    const request = buildRequest();
 
     const response = createMockResponse();
 
@@ -341,15 +339,7 @@ describe('/api/contact handler', () => {
   test('returns 500 when RATE_LIMIT_SALT is not configured', async () => {
     delete process.env.RATE_LIMIT_SALT;
 
-    const request = {
-      method: 'POST',
-      headers: {},
-      body: {
-        name: 'Test',
-        email: 'test@example.com',
-        message: 'Hello',
-      },
-    } as VercelRequest;
+    const request = buildRequest();
 
     const response = createMockResponse();
 

@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useToast } from '@contexts/toasterProvider/useToast';
 import type { ToastLevel } from '@contexts/toasterProvider/ToastContext';
+import { normaliseInput, isEmailValid, isMessageValid } from '@utils/formUtils';
 import { privacyPolicy } from '@data/page/Page.data';
 import Card from '@shared/card/Card';
-import FormField from './FormField';
 import Modal from '@shared/modal/Modal';
+import FormField from './FormField';
 
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -71,10 +72,11 @@ export default function ContactForm() {
 
   function getErrors(data: FormData): FormErrors {
     const errors: FormErrors = {};
-    if (!data.name.trim()) errors.name = 'You must give a name.';
-    if (!data.email.trim()) errors.email = 'Needed to send word back.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errors.email = 'The runes look wrong.';
-    if (!data.message.trim()) errors.message = 'Share your message.';
+    if (!normaliseInput(data.name)) errors.name = 'You must give a name.';
+    if (!normaliseInput(data.email)) errors.email = 'Needed to send word back.';
+    else if (!isEmailValid(data.email)) errors.email = 'The runes look wrong.';
+    if (!normaliseInput(data.message)) errors.message = 'Share your message.';
+    else if (!isMessageValid(data.message)) errors.message = 'Your message lacks purpose.';
 
     return errors;
   }
@@ -102,11 +104,18 @@ export default function ContactForm() {
     }
 
     setStatus('submitting');
+    const payload = {
+      ...formData,
+      name: normaliseInput(formData.name),
+      email: normaliseInput(formData.email),
+      subject: formData.subject ? normaliseInput(formData.subject) : '',
+      message: normaliseInput(formData.message),
+    };
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
