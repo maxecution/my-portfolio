@@ -89,7 +89,7 @@ export default function About() {
                     </IconWrapper>
                   </div>
                   <h4 className='text-xl mb-2 text-center text-primary-950 dark:text-foreground'>{attribute.name}</h4>
-                  <div className='text-4xl text-primary mb-2'>{attribute.value}</div>
+                  <div className='text-4xl text-primary mb-2'>+{Math.floor((attribute.value - 10) / 2)}</div>
                   <p className='text-muted-foreground text-center'>{attribute.stat}</p>
                   <p className='mt-4 text-xs text-primary/85'>Click to reveal</p>
                 </div>
