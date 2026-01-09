@@ -35,7 +35,7 @@ export default function NavBar() {
         <div
           className={`${
             cvButtonHasScrolled ? 'opacity-100 visible' : 'opacity-0 invisible'
-          } absolute left-1/2 -translate-x-1/2 text-background bg-primary border-2 border-primary rounded-full p-2 hover:cursor-pointer transition-opacity duration-300`}
+          } absolute left-1/2 -translate-x-1/2 text-background bg-primary border-2 border-primary rounded-full px-4 py-2 hover:cursor-pointer transition-opacity duration-300`}
           aria-hidden={!cvButtonHasScrolled}>
           <a
             href={cvURL}
@@ -43,7 +43,7 @@ export default function NavBar() {
             rel='noopener noreferrer'
             className='text-sm md:text-base font-bold'
             data-testid='cv-download-link'>
-            Download CV
+            View CV
           </a>
         </div>
 

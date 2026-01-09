@@ -20,7 +20,7 @@ export function GradientText({ children, className = '', variant = 'primary', cu
 
   return (
     <span
-      className={`bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent animate-gradient ${className}`}
+      className={`bg-linear-to-r ${gradientClass} bg-clip-text text-transparent animate-gradient ${className}`}
       style={{
         backgroundSize: '400% auto',
       }}>

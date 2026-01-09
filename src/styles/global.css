@@ -2,6 +2,22 @@
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
+@media (prefers-reduced-motion: reduce) {
+  .animate-rune {
+    animation: none;
+  }
+  .float-rune {
+    animation: none;
+    opacity: 0.15;
+  }
+  .animate-gradient {
+    animation: none;
+  }
+  .animate-cursor-blink {
+    animation: none;
+  }
+}
+
 @theme {
   /* Typography */
   --font-size: 16px;
@@ -29,6 +45,11 @@
   --color-primary-800: #372108;
   --color-primary-900: #241404;
   --color-primary-950: #180b02;
+
+  --rune-anchor: #00000059;
+  --rune-glow-core: #7b4f1df2;
+  --rune-glow-mid: #7b4f1d8c;
+  --rune-glow-far: #ffc8781f;
 }
 .dark {
   --color-background: #0a0a0f;
@@ -51,6 +72,11 @@
   --color-primary-800: #fcdc90;
   --color-primary-900: #feefd4;
   --color-primary-950: #fef6e6;
+
+  --rune-anchor: #00000026;
+  --rune-glow-core: #d4af37bf;
+  --rune-glow-mid: #d4af3766;
+  --rune-glow-far: #ffc8781f;
 }
 
 @layer base {
@@ -164,4 +190,27 @@
 
 .animate-rune {
   animation: runePulse 3s ease-in-out infinite;
+}
+
+@keyframes runeFloat {
+  0% {
+    opacity: 0.15;
+    transform: rotate(0deg);
+  }
+  50% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0.15;
+    transform: rotate(360deg);
+  }
+}
+.float-rune {
+  position: absolute;
+  animation-name: runeFloat;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+  text-shadow: 0 0 1px var(--rune-anchor), 0 0 3px var(--rune-glow-core), 0 0 10px var(--rune-glow-mid),
+    0 0 26px var(--rune-glow-far);
 }

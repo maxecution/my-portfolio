@@ -10,7 +10,7 @@ describe('GradientText Component', () => {
     expect(textElement).toBeVisible();
 
     // Check for gradient-related classes
-    expect(textElement).toHaveClass('bg-gradient-to-r', 'bg-clip-text', 'text-transparent', 'animate-gradient');
+    expect(textElement).toHaveClass('bg-linear-to-r', 'bg-clip-text', 'text-transparent', 'animate-gradient');
 
     // Check for default primary gradient classes
     expect(textElement).toHaveClass('from-primary-600', 'via-primary-200', 'to-primary-600');
