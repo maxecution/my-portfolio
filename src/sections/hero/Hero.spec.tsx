@@ -1,3 +1,8 @@
+jest.mock('@ui/runicBackground/RunicBackground', () => ({
+  __esModule: true,
+  RunicBackground: () => null, // Mocked as null to avoid rendering during tests,
+}));
+
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Hero from './Hero';
@@ -47,7 +52,7 @@ describe('Hero Component', () => {
       // The gradient text should be a span with the appropriate gradient classes
       const gradientSpan = heading.querySelector('span');
       expect(gradientSpan).toBeVisible();
-      expect(gradientSpan).toHaveClass('bg-gradient-to-r', 'bg-clip-text', 'text-transparent', 'animate-gradient');
+      expect(gradientSpan).toHaveClass('bg-linear-to-r', 'bg-clip-text', 'text-transparent', 'animate-gradient');
 
       // Check the description
       const description = screen.getByText(TEXT);

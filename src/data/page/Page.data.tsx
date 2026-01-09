@@ -44,5 +44,4 @@ export const privacyPolicy: PrivacyPolicy = {
   ),
 };
 
-export const cvURL: string =
-  'https://github.com/maxecution/my-portfolio/releases/latest/download/Max_Zimmer-Smith_CV.pdf';
+export const cvURL: string = 'https://maxecution.github.io/portfolio-assets/public/Max_Zimmer-Smith_CV.pdf';
