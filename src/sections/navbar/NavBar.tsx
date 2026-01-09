@@ -39,7 +39,7 @@ export default function NavBar() {
           aria-hidden={!cvButtonHasScrolled}>
           <a
             href={cvURL}
-            download
+            target='_blank'
             rel='noopener noreferrer'
             className='text-sm md:text-base font-bold'
             data-testid='cv-download-link'>
