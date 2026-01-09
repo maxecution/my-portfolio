@@ -36,7 +36,7 @@ export default function NavBar() {
           className={`${
             cvButtonHasScrolled ? 'opacity-100 visible' : 'opacity-0 invisible'
           } absolute left-1/2 -translate-x-1/2 text-background bg-primary border-2 border-primary rounded-full p-2 hover:cursor-pointer transition-opacity duration-300`}
-          aria-hidden={cvButtonHasScrolled}>
+          aria-hidden={!cvButtonHasScrolled}>
           <a
             href={cvURL}
             download
