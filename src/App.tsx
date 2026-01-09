@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@contexts/ThemeProvider/ThemeProvider';
 import { ToasterProvider } from '@contexts/toasterProvider/ToasterProvider';
+import { Analytics } from '@vercel/analytics/react';
 import Section from '@layout/section/Section';
 import NavBar from '@sections/navbar/NavBar';
 import Hero from '@sections/hero/Hero';
@@ -28,6 +29,7 @@ function App() {
           </Section>
         </main>
         <Footer />
+        <Analytics />
       </ToasterProvider>
     </ThemeProvider>
   );
