@@ -75,14 +75,14 @@ describe('NavBar', () => {
       expect(navMenu).toHaveClass('flex-row', 'items-center');
 
       // Desktop navigation should be hidden on mobile, visible on desktop
-      expect(navMenu.parentElement).toHaveClass('hidden', 'md:flex');
+      expect(navMenu.parentElement).toHaveClass('hidden', 'lg:flex');
 
       // Should render burger menu button for mobile
       const burgerButton = screen.getByRole('button', { name: 'Open navigation menu' });
       expect(burgerButton).toBeInTheDocument();
 
       // Mobile navigation should be visible on mobile, hidden on desktop
-      expect(burgerButton.parentElement).toHaveClass('md:hidden');
+      expect(burgerButton.parentElement).toHaveClass('lg:hidden');
     });
   });
 

@@ -87,7 +87,7 @@ describe('Hero Component', () => {
       render(<Hero />);
 
       // Find the arrow container div (parent of the link containing the arrow)
-      const arrowLink = screen.getByRole('link');
+      const arrowLink = screen.getByTestId('scroll-arrow');
       const arrowContainer = arrowLink.parentElement;
       expect(arrowContainer).toHaveClass(
         'absolute',
@@ -111,7 +111,7 @@ describe('Hero Component', () => {
 
       // When scrolled, find the arrow container by link and then parent div
       // The SVG becomes inaccessible when aria-hidden="true" is on the parent
-      const arrowLink = screen.getByRole('link', { hidden: true });
+      const arrowLink = screen.getByTestId('scroll-arrow');
       const arrowContainer = arrowLink.parentElement;
       expect(arrowContainer).toHaveClass('opacity-0', 'invisible');
       expect(arrowContainer).not.toHaveClass('animate-bounce', 'opacity-100', 'visible');
@@ -123,7 +123,7 @@ describe('Hero Component', () => {
       // Initially not scrolled
       rerender(<Hero />);
 
-      const arrowLink = screen.getByRole('link');
+      const arrowLink = screen.getByTestId('scroll-arrow');
       const arrowContainer = arrowLink.parentElement;
       expect(arrowContainer).toHaveClass('opacity-100', 'visible');
 

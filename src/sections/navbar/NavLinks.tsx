@@ -10,10 +10,7 @@ export default function NavLinks({ links, orientation = 'horizontal', onLinkClic
   const isVertical = orientation === 'vertical';
 
   return (
-    <ul
-      className={`flex ${
-        isVertical ? 'flex-col space-y-4' : 'flex-row items-center gap-8 md:gap-10 xl:gap-12 3xl:gap-16'
-      }`}>
+    <ul className={`flex ${isVertical ? 'flex-col space-y-4' : 'flex-row items-center md:gap-3 xl:gap-12 3xl:gap-16'}`}>
       {links.map((link) => (
         <li key={link.href}>
           <a

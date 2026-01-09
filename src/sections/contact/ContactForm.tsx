@@ -175,7 +175,7 @@ export default function ContactForm() {
   const btnClass = `${baseBtnClass} ${isIdle && isSubmitDisabled ? disabledIdleClass : activeColorClass}`;
 
   return (
-    <Card className='h-full'>
+    <Card id='contact-form' className='h-full'>
       <form className='space-y-6' onSubmit={handleSubmit}>
         <FormField
           id='name'
