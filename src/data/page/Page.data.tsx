@@ -43,3 +43,6 @@ export const privacyPolicy: PrivacyPolicy = {
     </div>
   ),
 };
+
+export const cvURL: string =
+  'https://github.com/maxecution/my-portfolio/releases/latest/download/Max_Zimmer-Smith_CV.pdf';

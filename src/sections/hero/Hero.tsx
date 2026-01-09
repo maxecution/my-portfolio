@@ -1,5 +1,5 @@
-import { heroData, cvURL } from '@data/hero/Hero.data';
-import { authorData } from '@data/page/Page.data';
+import { heroData } from '@data/hero/Hero.data';
+import { authorData, cvURL } from '@data/page/Page.data';
 import { GradientText } from '@ui/text/GradientText';
 import TypewriterEffect from './TypewriterEffect';
 import useScrollState from '@hooks/useScrollState';
