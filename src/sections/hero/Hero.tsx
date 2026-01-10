@@ -1,7 +1,6 @@
 import { heroData } from '@data/hero/Hero.data';
 import { authorData, cvURL } from '@data/page/Page.data';
 import { GradientText } from '@ui/text/GradientText';
-import { RunicBackground } from '@ui/runicBackground/RunicBackground';
 import TypewriterEffect from './TypewriterEffect';
 import useScrollState from '@hooks/useScrollState';
 import Arrow from '@ui/arrow/Arrow';
@@ -20,56 +19,47 @@ export default function Hero() {
   const hasScrolled = useScrollState(160);
   const typewriterWidth = getTypewriterWidth(heroData.typewriterPhrases);
   return (
-    <div className='relative h-full w-full'>
-      {/* Full-bleed clipped background layer */}
-      <div className='absolute inset-0 overflow-hidden pointer-events-none'>
-        <RunicBackground />
-      </div>
-
-      {/* Main content layer */}
-      <div className='relative z-10 flex flex-col items-center justify-center h-full px-4'>
-        <div className='flex flex-col text-center items-center justify-center gap-6 md:gap-8 lg:gap-10'>
-          <h1 className='text-5xl md:text-7xl tracking-tight font-medium'>
-            Well met, I'm <GradientText>{authorData.firstName}</GradientText>
-          </h1>
-          {/* Typewriter effect container */}
-          <span
-            className='p-2 bg-primary/10 backdrop-blur-sm border-2 border-primary/50 rounded-full text-sm text-center font-display text-muted-foreground'
-            style={{ width: typewriterWidth }}>
-            <TypewriterEffect phrases={heroData.typewriterPhrases} />
-          </span>
-          {/* Description */}
-          <p className='text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto'>{heroData.text}</p>
-
-          <div className='flex flex-col md:flex-row gap-5'>
-            <a
-              href='#contact-form'
-              className='min-w-45 bg-background border-2 border-primary rounded-lg px-8 py-4 text-primary font-bold transition-transform hover:scale-105 shadow-primary/50 hover:shadow-lg'
-              data-testid='contact-link'>
-              Get in Touch
-            </a>
-
-            <a
-              href={cvURL}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='min-w-45 text-center border-2 border-primary bg-primary rounded-lg px-8 py-4 text-background font-bold transition-transform hover:scale-105 shadow-primary/50 hover:shadow-lg'
-              data-testid='cv-download-link'>
-              View CV
-            </a>
-          </div>
-        </div>
-
-        {/* Arrow positioned at bottom */}
-        <div
-          className={`absolute bottom-5 left-1/2 -translate-x-1/2 transition-all duration-700 ease-in-out ${
-            hasScrolled ? 'opacity-0 invisible' : 'opacity-100 visible animate-bounce'
-          }`}
-          aria-hidden={hasScrolled}>
-          <a href='#about' className='text-primary' data-testid='scroll-arrow'>
-            <Arrow className='text-primary' size={30} direction='down' aria-label='Scroll down to About section' />
+    <div className='flex flex-col items-center justify-center h-full relative px-4'>
+      {/* Main content */}
+      <div className='flex flex-col text-center items-center justify-center gap-6 md:gap-8 lg:gap-10'>
+        <h1 className='text-5xl md:text-7xl tracking-tight font-medium'>
+          Well met, I'm <GradientText>{authorData.firstName}</GradientText>
+        </h1>
+        {/* Typewriter effect container */}
+        <span
+          className='p-2 bg-primary/10 backdrop-blur-sm border-2 border-primary/50 rounded-full text-sm text-center font-display text-muted-foreground'
+          style={{ width: typewriterWidth }}>
+          <TypewriterEffect phrases={heroData.typewriterPhrases} />
+        </span>
+        {/* Description */}
+        <p className='text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto'>{heroData.text}</p>
+        <div className='flex flex-col md:flex-row gap-5'>
+          <a
+            href='#contact-form'
+            className='min-w-45 bg-background border-2 border-primary rounded-lg px-8 py-4 text-primary font-bold transition-transform hover:scale-105 shadow-primary/50 hover:shadow-lg'
+            data-testid='contact-link'>
+            Get in Touch
+          </a>
+          <a
+            href={cvURL}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='min-w-45 text-center border-2 border-primary bg-primary rounded-lg px-8 py-4 text-background font-bold transition-transform hover:scale-105 shadow-primary/50 hover:shadow-lg'
+            data-testid='cv-download-link'>
+            View CV
           </a>
         </div>
+      </div>
+
+      {/* Arrow positioned at bottom */}
+      <div
+        className={`absolute bottom-5 left-1/2 -translate-x-1/2 transition-all duration-700 ease-in-out ${
+          hasScrolled ? 'opacity-0 invisible' : 'opacity-100 visible animate-bounce'
+        }`}
+        aria-hidden={hasScrolled}>
+        <a href='#about' className='text-primary' data-testid='scroll-arrow'>
+          <Arrow className='text-primary' size={30} direction='down' aria-label='Scroll down to About section' />
+        </a>
       </div>
     </div>
   );

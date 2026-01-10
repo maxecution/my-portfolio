@@ -23,7 +23,7 @@ describe('RunicBackground', () => {
 
     render(<RunicBackground />);
     const renderedRunes = screen.getAllByText(RUNE_REGEX);
-    expect(renderedRunes.length).toBe(10); // small screen count
+    expect(renderedRunes.length).toBe(12); // small screen count
   });
 
   test('renders the correct number of runes for medium screens', () => {
@@ -31,7 +31,7 @@ describe('RunicBackground', () => {
 
     render(<RunicBackground />);
     const renderedRunes = screen.getAllByText(RUNE_REGEX);
-    expect(renderedRunes.length).toBe(15); // medium screen count
+    expect(renderedRunes.length).toBe(16); // medium screen count
   });
 
   test('renders the correct number of runes for large screens', () => {
@@ -54,13 +54,13 @@ describe('RunicBackground', () => {
     mockUseIsMobile.mockImplementation((bp?: number) => bp === 768);
     const { rerender } = render(<RunicBackground />);
     let renderedRunes = screen.getAllByText(RUNE_REGEX);
-    expect(renderedRunes.length).toBe(10);
+    expect(renderedRunes.length).toBe(12);
 
     mockUseIsMobile.mockImplementation((bp?: number) => bp === 1024);
     rerender(<RunicBackground />);
 
     renderedRunes = screen.getAllByText(RUNE_REGEX);
-    expect(renderedRunes.length).toBe(15);
+    expect(renderedRunes.length).toBe(16);
   });
 
   test('reuses existing runes when count does not change', () => {
@@ -68,12 +68,12 @@ describe('RunicBackground', () => {
     const { rerender } = render(<RunicBackground />);
     const firstRenderRunes = screen.getAllByText(RUNE_REGEX).map((el) => el.textContent);
 
-    expect(firstRenderRunes.length).toBe(10);
+    expect(firstRenderRunes.length).toBe(12);
 
     rerender(<RunicBackground />);
     const secondRenderRunes = screen.getAllByText(RUNE_REGEX).map((el) => el.textContent);
 
-    expect(secondRenderRunes.length).toBe(10);
+    expect(secondRenderRunes.length).toBe(12);
 
     expect(secondRenderRunes).toEqual(firstRenderRunes);
   });
