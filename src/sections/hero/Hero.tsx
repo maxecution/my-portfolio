@@ -1,7 +1,6 @@
 import { heroData } from '@data/hero/Hero.data';
 import { authorData, cvURL } from '@data/page/Page.data';
 import { GradientText } from '@ui/text/GradientText';
-import { RunicBackground } from '@ui/runicBackground/RunicBackground';
 import TypewriterEffect from './TypewriterEffect';
 import useScrollState from '@hooks/useScrollState';
 import Arrow from '@ui/arrow/Arrow';
@@ -21,9 +20,6 @@ export default function Hero() {
   const typewriterWidth = getTypewriterWidth(heroData.typewriterPhrases);
   return (
     <div className='flex flex-col items-center justify-center h-full relative px-4'>
-      {/* Runic Background */}
-      <RunicBackground />
-
       {/* Main content */}
       <div className='flex flex-col text-center items-center justify-center gap-6 md:gap-8 lg:gap-10'>
         <h1 className='text-5xl md:text-7xl tracking-tight font-medium'>
@@ -57,7 +53,7 @@ export default function Hero() {
 
       {/* Arrow positioned at bottom */}
       <div
-        className={`absolute bottom-5 left-1/2 transform -translate-x-1/2 transition-all duration-700 ease-in-out ${
+        className={`absolute bottom-5 left-1/2 -translate-x-1/2 transition-all duration-700 ease-in-out ${
           hasScrolled ? 'opacity-0 invisible' : 'opacity-100 visible animate-bounce'
         }`}
         aria-hidden={hasScrolled}>

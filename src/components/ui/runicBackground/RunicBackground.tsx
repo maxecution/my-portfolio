@@ -8,7 +8,7 @@ export function RunicBackground() {
   const isLarge = useIsMobile(1440);
 
   // Determine rune count
-  const count = isSmall ? 10 : isMedium ? 15 : isLarge ? 20 : 30;
+  const count = isSmall ? 12 : isMedium ? 16 : isLarge ? 20 : 30;
 
   const runesRef = useRef<
     Array<{

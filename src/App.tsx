@@ -3,6 +3,7 @@ import { ToasterProvider } from '@contexts/toasterProvider/ToasterProvider';
 import { Analytics } from '@vercel/analytics/react';
 import Section from '@layout/section/Section';
 import NavBar from '@sections/navbar/NavBar';
+import { RunicBackground } from '@ui/runicBackground/RunicBackground';
 import Hero from '@sections/hero/Hero';
 import About from '@sections/about/About';
 import Projects from '@sections/projects/Projects';
@@ -15,7 +16,7 @@ function App() {
       <ToasterProvider>
         <NavBar />
         <main className='min-h-screen'>
-          <Section id='hero' ariaLabel='Hero' fullHeight>
+          <Section id='hero' ariaLabel='Hero' fullHeight background={<RunicBackground />}>
             <Hero />
           </Section>
           <Section id='about' title='About Me'>
