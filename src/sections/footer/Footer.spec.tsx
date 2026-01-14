@@ -3,12 +3,6 @@ import { render, screen } from '@testing-library/react';
 import Footer from './Footer';
 import { authorData } from '@data/page/Page.data';
 
-// jest.mock('@data/page/Page.data', () => ({
-//   authorData: {
-//     firstName: 'Max',
-//   },
-// }));
-
 describe('Footer component', () => {
   beforeAll(() => {
     jest.useFakeTimers();
