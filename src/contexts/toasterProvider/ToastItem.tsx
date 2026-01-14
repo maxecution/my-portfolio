@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Toast } from './ToastContext';
-import { crossX } from '@ui/icons/Icons';
+import { crossX } from '@assets/icons/Icons';
 
 const styles = {
   success: 'bg-green-50 border-green-400 text-green-900',

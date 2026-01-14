@@ -36,7 +36,7 @@ export default function ProjectCard({
         <div className='absolute top-4 right-4 z-10'>
           <DifficultyBadge difficulty={difficulty} />
         </div>
-        <div className='relative h-full min-h-0 bg-linear-to-br from-primary/20 via-secondary/20 to-primary/20 overflow-hidden'>
+        <div className='relative h-full bg-linear-to-br from-primary/20 via-secondary/20 to-primary/20 overflow-hidden'>
           <div className='absolute inset-0 flex items-center justify-center'>
             <img
               src={getScreenshot(title)}
@@ -44,7 +44,7 @@ export default function ProjectCard({
                 e.currentTarget.src = '/projectScreenshots/placeholder-screenshot.png';
               }}
               alt={title + ' image'}
-              className='object-fill h-full w-full rounded-lg'
+              className='object-cover object-top h-full w-full rounded-lg'
             />
           </div>
           <div className='absolute inset-0 bg-linear-to-t from-card to-transparent'></div>

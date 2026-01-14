@@ -3,6 +3,7 @@ import { normaliseInput, isEmailValid, isMessageValid } from '@utils/formUtils';
 import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 import crypto from 'crypto';
+import { ownerEmail } from '@data/contact/Contact.data';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const redis = new Redis({
@@ -73,7 +74,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
     const { data, error } = await resend.emails.send({
       from,
-      to: 'max.zimmersmith@gmail.com',
+      to: ownerEmail,
       subject: subjectToUse,
       html: `
         <div>

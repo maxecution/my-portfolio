@@ -1,4 +1,4 @@
-import { crossedSwords } from '@ui/icons/Icons';
+import { crossedSwords } from '@assets/icons/Icons';
 interface SectionHeaderProps {
   id?: string;
   children: string;

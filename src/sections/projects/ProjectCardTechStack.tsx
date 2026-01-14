@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Pill from '@shared/pill/Pill';
-import { crossX } from '@ui/icons/Icons';
+import { crossX } from '@assets/icons/Icons';
 
 interface ProjectCardTechStackProps {
   techStack: string[];

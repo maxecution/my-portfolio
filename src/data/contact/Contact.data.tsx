@@ -18,6 +18,8 @@ export interface QuickInfoCard {
   info: React.ReactNode;
 }
 
+export const ownerEmail: string = 'max.zimmersmith@gmail.com';
+
 export const contactIntro: ContactIntro = {
   sectionHeader: `The sending stone is active. Reach out and let the adventure begin. Share your challenge, your vision, or simply tales from the road, I'm always open to new alliances. Let's forge something extraordinary together.`,
 };
@@ -71,7 +73,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: 'Email',
-    handle: 'max.zimmersmith@gmail.com',
+    handle: ownerEmail,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -89,7 +91,7 @@ export const socialLinks: SocialLink[] = [
         <rect x='2' y='4' width='20' height='16' rx='2' />
       </svg>
     ),
-    url: 'mailto:max.zimmersmith@gmail.com',
+    url: 'mailto:' + ownerEmail,
     color: 'hover:text-red-400',
   },
 ];
