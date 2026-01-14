@@ -203,6 +203,6 @@ pnpm run test:coverage
 Source code is licensed under the MIT License.
 Branding, images, and personal content are not.
 
-See the [LICENSE](./LICENSE) file for full details.
+See the [LICENSE](./LICENSE.md) file for full details.
 
 ---
