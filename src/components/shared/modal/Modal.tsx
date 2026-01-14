@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { crossX } from '@ui/icons/Icons';
+import { crossX } from '@assets/icons/Icons';
 import cn from '@utils/cn';
 
 interface ModalProps {

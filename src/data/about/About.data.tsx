@@ -78,7 +78,7 @@ export const attributes: Attribute[] = [
     id: 'constitution',
     name: 'Constitution',
     stat: 'Adaptability',
-    value: 16,
+    value: 19,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -156,7 +156,7 @@ export const attributes: Attribute[] = [
     id: 'charisma',
     name: 'Charisma',
     stat: 'Collaboration',
-    value: 15,
+    value: 18,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'

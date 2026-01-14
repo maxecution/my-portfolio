@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import Footer from './Footer';
+import { authorData } from '@data/page/Page.data';
 
-jest.mock('@data/page/Page.data', () => ({
-  authorData: {
-    firstName: 'Max',
-  },
-}));
+// jest.mock('@data/page/Page.data', () => ({
+//   authorData: {
+//     firstName: 'Max',
+//   },
+// }));
 
 describe('Footer component', () => {
   beforeAll(() => {
@@ -22,9 +23,10 @@ describe('Footer component', () => {
     render(<Footer />);
 
     expect(screen.getByRole('contentinfo')).toBeVisible();
-    expect(screen.getByText(/© 2026/i)).toBeVisible();
-    expect(screen.getByText(/created by max/i)).toBeVisible();
-    expect(screen.getByText(/every great app begins with a single line of code/i)).toBeVisible();
+    expect(
+      screen.getByText(`© 2026 ${authorData.firstName + ' ' + authorData.lastName} | All rights reserved`)
+    ).toBeVisible();
+    expect(screen.getByText(`"Every great app begins with a single line of code"`)).toBeVisible();
 
     const runes = ['ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ'];
 

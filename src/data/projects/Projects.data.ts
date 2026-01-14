@@ -15,6 +15,7 @@ export const projectIntro: ProjectIntro = {
   sectionHeader: `A showcase of my adventures in code, each project a quest completed, highlighting the projects that have shaped my journey as a developer. Explore the realms I've created and the problems I've solved.`,
 };
 
+// Project Screenshots should follow the naming convention: project-title-screenshot.png, e.g. presonal-portfolio-screenshot.png, and saved in the public/projectScreenshots/ directory.
 export const projectsData: ProjectCardDetails[] = [
   {
     title: 'Personal Portfolio',
@@ -44,20 +45,4 @@ export const projectsData: ProjectCardDetails[] = [
     liveUrl: 'https://drw-helper.vercel.app/',
     difficulty: 'Easy',
   },
-  // {
-  //   title: 'Placeholder 1',
-  //   description: 'A placeholder to showcase the carousel on larger screens.',
-  //   techStack: ['React', 'TypeScript'],
-  //   githubUrl: '#',
-  //   liveUrl: '#',
-  //   difficulty: 'Medium',
-  // },
-  // {
-  //   title: 'Placeholder 2',
-  //   description: 'A placeholder to showcase the carousel on larger screens.',
-  //   techStack: ['React', 'TypeScript'],
-  //   githubUrl: '#',
-  //   liveUrl: '#',
-  //   difficulty: 'Legendary',
-  // },
 ];

@@ -17,6 +17,7 @@ export default defineConfig({
       '@shared': '/src/components/shared',
       '@ui': '/src/components/ui',
       '@utils': '/src/utils',
+      '@assets': '/src/assets',
     },
   },
   server: {
