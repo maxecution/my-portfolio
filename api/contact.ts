@@ -1,5 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { normaliseInput, isEmailValid, isMessageValid } from '../src/utils/formUtils.ts';
 import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 import crypto from 'crypto';
@@ -19,6 +18,18 @@ function escapeHtml(s: string) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function normaliseInput(input: string): string {
+  return input.replace(/\s+/g, ' ').trim();
+}
+
+function isEmailValid(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(normaliseInput(email));
+}
+
+function isMessageValid(message: string): boolean {
+  return normaliseInput(message).length > 10;
 }
 
 function getIp(request: VercelRequest): string | undefined {
