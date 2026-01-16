@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { normaliseInput, isEmailValid, isMessageValid } from '@utils/formUtils';
+import { normaliseInput, isEmailValid, isMessageValid } from '../src/utils/formUtils.ts';
 import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 import crypto from 'crypto';
-import { ownerEmail } from '@data/contact/Contact.data';
 
+const ownerEmail: string = 'max.zimmersmith@gmail.com'; // Update to relevant reply-to email
 const resend = new Resend(process.env.RESEND_API_KEY);
 const redis = new Redis({
   url: process.env.KV_REST_API_URL!,
