@@ -18,6 +18,7 @@ export interface QuickInfoCard {
   info: React.ReactNode;
 }
 
+// this needs to be updated manually in api/contact.ts as well
 export const ownerEmail: string = 'max.zimmersmith@gmail.com';
 
 export const contactIntro: ContactIntro = {
