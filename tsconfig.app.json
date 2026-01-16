@@ -40,5 +40,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "tailwindcss.config.ts", "api", "lib/formUtils.ts"]
+  "include": ["src", "tailwindcss.config.ts", "api", "lib"]
 }
