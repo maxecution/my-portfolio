@@ -20,7 +20,8 @@
       "@shared/*": ["components/shared/*"],
       "@ui/*": ["components/ui/*"],
       "@utils/*": ["utils/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@lib/*": ["../lib/*"]
     },
 
     /* Bundler mode */
@@ -39,5 +40,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "tailwindcss.config.ts", "api"]
+  "include": ["src", "tailwindcss.config.ts", "api", "lib/formUtils.ts"]
 }

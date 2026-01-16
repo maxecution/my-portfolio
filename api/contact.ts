@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { normaliseInput, isEmailValid, isMessageValid } from '../src/utils/formUtils.ts';
+import { normaliseInput, isEmailValid, isMessageValid } from '../lib/formUtils.ts';
 import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 import crypto from 'crypto';
