@@ -29,7 +29,6 @@ export default {
     '^@ui/(.*)$': '<rootDir>/src/components/ui/$1',
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
     '^@assets/(.*)$': '<rootDir>/src/assets/$1',
-    '^@lib/(.*)$': '<rootDir>/lib/$1',
     // Handle CSS imports in tests
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     // Handle static assets

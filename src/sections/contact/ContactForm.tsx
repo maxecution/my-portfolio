@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useToast } from '@contexts/toasterProvider/useToast';
 import type { ToastLevel } from '@contexts/toasterProvider/ToastContext';
-import { normaliseInput, isEmailValid, isMessageValid } from '@lib/formUtils';
+import { normaliseInput, isEmailValid, isMessageValid } from '@utils/formUtils';
 import { privacyPolicy } from '@data/page/Page.data';
 import Card from '@shared/card/Card';
 import Modal from '@shared/modal/Modal';

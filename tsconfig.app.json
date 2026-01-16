@@ -20,8 +20,7 @@
       "@shared/*": ["components/shared/*"],
       "@ui/*": ["components/ui/*"],
       "@utils/*": ["utils/*"],
-      "@assets/*": ["assets/*"],
-      "@lib/*": ["../lib/*"]
+      "@assets/*": ["assets/*"]
     },
 
     /* Bundler mode */

@@ -18,7 +18,6 @@ export default defineConfig({
       '@ui': '/src/components/ui',
       '@utils': '/src/utils',
       '@assets': '/src/assets',
-      '@lib': '/lib',
     },
   },
   server: {
