@@ -19,6 +19,8 @@ export default {
     ],
   },
   moduleNameMapper: {
+    '^(?:\\./|(?:\\.\\./)*)src/(.+)\\.js$': '<rootDir>/src/$1.ts',
+    '^(?:\\./|(?:\\.\\./)*)api/(.+)\\.js$': '<rootDir>/api/$1.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@layout/(.*)$': '<rootDir>/src/components/layout/$1',
     '^@sections/(.*)$': '<rootDir>/src/sections/$1',

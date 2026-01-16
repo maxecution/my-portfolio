@@ -20,7 +20,7 @@ jest.mock('resend', () => {
 });
 
 // importing after mocks to avoid hoisting issues
-import handler from './contact';
+import handler from '../api/contact.js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import crypto from 'crypto';
 
