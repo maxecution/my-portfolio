@@ -19,7 +19,11 @@ export interface QuickInfoCard {
 }
 
 // this needs to be updated manually in api/contact.ts as well
-export const ownerEmail: string = 'max.zimmersmith@gmail.com';
+const githubHandle = 'maxecution';
+const githubUrl = 'https://github.com/' + githubHandle;
+const linkedinHandle = 'in/max-zimmer-smith/';
+const linkedinUrl = 'https://www.linkedin.com/' + linkedinHandle;
+const ownerEmail: string = 'mzs.enquiry@gmail.com';
 
 export const contactIntro: ContactIntro = {
   sectionHeader: `The sending stone is active. Reach out and let the adventure begin. Share your challenge, your vision, or simply tales from the road, I'm always open to new alliances. Let's forge something extraordinary together.`,
@@ -27,7 +31,7 @@ export const contactIntro: ContactIntro = {
 export const socialLinks: SocialLink[] = [
   {
     name: 'GitHub',
-    handle: '@maxecution',
+    handle: '@' + githubHandle,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -45,12 +49,12 @@ export const socialLinks: SocialLink[] = [
         <path d='M9 18c-4.51 2-5-2-7-2'></path>
       </svg>
     ),
-    url: 'https://github.com/maxecution',
+    url: githubUrl,
     color: 'hover:text-purple-400',
   },
   {
     name: 'LinkedIn',
-    handle: 'in/max-zimmer-smith/',
+    handle: linkedinHandle,
     icon: (
       <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -69,7 +73,7 @@ export const socialLinks: SocialLink[] = [
         <circle cx='4' cy='4' r='2' />
       </svg>
     ),
-    url: 'https://www.linkedin.com/in/max-zimmer-smith/',
+    url: linkedinUrl,
     color: 'hover:text-blue-400',
   },
   {
