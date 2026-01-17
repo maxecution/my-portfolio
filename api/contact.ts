@@ -3,7 +3,7 @@ import { Redis } from '@upstash/redis';
 import { Resend } from 'resend';
 import crypto from 'crypto';
 
-const ownerEmail: string = 'max.zimmersmith@gmail.com'; // Update to relevant reply-to email
+const ownerEmail: string = 'mzs.enquiry@gmail.com'; // Update to relevant reply-to email
 const resend = new Resend(process.env.RESEND_API_KEY);
 const redis = new Redis({
   url: process.env.KV_REST_API_URL!,
@@ -35,7 +35,7 @@ function isMessageValid(message: string): boolean {
 function getIp(request: VercelRequest): string | undefined {
   const headers = request.headers ?? {};
   const xfwd = headers['x-forwarded-for'];
-  const ip = Array.isArray(xfwd) ? xfwd[0] : xfwd ?? request.socket?.remoteAddress;
+  const ip = Array.isArray(xfwd) ? xfwd[0] : (xfwd ?? request.socket?.remoteAddress);
   return ip?.toString();
 }
 
