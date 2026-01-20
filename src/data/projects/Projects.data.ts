@@ -18,8 +18,16 @@ export const projectIntro: ProjectIntro = {
 // Project Screenshots should follow the naming convention: project-title-screenshot.png, e.g. presonal-portfolio-screenshot.png, and saved in the public/projectScreenshots/ directory.
 export const projectsData: ProjectCardDetails[] = [
   {
-    title: 'Personal Portfolio',
-    description: 'A placeholder for testing until final version of page is deployed.',
+    title: 'Dark Road West Helper',
+    description: 'A QoL tools collection for a Westmarches D&D server.',
+    techStack: ['React', 'Vite', 'TypeScript', 'Tailwind CSS', 'Vercel', 'GitHub', 'GitHub Actions'],
+    githubUrl: 'https://github.com/maxecution/DRW-helper',
+    liveUrl: 'https://drw-helper.vercel.app/',
+    difficulty: 'Easy',
+  },
+  {
+    title: 'My Personal Portfolio',
+    description: 'An evolving website to showcase my private projects.',
     techStack: [
       'React',
       'Vite',
@@ -35,14 +43,14 @@ export const projectsData: ProjectCardDetails[] = [
     ],
     githubUrl: 'https://github.com/maxecution/my-portfolio/',
     liveUrl: 'https://maxzimmersmith.vercel.app/',
-    difficulty: 'Hard',
+    difficulty: 'Medium',
   },
   {
-    title: 'Dark Road West Helper Tool',
-    description: 'A collection of QoL tools for a Westmarches D&D Community.',
-    techStack: ['React', 'Vite', 'TypeScript', 'Tailwind CSS', 'Vercel', 'GitHub', 'GitHub Actions'],
-    githubUrl: 'https://github.com/maxecution/DRW-helper',
-    liveUrl: 'https://drw-helper.vercel.app/',
+    title: 'Discord Game News Bot',
+    description: 'A web scraper to posts game news to Discord via webhook.',
+    techStack: ['Node.js', 'JavaScript', 'Cheerio', 'GitHub Actions', 'Cron schedules', 'Discord Webhooks'],
+    githubUrl: 'https://github.com/maxecution/discord-game-news-bot',
+    liveUrl: 'https://github.com/maxecution/discord-game-news-bot/actions',
     difficulty: 'Easy',
   },
 ];
