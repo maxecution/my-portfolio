@@ -47,7 +47,7 @@ export const projectsData: ProjectCardDetails[] = [
   },
   {
     title: 'Discord Game News Bot',
-    description: 'A web scraper to posts game news to Discord via webhook.',
+    description: 'A web scraper to post game news to Discord via webhook.',
     techStack: ['Node.js', 'JavaScript', 'Cheerio', 'GitHub Actions', 'Cron schedules', 'Discord Webhooks'],
     githubUrl: 'https://github.com/maxecution/discord-game-news-bot',
     liveUrl: 'https://github.com/maxecution/discord-game-news-bot/actions',
