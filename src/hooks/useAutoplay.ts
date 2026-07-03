@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type UseAutoplayOptions = {
   delay: number;
@@ -16,15 +16,15 @@ export function useAutoplay(callback: () => void, { delay, enabled = true }: Use
     savedCallback.current = callback;
   }, [callback]);
 
-  const clear = () => {
+  const clear = useCallback(() => {
     if (intervalRef.current != null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     setIsPlaying(false);
-  };
+  }, []);
 
-  const start = () => {
+  const start = useCallback(() => {
     if (!enabled || delay <= 0) {
       clear();
       return;
@@ -37,7 +37,7 @@ export function useAutoplay(callback: () => void, { delay, enabled = true }: Use
     }, delay);
 
     setIsPlaying(true);
-  };
+  }, [clear, delay, enabled]);
 
   useEffect(() => {
     clear();
@@ -54,7 +54,7 @@ export function useAutoplay(callback: () => void, { delay, enabled = true }: Use
       clear();
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, [delay, enabled]);
+  }, [clear, start]);
 
   return {
     pause: clear,
