@@ -194,7 +194,7 @@ describe('Carousel Component', () => {
 
     test('supports columnGap fallback when gap is empty', () => {
       getComputedStyleMock.mockImplementationOnce(
-        () => ({ gap: '', columnGap: '10px' } as unknown as CSSStyleDeclaration)
+        () => ({ gap: '', columnGap: '10px' }) as unknown as CSSStyleDeclaration,
       );
       render(<Carousel data={data} />);
       const wrapper = document.querySelector('.relative.mx-auto') as HTMLDivElement;
@@ -295,7 +295,7 @@ describe('Carousel Component', () => {
           pointerType: 'mouse',
           clientX: 100,
           clientY: 10,
-        })
+        }),
       );
 
       window.dispatchEvent(
@@ -304,7 +304,7 @@ describe('Carousel Component', () => {
           pointerType: 'mouse',
           clientX: 180,
           clientY: 12,
-        })
+        }),
       );
 
       window.dispatchEvent(
@@ -313,7 +313,7 @@ describe('Carousel Component', () => {
           pointerType: 'mouse',
           clientX: 180,
           clientY: 12,
-        })
+        }),
       );
 
       expect(scrollToSpy).toHaveBeenCalled();
@@ -356,6 +356,29 @@ describe('Carousel Component', () => {
       expect(removeSpyRegion).toHaveBeenCalledWith('scroll', expect.any(Function));
     });
 
+    test('resumes autoplay after 15s touch pause timeout', () => {
+      jest.useFakeTimers();
+
+      render(<Carousel data={data} />);
+      const region = getCarouselRegion();
+
+      region.dispatchEvent(
+        new window.PointerEvent('pointerdown', {
+          bubbles: true,
+          pointerId: 1,
+          clientX: 100,
+          clientY: 0,
+          pointerType: 'touch',
+        }),
+      );
+
+      jest.advanceTimersByTime(15000);
+
+      expect(resumeMock).toHaveBeenCalled();
+
+      jest.useRealTimers();
+    });
+
     test('clears mobile pause timeout on unmount after touch drag', () => {
       jest.useFakeTimers();
       const clearSpy = jest.spyOn(window, 'clearTimeout');
@@ -370,7 +393,7 @@ describe('Carousel Component', () => {
           clientX: 100,
           clientY: 0,
           pointerType: 'touch',
-        })
+        }),
       );
 
       window.dispatchEvent(
@@ -380,7 +403,7 @@ describe('Carousel Component', () => {
           clientX: 50,
           clientY: 0,
           pointerType: 'touch',
-        })
+        }),
       );
 
       window.dispatchEvent(
@@ -388,7 +411,7 @@ describe('Carousel Component', () => {
           bubbles: true,
           pointerId: 21,
           pointerType: 'touch',
-        })
+        }),
       );
 
       unmount();

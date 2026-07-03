@@ -98,20 +98,6 @@ export default function Carousel({ data }: Props) {
     };
   }, [itemsPerView, data.length]);
 
-  /* Pointer drag (desktop only) */
-
-  useEffect(() => {
-    const cleanup = setupPointerHandlers({
-      containerRef,
-      drag,
-      rafRef,
-      layoutRef,
-      autoplay,
-      goToIndex,
-    });
-    return cleanup;
-  }, [itemsPerView]);
-
   /* Navigation helpers */
 
   const goToIndex = (index: number) => goToIndexImpl(containerRef.current, layoutRef, index);
@@ -129,8 +115,31 @@ export default function Carousel({ data }: Props) {
     {
       delay: AUTOPLAY_DELAY,
       enabled: true,
-    }
+    },
   );
+
+  // Keep a ref so the pointer handlers always call the latest pause/resume
+  // without making the effect depend on the autoplay object (which is new each render).
+  const autoplayRef = useRef(autoplay);
+  autoplayRef.current = autoplay;
+  const stableAutoplay = useRef({
+    pause: () => autoplayRef.current.pause(),
+    resume: () => autoplayRef.current.resume(),
+  }).current;
+
+  /* Pointer drag (desktop only) */
+
+  useEffect(() => {
+    const cleanup = setupPointerHandlers({
+      containerRef,
+      drag,
+      rafRef,
+      layoutRef,
+      autoplay: stableAutoplay,
+      goToIndex,
+    });
+    return cleanup;
+  }, [itemsPerView, stableAutoplay]);
 
   return (
     <div className='relative'>
